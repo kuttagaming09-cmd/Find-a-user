@@ -49,8 +49,14 @@
         </button>
     </div>
 
+    <!-- Autosave Status Indicator -->
+    <div class="text-center text-[10px] text-slate-400 mb-1 flex items-center justify-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+        <span>Autosave active</span>
+    </div>
+
     <!-- Bottom Navigation -->
-    <div class="grid grid-cols-4 gap-2 bg-slate-800 p-3 rounded-2xl border border-slate-700 text-center shadow-xl mt-2">
+    <div class="grid grid-cols-3 gap-2 bg-slate-800 p-3 rounded-2xl border border-slate-700 text-center shadow-xl">
         <button onclick="switchTab('mine')" class="text-cyan-400 flex flex-col items-center gap-1"><i class="fa-solid fa-pickaxe text-lg"></i><span class="text-[10px]">Mine</span></button>
         <button onclick="switchTab('tasks')" class="text-slate-400 hover:text-white flex flex-col items-center gap-1 transition"><i class="fa-solid fa-list-check text-lg"></i><span class="text-[10px]">Tasks</span></button>
         <button onclick="switchTab('wallet')" class="text-slate-400 hover:text-white flex flex-col items-center gap-1 transition"><i class="fa-solid fa-wallet text-lg"></i><span class="text-[10px]">Withdraw</span></button>
@@ -108,9 +114,22 @@
             lastClaim: parseInt(localStorage.getItem('lastClaim')) || 0
         };
 
+        // UI Header setup
         document.getElementById('user-name').innerText = user.name;
         if(tg.initDataUnsafe?.user?.photo_url) {
             document.getElementById('user-avatar').src = user.photo;
+        }
+
+        // Auto Load from Telegram Cloud Storage on start
+        if (tg.CloudStorage) {
+            tg.CloudStorage.getItems(['coins', 'level', 'lastClaim'], (err, values) => {
+                if (!err && values) {
+                    if (values.coins) user.coins = parseInt(values.coins);
+                    if (values.level) user.level = parseInt(values.level);
+                    if (values.lastClaim) user.lastClaim = parseInt(values.lastClaim);
+                    updateUI();
+                }
+            });
         }
 
         function updateUI() {
@@ -119,6 +138,29 @@
             document.getElementById('finger-limit').innerText = user.maxFingers;
         }
 
+        // Realtime AutoSave function (Local + Telegram Cloud)
+        function autoSave() {
+            localStorage.setItem('coins', user.coins);
+            localStorage.setItem('level', user.level);
+            localStorage.setItem('lastClaim', user.lastClaim);
+
+            if (tg.CloudStorage) {
+                tg.CloudStorage.setItem('coins', user.coins.toString());
+                tg.CloudStorage.setItem('level', user.level.toString());
+                tg.CloudStorage.setItem('lastClaim', user.lastClaim.toString());
+            }
+        }
+
+        // Automatic background save every 2 seconds
+        setInterval(autoSave, 2000);
+
+        // Save when app is closed or minimized
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                autoSave();
+            }
+        });
+
         // Tap Mechanic
         const tapArea = document.getElementById('tap-btn');
         tapArea.addEventListener('touchstart', (e) => {
@@ -126,7 +168,7 @@
             let touches = Math.min(e.touches.length, user.maxFingers);
             user.coins += (touches * 1);
             checkLevel();
-            saveData();
+            localStorage.setItem('coins', user.coins); // Immediate local save
             updateUI();
             
             for(let i=0; i<touches; i++) {
@@ -151,7 +193,6 @@
             }
         }
 
-        // --- NEW AD NETWORK & RESET-PROOF TIMER ---
         function getAutoAdInterval() {
             let interval = 300 - ((user.level - 1) * 10);
             return Math.max(120, interval); // Min 2 minutes
@@ -176,10 +217,7 @@
         }, 1000);
 
         function triggerAutoAd() {
-            // Your New Ad Network URL
             const adUrl = "https://www.profitableratecpmnetwork.com/ubupygs3?key=511d31b0135289fc6ee4ff0f18b63a18";
-            
-            // Open securely via Telegram WebApp
             if(tg.openLink) {
                 tg.openLink(adUrl);
             } else {
@@ -187,13 +225,12 @@
             }
         }
 
-        // Daily Bonus
         function claimDaily() {
             let now = Date.now();
             if (now - user.lastClaim > 86400000) {
                 user.coins += 5000;
                 user.lastClaim = now;
-                saveData(); updateUI();
+                autoSave(); updateUI();
                 tg.showAlert("🎁 Daily Bonus Claimed! +5,000 Coins");
                 tg.HapticFeedback?.notificationOccurred('success');
             } else {
@@ -202,7 +239,6 @@
             }
         }
 
-        // Withdraw Request
         function submitWithdraw() {
             let address = document.getElementById('w-address').value;
             let amount = parseInt(document.getElementById('w-amount').value);
@@ -210,7 +246,7 @@
             if (amount < 1000000) return tg.showAlert("❌ Minimum 1,000,000 Coins!");
             if (amount > user.coins) return tg.showAlert("❌ Not enough coins!");
             
-            user.coins -= amount; saveData(); updateUI();
+            user.coins -= amount; autoSave(); updateUI();
             
             tg.sendData(JSON.stringify({
                 action: "withdraw_request",
@@ -235,17 +271,7 @@
             document.getElementById('modal-tasks').classList.add('hidden');
             document.getElementById('modal-wallet').classList.add('hidden');
         }
-        function saveData() {
-            localStorage.setItem('coins', user.coins);
-            localStorage.setItem('level', user.level);
-            localStorage.setItem('lastClaim', user.lastClaim);
-            
-            // Save balance to Bot for Leaderboard
-            tg.sendData(JSON.stringify({
-                action: "save_balance",
-                userId: user.id, userName: user.name, coins: user.coins
-            }));
-        }
+        
         updateUI();
     </script>
 </body>
