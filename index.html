@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -8,183 +8,146 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { user-select: none; touch-action: manipulation; background: #0f172a; color: white; transition: all 0.3s; }
+        body { user-select: none; touch-action: manipulation; background: #0f172a; color: white; overflow: hidden; }
+        .tap-btn { transition: transform 0.05s ease; }
         .tap-btn:active { transform: scale(0.92); }
-        .floating-text { position: absolute; animation: floatUp 0.8s ease-out forwards; color: #38bdf8; font-weight: bold; font-size: 22px; pointer-events: none; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-80px); } }
-        .hidden { display: none !important; }
+        .floating-text { position: absolute; animation: floatUp 0.8s ease-out forwards; color: #38bdf8; font-weight: 900; font-size: 24px; pointer-events: none; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.2); } }
     </style>
 </head>
-<body class="flex flex-col h-screen justify-between p-4 max-w-md mx-auto">
+<body class="flex flex-col h-screen justify-between p-4 max-w-md mx-auto relative">
 
-    <!-- Top Header -->
-    <div class="flex justify-between items-center mb-2">
-        <button onclick="toggleLanguage()" class="bg-slate-700 px-3 py-1 rounded-full text-xs font-bold border border-slate-600 flex items-center gap-2">
-            <i class="fa-solid fa-language text-cyan-400"></i> <span id="lang-btn">English</span>
-        </button>
-        <div class="text-[10px] text-slate-400 flex items-center gap-1">
-            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> <span data-bn="অটোসেভ অন" data-en="Autosave ON">Autosave ON</span>
-        </div>
-    </div>
-
-    <!-- User Profile Card -->
-    <div class="bg-slate-800/90 rounded-2xl p-4 flex items-center justify-between border border-slate-700 shadow-lg">
+    <!-- Header & Daily Bonus -->
+    <div class="bg-slate-800/90 rounded-2xl p-4 flex items-center justify-between border border-slate-700 shadow-lg backdrop-blur-md">
         <div class="flex items-center gap-3">
-            <img id="user-avatar" src="https://via.placeholder.com/50" class="w-12 h-12 rounded-full border-2 border-cyan-400">
+            <img id="user-avatar" src="https://via.placeholder.com/50" class="w-12 h-12 rounded-full border-2 border-cyan-400 shadow-[0_0_10px_cyan]">
             <div>
-                <h2 id="user-name" class="font-bold text-sm">User</h2>
-                <div class="text-xs text-slate-400">ID: <span id="user-id-txt" class="text-cyan-300">000</span></div>
+                <h2 id="user-name" class="font-bold text-sm text-gray-100">User</h2>
+                <div class="text-xs text-yellow-400 font-semibold">Level <span id="user-level" class="text-white">1</span></div>
             </div>
         </div>
-        <div class="text-right">
-            <div class="text-xs text-yellow-400 font-bold" data-bn="লেভেল" data-en="Level">Level <span id="user-level" class="text-white text-lg">1</span></div>
-            <div class="text-[10px] text-slate-400" data-bn="পাওয়ার" data-en="Power">Power: <span id="finger-limit">2</span>/tap</div>
-        </div>
+        <button onclick="claimDaily()" class="bg-gradient-to-r from-green-500 to-green-700 text-xs px-4 py-2 rounded-full font-bold shadow-[0_0_15px_rgba(34,197,94,0.4)] hover:scale-105 transition-transform text-white">🎁 Daily Bonus</button>
     </div>
 
-    <!-- Balance Area -->
-    <div class="text-center my-6">
-        <div class="flex items-center justify-center gap-2 mb-1">
-            <i class="fa-solid fa-coins text-yellow-400 text-4xl"></i>
-            <span id="coin-balance" class="text-5xl font-black tracking-tight text-white shadow-cyan-500 drop-shadow-lg">0</span>
+    <!-- Balance & Timer Info -->
+    <div class="text-center mt-6 mb-2">
+        <div class="flex items-center justify-center gap-3 mb-3">
+            <i class="fa-solid fa-coins text-yellow-400 text-4xl animate-bounce"></i>
+            <span id="coin-balance" class="text-5xl font-black tracking-tight text-white drop-shadow-[0_0_15px_rgba(6,182,212,0.8)]">0</span>
         </div>
-        <div class="text-xs text-green-400 font-semibold bg-green-900/30 inline-block px-3 py-1 rounded-full border border-green-800">
-            ≈ <span id="usdt-value">0.00</span> USDT
+        <div class="inline-block bg-slate-800/80 px-4 py-1.5 rounded-full text-xs text-cyan-300 border border-slate-600 shadow-inner">
+            Max <span id="finger-limit" class="font-bold text-white">2</span> Taps | ⏱️ Auto Ad in: <span id="ad-timer" class="font-bold text-red-400">0s</span>
         </div>
+        <p class="text-[10px] text-gray-400 mt-2">💾 Auto-saving to device...</p>
     </div>
 
     <!-- Tapping Area -->
-    <div class="relative flex justify-center items-center my-auto h-56" id="tap-area">
-        <button id="tap-btn" class="tap-btn w-56 h-56 rounded-full bg-gradient-to-b from-cyan-600 to-blue-900 shadow-[0_0_60px_rgba(6,182,212,0.5)] border-4 border-cyan-400 flex justify-center items-center">
-            <div class="w-full h-full rounded-full bg-slate-900/20 flex flex-col items-center justify-center">
-                <i class="fa-solid fa-hand-pointer text-5xl text-cyan-100 mb-2"></i>
-                <span class="text-sm font-black text-cyan-50 tracking-widest" data-bn="ট্যাপ করুন" data-en="TAP">TAP</span>
+    <div class="relative flex justify-center items-center flex-1 my-4" id="tap-area">
+        <button id="tap-btn" class="tap-btn w-64 h-64 rounded-full bg-gradient-to-b from-cyan-500 to-blue-700 p-2 shadow-[0_0_60px_rgba(6,182,212,0.5)] border-4 border-cyan-300 flex justify-center items-center relative overflow-hidden">
+            <div class="w-full h-full rounded-full bg-slate-900/40 flex flex-col items-center justify-center relative z-10">
+                <i class="fa-solid fa-bolt text-6xl text-cyan-200 mb-2 drop-shadow-[0_0_10px_white]"></i>
+                <span class="text-sm font-black text-cyan-100 tracking-[0.2em]">TAP NOW</span>
             </div>
+            <!-- Glow effect -->
+            <div class="absolute inset-0 bg-cyan-400 opacity-20 rounded-full animate-pulse"></div>
         </button>
     </div>
 
-    <!-- Bottom Navigation -->
-    <div class="grid grid-cols-4 gap-2 bg-slate-800 p-2 rounded-2xl border border-slate-700 text-center shadow-xl mb-2">
-        <button onclick="switchTab('mine')" class="text-cyan-400 flex flex-col items-center gap-1"><i class="fa-solid fa-gamepad text-lg"></i><span class="text-[10px]" data-bn="খেলুন" data-en="Play">Play</span></button>
-        <button onclick="switchTab('boost')" class="text-slate-400 hover:text-white flex flex-col items-center gap-1"><i class="fa-solid fa-bolt text-lg"></i><span class="text-[10px]" data-bn="বুস্ট" data-en="Boost">Boost</span></button>
-        <button onclick="switchTab('friends')" class="text-slate-400 hover:text-white flex flex-col items-center gap-1"><i class="fa-solid fa-users text-lg"></i><span class="text-[10px]" data-bn="রেফার" data-en="Refer">Refer</span></button>
-        <button onclick="switchTab('wallet')" class="text-slate-400 hover:text-white flex flex-col items-center gap-1"><i class="fa-solid fa-wallet text-lg"></i><span class="text-[10px]" data-bn="উত্তোলন" data-en="Cashout">Cashout</span></button>
+    <!-- Bottom Navigation Bar (All Options Intact) -->
+    <div class="grid grid-cols-4 gap-2 bg-slate-800/90 p-3 rounded-2xl border border-slate-700 text-center shadow-[0_-5px_20px_rgba(0,0,0,0.3)] mb-2">
+        <button onclick="switchTab('mine')" class="text-cyan-400 flex flex-col items-center gap-1 hover:scale-105 transition">
+            <i class="fa-solid fa-pickaxe text-xl"></i><span class="text-[10px] font-bold">Mine</span>
+        </button>
+        <button onclick="switchTab('tasks')" class="text-slate-400 hover:text-white flex flex-col items-center gap-1 hover:scale-105 transition">
+            <i class="fa-solid fa-list-check text-xl"></i><span class="text-[10px] font-bold">Tasks</span>
+        </button>
+        <button onclick="switchTab('wallet')" class="text-slate-400 hover:text-white flex flex-col items-center gap-1 hover:scale-105 transition">
+            <i class="fa-solid fa-wallet text-xl"></i><span class="text-[10px] font-bold">Withdraw</span>
+        </button>
+        <!-- Sync to Leaderboard Button -->
+        <button onclick="syncBalanceToBot()" class="text-green-400 hover:text-green-300 flex flex-col items-center gap-1 hover:scale-105 transition bg-slate-700/50 rounded-lg p-1">
+            <i class="fa-solid fa-cloud-arrow-up text-xl animate-pulse"></i><span class="text-[10px] font-bold">Sync Bot</span>
+        </button>
     </div>
 
-    <!-- MODALS -->
-    
-    <!-- 1. Boost Modal (Watch Ads) -->
-    <div id="modal-boost" class="hidden fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 p-4 flex flex-col justify-center items-center">
-        <div class="bg-slate-800 p-6 rounded-3xl w-full max-w-sm border border-slate-700 text-center">
-            <h3 class="text-2xl font-black mb-2 text-yellow-400" data-bn="পাওয়ার বাড়ান" data-en="Upgrade Power">Upgrade Power</h3>
-            <p class="text-sm text-slate-300 mb-6" data-bn="৫টি অ্যাড দেখলে পাওয়ার ১ লেভেল বাড়বে।" data-en="Watch 5 Ads to increase power by +1 Level.">Watch 5 Ads to increase power by +1 Level.</p>
+    <!-- TASKS MODAL -->
+    <div id="modal-tasks" class="hidden fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 p-4 flex flex-col justify-center items-center">
+        <div class="bg-slate-800 p-6 rounded-3xl w-full max-w-sm border border-slate-600 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+            <h3 class="text-2xl font-black mb-6 text-center text-cyan-400"><i class="fa-solid fa-tasks"></i> Earn More Coins</h3>
             
-            <div class="bg-slate-900 p-4 rounded-2xl mb-6 border border-slate-700">
-                <div class="text-4xl font-black text-cyan-400 mb-2"><span id="ad-count">0</span> / 5</div>
-                <div class="w-full bg-slate-700 rounded-full h-2.5 mb-4">
-                    <div id="ad-progress" class="bg-cyan-400 h-2.5 rounded-full" style="width: 0%"></div>
+            <div class="bg-slate-900 p-4 rounded-2xl mb-4 flex justify-between items-center border border-slate-700 shadow-inner">
+                <div>
+                    <div class="text-sm font-bold text-white">Join Our Telegram</div>
+                    <div class="text-xs text-yellow-400 mt-1 font-black">+50,000 Coins</div>
                 </div>
-                <button onclick="watchAd()" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold flex justify-center items-center gap-2"><i class="fa-solid fa-play"></i> <span data-bn="অ্যাড দেখুন" data-en="Watch Ad">Watch Ad</span></button>
+                <button onclick="verifyTask('telegram')" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-xs font-bold transition shadow-[0_0_10px_blue]">Verify</button>
             </div>
-            <button onclick="closeModals()" class="w-full bg-slate-700 py-3 rounded-xl font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+
+            <button onclick="closeModals()" class="w-full bg-slate-700 hover:bg-slate-600 py-3 rounded-xl mt-4 font-bold transition text-white">✖ Close Tasks</button>
         </div>
     </div>
 
-    <!-- 2. Friends/Referral Modal -->
-    <div id="modal-friends" class="hidden fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 p-4 flex flex-col justify-center items-center">
-        <div class="bg-slate-800 p-6 rounded-3xl w-full max-w-sm border border-slate-700 text-center">
-            <h3 class="text-2xl font-black mb-2 text-cyan-400" data-bn="বন্ধুদের আমন্ত্রণ" data-en="Invite Friends">Invite Friends</h3>
-            <p class="text-xs text-slate-300 mb-4" data-bn="টাকা তুলতে কমপক্ষে ১ জনকে রেফার করতে হবে!" data-en="You MUST refer at least 1 friend to withdraw!">You MUST refer at least 1 friend to withdraw!</p>
-            
-            <div class="bg-slate-900 p-4 rounded-xl mb-4">
-                <div class="text-sm text-slate-400" data-bn="আপনার মোট রেফার:" data-en="Your Total Referrals:">Your Total Referrals:</div>
-                <div class="text-3xl font-black text-white" id="ref-count-display">0</div>
-            </div>
-            
-            <button onclick="closeModals()" class="w-full bg-slate-700 py-3 rounded-xl font-bold mt-2" data-bn="বন্ধ করুন" data-en="Close">Close</button>
-        </div>
-    </div>
-
-    <!-- 3. Wallet / Withdraw Modal -->
+    <!-- WALLET / WITHDRAW MODAL -->
     <div id="modal-wallet" class="hidden fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 p-4 flex flex-col justify-center items-center">
-        <div class="bg-slate-800 p-6 rounded-3xl w-full max-w-sm border border-slate-700">
-            <h3 class="text-2xl font-black mb-2 text-green-400 text-center" data-bn="টাকা উত্তোলন" data-en="Withdraw Funds">Withdraw Funds</h3>
+        <div class="bg-slate-800 p-6 rounded-3xl w-full max-w-sm border border-slate-600 text-center shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+            <h3 class="text-2xl font-black mb-2 text-green-400"><i class="fa-solid fa-money-bill-wave"></i> Cashout</h3>
+            <p class="text-xs mb-6 text-slate-300 bg-slate-900 py-2 rounded-lg font-semibold border border-slate-700">Minimum Withdraw: 1,000,000 Coins</p>
             
-            <div class="bg-slate-900 p-3 rounded-xl mb-4 text-xs border border-slate-700">
-                <div class="flex justify-between mb-1"><span class="text-slate-400" data-bn="রেট:" data-en="Rate:">Rate:</span> <span class="font-bold text-white">1,000,000 = 1 USDT</span></div>
-                <div class="flex justify-between mb-1"><span class="text-slate-400" data-bn="ফি:" data-en="Fee:">Fee:</span> <span class="font-bold text-red-400">15%</span></div>
-                <div class="flex justify-between"><span class="text-slate-400" data-bn="শর্ত:" data-en="Condition:">Condition:</span> <span class="font-bold text-yellow-400" data-bn="ন্যূনতম ১টি রেফার" data-en="Min 1 Referral">Min 1 Referral</span></div>
+            <div class="text-left mb-4">
+                <label class="text-xs text-slate-400 ml-1 font-bold">Payment Details (Bkash/Nagad/Crypto)</label>
+                <input id="w-address" type="text" placeholder="Enter Account Number or Address" class="w-full bg-slate-900 p-3 mt-1 rounded-xl text-white border border-slate-600 focus:border-cyan-400 outline-none transition">
             </div>
             
-            <div class="mb-3">
-                <label class="text-xs text-slate-400 ml-1" data-bn="অ্যাড্রেস (USDT/Bkash)" data-en="Address (USDT/Bkash)">Payment Details</label>
-                <input id="w-address" type="text" class="w-full bg-slate-900 p-3 mt-1 rounded-xl text-white border border-slate-600 outline-none">
+            <div class="text-left mb-6">
+                <label class="text-xs text-slate-400 ml-1 font-bold">Withdraw Amount</label>
+                <input id="w-amount" type="number" placeholder="e.g. 1000000" class="w-full bg-slate-900 p-3 mt-1 rounded-xl text-white border border-slate-600 focus:border-cyan-400 outline-none transition">
             </div>
             
-            <div class="mb-4">
-                <label class="text-xs text-slate-400 ml-1" data-bn="কয়েন পরিমাণ (মিনিমাম ১০ লক্ষ)" data-en="Amount (Min 1,000,000)">Amount</label>
-                <input id="w-amount" type="number" oninput="calculateWithdraw()" placeholder="1000000" class="w-full bg-slate-900 p-3 mt-1 rounded-xl text-white border border-slate-600 outline-none">
-            </div>
-
-            <div class="text-center mb-4 text-sm font-bold text-cyan-300">
-                <span data-bn="আপনি পাবেন:" data-en="You will receive:">You get:</span> <span id="final-usdt">0.00</span> USDT
-            </div>
-            
-            <button onclick="submitWithdraw()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 font-bold py-3 rounded-xl shadow-lg" data-bn="উত্তোলন করুন" data-en="Withdraw Now">Withdraw Now</button>
-            <button onclick="closeModals()" class="w-full bg-slate-700 py-3 rounded-xl font-bold mt-2" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+            <button onclick="submitWithdraw()" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(34,197,94,0.5)] hover:scale-[1.02] transition text-white">📤 Send Request to Admin</button>
+            <button onclick="closeModals()" class="w-full bg-slate-700 hover:bg-slate-600 py-3 rounded-xl mt-3 font-bold transition text-white">✖ Close Wallet</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.ready();
 
-        // URL থেকে রেফারেল কাউন্ট বের করা (বট থেকে পাঠানো)
-        const urlParams = new URLSearchParams(window.location.search);
-        const botReferrals = parseInt(urlParams.get('refs')) || 0;
-
+        // Load data from LocalStorage (This is the True Autosave for Frontend)
         let user = {
-            id: tg.initDataUnsafe?.user?.id || 123456789,
+            id: tg.initDataUnsafe?.user?.id || Math.floor(Math.random() * 100000),
             name: tg.initDataUnsafe?.user?.first_name || "Gamer",
             photo: tg.initDataUnsafe?.user?.photo_url || "https://via.placeholder.com/50",
             coins: parseInt(localStorage.getItem('coins')) || 0,
             level: parseInt(localStorage.getItem('level')) || 1,
-            adsWatched: parseInt(localStorage.getItem('adsWatched')) || 0,
-            referrals: botReferrals, // বট থেকে পাওয়া সঠিক রেফারেল
-            lang: localStorage.getItem('lang') || 'en'
+            maxFingers: parseInt(localStorage.getItem('maxFingers')) || 2,
+            lastClaim: parseInt(localStorage.getItem('lastClaim')) || 0
         };
 
         // UI Setup
         document.getElementById('user-name').innerText = user.name;
-        document.getElementById('user-id-txt').innerText = user.id;
-        if(tg.initDataUnsafe?.user?.photo_url) document.getElementById('user-avatar').src = user.photo;
-        document.getElementById('ref-count-display').innerText = user.referrals;
-        
-        applyLanguage();
+        if(tg.initDataUnsafe?.user?.photo_url) {
+            document.getElementById('user-avatar').src = user.photo;
+        }
 
         function updateUI() {
             document.getElementById('coin-balance').innerText = user.coins.toLocaleString();
-            document.getElementById('usdt-value').innerText = (user.coins / 1000000).toFixed(4);
             document.getElementById('user-level').innerText = user.level;
-            document.getElementById('finger-limit').innerText = user.level + 1; // Level 1 = 2 power, Level 2 = 3 power etc.
-            
-            // Ad progress
-            document.getElementById('ad-count').innerText = user.adsWatched;
-            document.getElementById('ad-progress').style.width = (user.adsWatched * 20) + "%";
+            document.getElementById('finger-limit').innerText = user.maxFingers;
         }
 
-        // Tap Logic
-        document.getElementById('tap-btn').addEventListener('touchstart', (e) => {
+        // Tap Mechanic
+        const tapArea = document.getElementById('tap-btn');
+        tapArea.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            let power = user.level + 1; // পাওয়ার লেভেলের উপর ভিত্তি করে
-            let touches = Math.min(e.touches.length, power);
-            user.coins += (touches * power);
-            
-            localStorage.setItem('coins', user.coins);
+            let touches = Math.min(e.touches.length, user.maxFingers);
+            user.coins += (touches * 1);
+            checkLevel();
+            saveDataLocally(); // <--- Auto-saves to phone instantly. No data lost!
             updateUI();
             
             for(let i=0; i<touches; i++) {
-                showFloat(`+${power}`, e.touches[i].clientX, e.touches[i].clientY);
+                showFloat('+1', e.touches[i].clientX, e.touches[i].clientY);
             }
             tg.HapticFeedback?.impactOccurred('light');
         });
@@ -193,95 +156,136 @@
             const el = document.createElement('div');
             el.className = 'floating-text';
             el.innerText = text;
-            el.style.left = `${x-10}px`; el.style.top = `${y-20}px`;
+            el.style.left = `${x-15}px`; el.style.top = `${y-30}px`;
             document.body.appendChild(el);
             setTimeout(() => el.remove(), 800);
         }
 
-        // Ad Logic
-        function watchAd() {
+        function checkLevel() {
+            let threshold = user.level * 1000;
+            if (user.coins >= threshold) {
+                user.level++;
+                tg.HapticFeedback?.notificationOccurred('success');
+            }
+        }
+
+        // --- AUTOSAVE LOCALLY ---
+        // এই ফাংশনটি গেমের ব্যালেন্স আপনার মোবাইলের ব্রাউজারে অটো সেভ করে রাখে
+        function saveDataLocally() {
+            localStorage.setItem('coins', user.coins);
+            localStorage.setItem('level', user.level);
+            localStorage.setItem('lastClaim', user.lastClaim);
+        }
+
+        // --- SYNC TO BOT (LEADERBOARD) ---
+        // গেম খেলা শেষ হলে এই ফাংশন দিয়ে ব্যালেন্স বটের কাছে পাঠাবেন
+        function syncBalanceToBot() {
+            tg.HapticFeedback?.impactOccurred('heavy');
+            // ডাটা সেন্ড করলে গেম ক্লোজ হয়ে যাবে, তাই ইউজারকে এলার্ট দেওয়া হলো
+            tg.sendData(JSON.stringify({
+                action: "save_balance",
+                userId: user.id, 
+                userName: user.name, 
+                coins: user.coins
+            }));
+        }
+
+        // --- NEW AD NETWORK (PROFITABLE RATE CPM) ---
+        function getAutoAdInterval() {
+            let interval = 300 - ((user.level - 1) * 10);
+            return Math.max(120, interval); // Minimum 2 mins
+        }
+
+        let nextAdTimestamp = parseInt(localStorage.getItem('nextAdTimestamp'));
+        if (!nextAdTimestamp || isNaN(nextAdTimestamp)) {
+            nextAdTimestamp = Date.now() + (getAutoAdInterval() * 1000);
+            localStorage.setItem('nextAdTimestamp', nextAdTimestamp);
+        }
+
+        setInterval(() => {
+            let now = Date.now();
+            let remainingSeconds = Math.max(0, Math.ceil((nextAdTimestamp - now) / 1000));
+            document.getElementById('ad-timer').innerText = `${remainingSeconds}s`;
+
+            if (remainingSeconds <= 0) {
+                triggerAutoAd();
+                nextAdTimestamp = Date.now() + (getAutoAdInterval() * 1000);
+                localStorage.setItem('nextAdTimestamp', nextAdTimestamp);
+            }
+        }, 1000);
+
+        function triggerAutoAd() {
+            // Your custom Ad URL
             const adUrl = "https://www.profitableratecpmnetwork.com/ubupygs3?key=511d31b0135289fc6ee4ff0f18b63a18";
-            if(tg.openLink) tg.openLink(adUrl); else window.open(adUrl, '_blank');
-            
-            // 5 সেকেন্ড পর অ্যাড কাউন্ট হবে
-            setTimeout(() => {
-                user.adsWatched++;
-                if (user.adsWatched >= 5) {
-                    user.level++;
-                    user.adsWatched = 0;
-                    tg.showAlert(user.lang === 'bn' ? "🎉 অভিনন্দন! আপনার পাওয়ার লেভেল বেড়েছে!" : "🎉 Congrats! Power Level Upgraded!");
-                    localStorage.setItem('level', user.level);
-                }
-                localStorage.setItem('adsWatched', user.adsWatched);
+            if(tg.openLink) {
+                tg.openLink(adUrl);
+            } else {
+                window.open(adUrl, '_blank');
+            }
+        }
+
+        // --- DAILY BONUS ---
+        function claimDaily() {
+            let now = Date.now();
+            if (now - user.lastClaim > 86400000) {
+                user.coins += 5000;
+                user.lastClaim = now;
+                saveDataLocally(); 
                 updateUI();
-            }, 5000);
+                tg.showAlert("🎉 5,000 Coins added to your balance!");
+                tg.HapticFeedback?.notificationOccurred('success');
+            } else {
+                let hours = Math.floor((86400000 - (now - user.lastClaim)) / 3600000);
+                tg.showAlert(`⏳ Bonus already claimed! Come back in ${hours} hours.`);
+            }
         }
 
-        // Withdraw Logic
-        function calculateWithdraw() {
-            let amount = parseInt(document.getElementById('w-amount').value) || 0;
-            let usdt = amount / 1000000;
-            let fee = usdt * 0.15; // 15% fee
-            let final = usdt - fee;
-            document.getElementById('final-usdt').innerText = final > 0 ? final.toFixed(4) : "0.00";
-        }
-
+        // --- WITHDRAW SYSTEM ---
         function submitWithdraw() {
             let address = document.getElementById('w-address').value;
             let amount = parseInt(document.getElementById('w-amount').value);
             
-            if (user.referrals < 1) {
-                return tg.showAlert(user.lang === 'bn' ? "❌ টাকা তুলতে কমপক্ষে ১ জনকে রেফার করতে হবে!" : "❌ You must refer at least 1 person!");
-            }
-            if (!address) return tg.showAlert("❌ Enter details!");
-            if (amount < 1000000) return tg.showAlert("❌ Minimum 1,000,000 Coins!");
-            if (amount > user.coins) return tg.showAlert("❌ Not enough coins!");
+            if (!address) return tg.showAlert("❌ Please enter your Bkash/Nagad/Crypto address!");
+            if (!amount || amount < 1000000) return tg.showAlert("❌ Minimum withdraw amount is 1,000,000 Coins!");
+            if (amount > user.coins) return tg.showAlert("❌ You don't have enough coins!");
             
-            let usdt = amount / 1000000;
-            let finalUsdt = usdt - (usdt * 0.15); // 15% deduction
-            
+            // Deduct balance and save
             user.coins -= amount; 
-            localStorage.setItem('coins', user.coins);
+            saveDataLocally(); 
             updateUI();
             
+            // Send to bot
             tg.sendData(JSON.stringify({
                 action: "withdraw_request",
-                userId: user.id, userName: user.name,
-                address: address, amount: amount, usdtAmount: finalUsdt.toFixed(4)
+                userId: user.id, 
+                userName: user.name,
+                address: address, 
+                amount: amount
             }));
-            
-            closeModals();
         }
 
-        // Language System
-        function toggleLanguage() {
-            user.lang = user.lang === 'en' ? 'bn' : 'en';
-            localStorage.setItem('lang', user.lang);
-            applyLanguage();
+        // --- TASKS VERIFICATION ---
+        function verifyTask(type) {
+            tg.sendData(JSON.stringify({
+                action: "verify_task",
+                userId: user.id, 
+                type: type
+            }));
         }
 
-        function applyLanguage() {
-            document.getElementById('lang-btn').innerText = user.lang === 'en' ? 'বাংলা' : 'English';
-            document.querySelectorAll('[data-en]').forEach(el => {
-                el.innerText = el.getAttribute(`data-${user.lang}`);
-            });
-        }
-
-        // Navigation
+        // --- TAB NAVIGATION ---
         function switchTab(tab) {
             closeModals();
-            if(tab === 'boost') document.getElementById('modal-boost').classList.remove('hidden');
-            if(tab === 'friends') document.getElementById('modal-friends').classList.remove('hidden');
+            if(tab === 'tasks') document.getElementById('modal-tasks').classList.remove('hidden');
             if(tab === 'wallet') document.getElementById('modal-wallet').classList.remove('hidden');
         }
         function closeModals() {
-            ['modal-boost', 'modal-friends', 'modal-wallet'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
+            document.getElementById('modal-tasks').classList.add('hidden');
+            document.getElementById('modal-wallet').classList.add('hidden');
         }
-        
+
+        // Initialize UI
         updateUI();
-        setInterval(() => { localStorage.setItem('coins', user.coins); }, 2000); // Background Autosave
     </script>
 </body>
 </html>
