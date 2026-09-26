@@ -106,7 +106,7 @@
                 <i class="fa-solid fa-play"></i>
             </div>
             <h3 class="text-lg font-bold text-yellow-400">Watch 5 Ads for Instant Energy</h3>
-            <p class="text-xs text-gray-400 mt-1 mb-4">৫টি সংক্ষিপ্ত ভিডিও বিজ্ঞাপন দেখলে আপনার পুরো অ্যানার্জি সাথে সাথে ১০০% রিফিল হয়ে যাবে!</p>
+            <p class="text-xs text-gray-400 mt-1 mb-4">৫টি ভিডিও বা অ্যাড ভিজিট করলে আপনার পুরো অ্যানার্জি সাথে সাথে ১০০% রিফিল হয়ে যাবে!</p>
             
             <!-- Progress Tracker -->
             <div class="mb-4">
@@ -285,41 +285,38 @@
             }
         }, 1000);
 
-        // Ads Mechanism (AdsGram SDK Integration point)
+        // Ads Mechanism (Integrated Ad Link)
         function watchAd() {
-            const btn = document.getElementById('ad-btn');
-            btn.innerText = "Watching Ad...";
-            btn.disabled = true;
+            const adUrl = "https://omg10.com/4/11881546";
+            
+            // Open Ad Link via Telegram SDK or Browser
+            if (tg && tg.openLink) {
+                tg.openLink(adUrl);
+            } else {
+                window.open(adUrl, '_blank');
+            }
 
-            // Simulate Video Ad Callback
-            setTimeout(() => {
-                adsWatched++;
-                document.getElementById('ads-count').innerText = adsWatched;
-                document.getElementById('ads-progress').style.width = (adsWatched / 5 * 100) + '%';
+            adsWatched++;
+            document.getElementById('ads-count').innerText = adsWatched;
+            document.getElementById('ads-progress').style.width = (adsWatched / 5 * 100) + '%';
 
-                if (adsWatched >= 5) {
-                    energy = maxEnergy;
-                    updateUI();
-                    alert("🎉 অভিনন্দন! ৫টি অ্যাড সম্পূর্ণ করে আপনি ১০০% এনার্জি রিফিল পেয়েছেন!");
-                    adsWatched = 0;
-                    document.getElementById('ads-count').innerText = 0;
-                    document.getElementById('ads-progress').style.width = '0%';
-                } else {
-                    alert(`অ্যাড সম্পূর্ণ হয়েছে! (${adsWatched}/5)`);
-                }
-
-                btn.innerHTML = `<i class="fa-solid fa-circle-play mr-2"></i> Watch Ad Now (+1)`;
-                btn.disabled = false;
-            }, 2500);
+            if (adsWatched >= 5) {
+                energy = maxEnergy;
+                updateUI();
+                alert("🎉 অভিনন্দন! ৫টি অ্যাড সম্পূর্ণ করে আপনি ১০০% এনার্জি রিফিল পেয়েছেন!");
+                adsWatched = 0;
+                document.getElementById('ads-count').innerText = 0;
+                document.getElementById('ads-progress').style.width = '0%';
+            } else {
+                alert(`অ্যাড ওপেন হয়েছে! (${adsWatched}/5)। ১০০% অ্যানার্জির জন্য আরও ${5 - adsWatched}টি অ্যাড দেখুন।`);
+            }
         }
 
         // Telegram Stars Purchase System
         function buyWithStars(itemName, starsCount) {
             if (tg && tg.openInvoice) {
-                // Real Telegram Stars Invoice Integration Point
                 tg.showAlert(`পেমেন্ট প্রসেস করা হচ্ছে: ${itemName} for ${starsCount} Stars ⭐`);
             } else {
-                // Fallback simulation for browser test
                 if(confirm(`${itemName} কেনার জন্য ${starsCount} Telegram Stars লাগবে। আপনি কি নিশ্চিত?`)) {
                     alert(`সফলভাবে ${itemName} কেনা হয়েছে!`);
                     if(itemName.includes('VIP')) {
