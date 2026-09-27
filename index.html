@@ -1,166 +1,1120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>P2P Referral App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            margin: 0; padding: 20px;
-        }
-        .header { text-align: center; margin-bottom: 20px; }
-        .balance { font-size: 24px; font-weight: bold; color: var(--tg-theme-button-color, #3390ec); }
-        .card {
-            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
-            padding: 15px; border-radius: 10px; margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .btn {
-            background-color: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none; padding: 10px 15px; border-radius: 5px;
-            cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px;
-        }
-        input, textarea {
-            width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius: 5px;
-            border: 1px solid #ccc; box-sizing: border-box;
-            background-color: var(--tg-theme-bg-color, #fff);
-            color: var(--tg-theme-text-color, #000);
-        }
-        .nav-tabs { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .nav-tab { flex: 1; text-align: center; padding: 10px; background: #ddd; cursor: pointer; }
-        .nav-tab.active { background: var(--tg-theme-button-color, #3390ec); color: white; }
-        .hidden { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#111318">
+<title>P2P Refer</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#0f1115;
+    --surface:#171a20;
+    --surface-2:#1d2129;
+    --surface-3:#232832;
+    --line:rgba(255,255,255,.075);
+    --text:#f6f7f9;
+    --muted:#969da9;
+    --green:#54c98a;
+    --green-2:#31ae70;
+    --gold:#f3c85b;
+    --blue:#72a7ff;
+    --danger:#ff7f8a;
+    --shadow:0 10px 30px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{
+    min-height:100vh;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 15% -5%, rgba(84,201,138,.08), transparent 35%),
+      radial-gradient(circle at 100% 15%, rgba(114,167,255,.06), transparent 30%),
+      var(--bg);
+    font-family:"Hind Siliguri",system-ui,sans-serif;
+    padding-bottom:92px;
+    overflow-x:hidden;
+}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.container{width:min(100%,520px);margin:0 auto;padding:14px 14px 8px}
+
+/* Header */
+.topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:14px;
+}
+.brand{
+    display:flex;align-items:center;gap:10px;
+}
+.brand-mark{
+    width:42px;height:42px;border-radius:13px;
+    display:grid;place-items:center;
+    background:#1f2a24;border:1px solid rgba(84,201,138,.2);
+    color:var(--green);font-size:19px;
+}
+.brand h1{font:800 15px/1.1 Inter,sans-serif;letter-spacing:-.2px}
+.brand p{color:var(--muted);font-size:11px;margin-top:2px}
+.icon-btn{
+    width:40px;height:40px;border-radius:12px;
+    border:1px solid var(--line);background:var(--surface);
+    color:var(--muted);display:grid;place-items:center;
+}
+.icon-btn:active,.action-btn:active,.nav-item:active{transform:scale(.97)}
+
+/* Profile */
+.profile{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:22px;padding:16px;
+    box-shadow:var(--shadow);
+}
+.profile-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.user{display:flex;align-items:center;gap:12px;min-width:0}
+.avatar{
+    width:48px;height:48px;border-radius:15px;flex:0 0 auto;
+    display:grid;place-items:center;
+    background:#263229;border:1px solid rgba(84,201,138,.16);
+    color:var(--green);font:800 17px Inter,sans-serif;
+}
+.user-text{min-width:0}
+.user-text h2{
+    font-size:18px;line-height:1.1;font-weight:700;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.user-text p{font-size:11px;color:var(--muted);margin-top:3px}
+.balance{
+    min-width:94px;text-align:right;
+}
+.balance small{display:block;color:var(--muted);font-size:10px}
+.balance strong{
+    display:inline-flex;align-items:center;gap:5px;
+    font:800 21px/1 Inter,sans-serif;color:var(--gold);
+}
+.balance strong i{font-size:13px}
+
+.welcome{
+    margin-top:14px;padding:11px 12px;border-radius:14px;
+    background:#1d241f;border:1px solid rgba(84,201,138,.15);
+    display:flex;align-items:center;gap:10px;
+}
+.welcome-icon{
+    width:31px;height:31px;border-radius:10px;display:grid;place-items:center;
+    background:#26372c;color:var(--green);font-size:13px;
+}
+.welcome p{font-size:12px;line-height:1.35;color:#d9dedb}
+.welcome b{color:#fff}
+.welcome .tag{margin-left:auto;white-space:nowrap;color:var(--green);font:700 11px Inter,sans-serif}
+
+/* Views */
+.view{display:none;animation:appear .22s ease}
+.view.active{display:block}
+@keyframes appear{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.section-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin:20px 2px 11px;
+}
+.section-head h3{font-size:18px;font-weight:700}
+.section-head span{font-size:11px;color:var(--muted)}
+.refresh{
+    border:0;background:transparent;color:var(--muted);padding:5px;
+}
+.refresh.spin i{animation:spin .55s linear}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Task */
+.task{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:19px;padding:15px;margin-bottom:11px;
+    box-shadow:0 8px 22px rgba(0,0,0,.14);
+}
+.task-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.task-title{font-size:16px;line-height:1.25;font-weight:700}
+.slots{
+    flex:0 0 auto;padding:4px 8px;border-radius:9px;
+    background:#1a2922;color:var(--green);
+    border:1px solid rgba(84,201,138,.12);
+    font-size:10px;font-weight:600;
+}
+.task-desc{color:var(--muted);font-size:12px;line-height:1.55;margin:8px 0 13px}
+.task-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.action-btn{
+    border-radius:12px;padding:11px 10px;border:1px solid var(--line);
+    background:var(--surface-2);color:#e7e9ec;
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    font-size:12px;font-weight:600;
+    transition:.15s ease;
+}
+.action-btn.primary{
+    background:#275c43;border-color:rgba(84,201,138,.18);color:#fff;
+}
+.action-btn i{font-size:11px}
+.empty{
+    text-align:center;padding:38px 18px;background:var(--surface);
+    border:1px dashed var(--line);border-radius:18px;color:var(--muted);
+}
+.empty i{font-size:28px;opacity:.5;margin-bottom:8px}
+.empty p{font-size:12px}
+
+/* Referral */
+.ref-card{
+    margin-top:17px;background:var(--surface);
+    border:1px solid var(--line);border-radius:21px;padding:16px;
+    box-shadow:var(--shadow);
+}
+.ref-top{display:flex;align-items:center;gap:11px}
+.ref-badge{
+    width:43px;height:43px;border-radius:14px;
+    background:#2c271b;color:var(--gold);
+    display:grid;place-items:center;border:1px solid rgba(243,200,91,.14)
+}
+.ref-top h3{font-size:17px;font-weight:700}
+.ref-top p{font-size:11px;color:var(--muted);margin-top:2px}
+.ref-reward{
+    margin:14px 0;padding:12px;border-radius:14px;
+    background:#1d241f;border:1px solid rgba(84,201,138,.12);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.ref-reward span{font-size:12px;color:#d3d8d4}
+.ref-reward strong{font:800 18px Inter,sans-serif;color:var(--gold);white-space:nowrap}
+.ref-link-wrap{
+    display:flex;align-items:center;gap:7px;
+    background:#11141a;border:1px solid var(--line);
+    border-radius:13px;padding:7px;
+}
+.ref-link{
+    min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    color:#cfd4dc;font:500 11px Inter,sans-serif;padding-left:5px;
+}
+.copy-btn{
+    flex:0 0 auto;border:0;border-radius:10px;
+    width:38px;height:38px;background:#243229;color:var(--green)
+}
+.share-btn{
+    margin-top:9px;width:100%;border:0;border-radius:13px;padding:12px;
+    background:#1f4634;color:#ecfff5;font-size:13px;font-weight:700;
+}
+.ref-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.stat{
+    padding:12px;border-radius:14px;background:var(--surface-2);
+    border:1px solid var(--line);
+}
+.stat span{display:block;color:var(--muted);font-size:10px}
+.stat strong{display:block;margin-top:3px;font:800 17px Inter,sans-serif;color:#fff}
+
+/* Create */
+.form-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:19px;
+    padding:15px;
+}
+.field{margin-bottom:13px}
+.label{display:block;font-size:11px;color:#aab0ba;font-weight:600;margin-bottom:6px}
+.input,.textarea{
+    width:100%;background:#11141a;border:1px solid var(--line);
+    color:#fff;border-radius:13px;padding:12px 13px;outline:none;font-size:13px;
+}
+.textarea{resize:none;min-height:95px}
+.input:focus,.textarea:focus{border-color:rgba(84,201,138,.36);box-shadow:0 0 0 3px rgba(84,201,138,.05)}
+.cost{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:11px 12px;border-radius:13px;background:#1f1d16;
+    border:1px solid rgba(243,200,91,.11);margin-bottom:12px;
+}
+.cost span{font-size:12px;color:#d3d0c4}
+.cost strong{font:800 14px Inter,sans-serif;color:var(--gold)}
+.submit{width:100%}
+
+/* Activity */
+.activity-block{margin-top:17px}
+.activity-title{font-size:14px;margin-bottom:9px;font-weight:700}
+.activity-title.green{color:var(--green)}
+.activity-title.blue{color:var(--blue)}
+.activity-item{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:15px;padding:11px 12px;margin-bottom:8px;
+}
+.activity-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.activity-name{font-size:13px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proof{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.status{
+    flex:0 0 auto;font:600 10px Inter,sans-serif;
+    padding:4px 7px;border-radius:8px;
+}
+.pending{background:#2d2717;color:#f4bd47}
+.approved{background:#1d2b22;color:var(--green)}
+.rejected{background:#2d2022;color:var(--danger)}
+
+/* Bottom nav */
+.nav{
+    position:fixed;left:50%;bottom:11px;transform:translateX(-50%);
+    width:min(calc(100% - 22px),500px);
+    background:rgba(23,26,32,.96);backdrop-filter:blur(14px);
+    border:1px solid var(--line);border-radius:19px;padding:7px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+    box-shadow:0 16px 35px rgba(0,0,0,.36);z-index:100;
+}
+.nav-item{
+    min-height:52px;border-radius:14px;border:0;background:transparent;
+    color:#818792;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;font-size:10px;font-weight:600;transition:.15s ease;
+}
+.nav-item i{font-size:16px}
+.nav-item.active{background:#202a24;color:#fff}
+.nav-item.active i{color:var(--green)}
+
+/* Modal */
+.overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.67);backdrop-filter:blur(5px);
+    display:none;align-items:flex-end;z-index:200;
+}
+.overlay.active{display:flex}
+.sheet{
+    width:100%;max-width:520px;margin:0 auto;background:var(--surface);
+    border-top:1px solid var(--line);border-radius:24px 24px 0 0;
+    padding:18px 15px 22px;animation:up .2s ease;
+}
+@keyframes up{from{transform:translateY(15px);opacity:.5}to{transform:none;opacity:1}}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.sheet-head h3{font-size:17px}
+.close{width:34px;height:34px;border:0;border-radius:11px;background:var(--surface-2);color:var(--muted)}
+.sheet .action-btn{width:100%;margin-top:2px}
+.sheet-note{font-size:11px;color:var(--muted);line-height:1.5;margin:9px 0 12px}
+
+/* Toast / skeleton */
+.toast{
+    position:fixed;left:50%;top:16px;transform:translate(-50%,-15px);
+    background:#20242b;color:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:9px 12px;font-size:12px;opacity:0;pointer-events:none;
+    transition:.2s;z-index:400;box-shadow:0 10px 24px rgba(0,0,0,.25);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.skeleton{
+    background:linear-gradient(90deg,#171a20 25%,#20242b 50%,#171a20 75%);
+    background-size:200% 100%;animation:shine 1.3s infinite;border-radius:18px;
+}
+@keyframes shine{to{background-position:-200% 0}}
+small.muted{color:var(--muted);font-size:11px}
+
+/* Mobile refinements */
+@media (max-width:380px){
+    .container{padding-left:11px;padding-right:11px}
+    .profile{padding:14px}
+    .balance strong{font-size:18px}
+    .nav-item{font-size:9px}
+}
+</style>
+
+<style>
+/* Publish-ready safety / notice / report / ad gate additions */
+.notice-stack{margin:12px 0}.notice-card{display:flex;gap:10px;align-items:flex-start;background:linear-gradient(135deg,rgba(245,185,66,.12),rgba(255,255,255,.02));border:1px solid rgba(245,185,66,.22);border-radius:16px;padding:12px 13px;box-shadow:var(--shadow)}
+.notice-card i{margin-top:2px;color:#f5b942}.notice-card strong{display:block;font-size:13px;margin-bottom:3px}.notice-card p{font-size:12px;line-height:1.5;color:var(--muted)}
+.task-owner{font-size:11px;color:var(--muted);margin-top:3px}.task-actions{grid-template-columns:1fr 1fr}.report-link{grid-column:1/-1;border:0;background:transparent;color:var(--muted);font-size:11px;padding:7px;text-decoration:underline;text-underline-offset:3px}.report-link:hover{color:#fff}
+.field-help{font-size:11px;color:var(--muted);line-height:1.45;margin-top:5px}.warning{background:#221b12;border:1px solid rgba(245,185,66,.18);padding:10px 11px;border-radius:13px;color:#d9c8a5;font-size:11px;line-height:1.5;margin:9px 0}.danger-note{background:#241518;border-color:rgba(255,94,94,.18);color:#e3b2b2}
+.ad-gate{margin-top:10px;border:1px dashed rgba(84,201,138,.3);background:rgba(84,201,138,.035);border-radius:16px;padding:12px}.ad-gate-top{display:flex;gap:9px;align-items:center}.ad-gate-top i{width:33px;height:33px;border-radius:10px;background:rgba(84,201,138,.1);display:grid;place-items:center;color:var(--accent)}.ad-gate-title{font-weight:700;font-size:13px}.ad-gate-note{font-size:11px;color:var(--muted);margin-top:2px}.gate-status{margin-top:9px;font-size:11px;color:var(--muted)}.gate-status strong{color:#fff}
+.hidden{display:none!important}.overlay.locked .sheet{max-width:520px}.ad-sheet{height:min(88vh,760px);display:flex;flex-direction:column}.ad-frame-wrap{flex:1;min-height:0;margin:10px 0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#0b0d10;position:relative}.ad-frame-wrap iframe{width:100%;height:100%;border:0;background:#fff}.ad-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(6,8,10,.08),rgba(6,8,10,.5));pointer-events:none}.ad-count{padding:10px 15px;border-radius:13px;background:rgba(7,9,12,.86);border:1px solid rgba(255,255,255,.1);font-weight:800;font-size:18px;backdrop-filter:blur(12px)}.ad-footer{font-size:11px;color:var(--muted);line-height:1.45}.ad-footer b{color:#fff}.ad-footer button{margin-top:8px}.banned-screen{position:fixed;inset:0;z-index:2000;background:rgba(7,9,12,.98);display:none;place-items:center;padding:24px}.banned-screen.active{display:grid}.banned-card{width:min(100%,440px);padding:24px;border:1px solid var(--line);border-radius:22px;background:var(--surface);text-align:center;box-shadow:var(--shadow)}.banned-card i{font-size:34px;margin-bottom:12px;color:var(--danger)}.banned-card h2{font-size:22px;margin-bottom:7px}.banned-card p{color:var(--muted);font-size:12px;line-height:1.55}
+.report-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.report-option{padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);color:#fff;font-size:11px}.report-option.active{border-color:rgba(84,201,138,.45);background:rgba(84,201,138,.08)}
+@media(max-width:380px){.report-options{grid-template-columns:1fr}.ad-sheet{height:92vh}}
+</style>
+
 </head>
+
 <body>
+<div class="toast" id="toast"></div>
 
-    <div class="header">
-        <h2>P2P Referral system</h2>
-        <div>আপনার টোকেন: <span class="balance" id="token-balance">0</span></div>
+<div class="container">
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-mark"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <div>
+                <h1>P2P Refer</h1>
+                <p data-i18n="brand_tagline">Earn • Refer • Grow</p>
+            </div>
+        </div>
+        <button class="icon-btn" onclick="openSettings()" data-i18n-aria-label="settings" aria-label="Settings"><i class="fa-solid fa-gear"></i></button>
     </div>
 
-    <div class="nav-tabs">
-        <div class="nav-tab active" onclick="switchTab('tasks')">এভেইলেবল টাস্ক</div>
-        <div class="nav-tab" onclick="switchTab('create')">টাস্ক দিন</div>
+    <section class="profile">
+        <div class="profile-row">
+            <div class="user">
+                <div class="avatar" id="user-avatar">U</div>
+                <div class="user-text">
+                    <h2 id="user-name" data-i18n="loading">Loading...</h2>
+                    <p id="user-id-text">ID: ------</p>
+                </div>
+            </div>
+            <div class="balance">
+                <small data-i18n="your_coins">আপনার Coins</small>
+                <strong><i class="fa-solid fa-coins"></i><span id="token-count">0</span></strong>
+            </div>
+        </div>
+        <div class="welcome">
+            <div class="welcome-icon"><i class="fa-solid fa-gift"></i></div>
+            <p data-i18n="welcome_text"><b>নতুন সদস্য?</b> অ্যাকাউন্ট খুললেই আপনার শুরু হবে <b>১০ Coins</b> দিয়ে।</p>
+            <span class="tag">+10</span>
+        </div>
+    </section>
+
+    <div class="notice-stack" id="notice-area"></div>
+
+    <!-- HOME / TASKS -->
+    <main class="view active" id="view-tasks">
+        <div class="section-head">
+            <div>
+                <h3 data-i18n="today_tasks">আজকের কাজ</h3>
+                <span data-i18n="tasks_desc">কাজ শেষ করুন, Coins জমা করুন</span>
+            </div>
+            <button class="refresh" id="refresh-btn" onclick="loadTasks(true)" data-i18n-aria-label="refresh" aria-label="Refresh"><i class="fa-solid fa-rotate"></i></button>
+        </div>
+        <div id="tasks-container">
+            <div class="skeleton" style="height:126px;margin-bottom:11px"></div>
+            <div class="skeleton" style="height:126px"></div>
+        </div>
+    </main>
+
+    <!-- REFERRAL -->
+    <main class="view" id="view-referral">
+        <div class="section-head">
+            <div>
+                <h3 data-i18n="invite_friend">বন্ধুকে আনুন 🎁</h3>
+                <span data-i18n="share_your_link">আপনার লিংক শেয়ার করুন</span>
+            </div>
+        </div>
+
+        <section class="ref-card">
+            <div class="ref-top">
+                <div class="ref-badge"><i class="fa-solid fa-user-plus"></i></div>
+                <div>
+                    <h3 data-i18n="per_new_member">প্রতি নতুন সদস্যে ৫০ Coins</h3>
+                    <p data-i18n="ref_join_desc">আপনার referral link দিয়ে কেউ যোগ দিলে</p>
+                </div>
+            </div>
+
+            <div class="ref-reward">
+                <span data-i18n="successful_referral_reward">একজন সফল referral-এর পুরস্কার</span>
+                <strong>+50 Coins</strong>
+            </div>
+
+            <div class="ref-link-wrap">
+                <div class="ref-link" id="ref-link" data-i18n="creating_link">লিংক তৈরি হচ্ছে...</div>
+                <button class="copy-btn" onclick="copyReferral()" data-i18n-aria-label="copy_referral" aria-label="Copy referral link"><i class="fa-regular fa-copy"></i></button>
+            </div>
+
+            <button class="share-btn" onclick="shareReferral()">
+                <i class="fa-solid fa-share-nodes"></i> <span data-i18n="share_with_friends">বন্ধুদের সাথে লিংক শেয়ার করুন</span>
+            </button>
+
+            <div class="ref-stats">
+                <div class="stat">
+                    <span data-i18n="referrals">আপনার Referral</span>
+                    <strong id="ref-count">0</strong>
+                </div>
+                <div class="stat">
+                    <span data-i18n="referral_earnings">Referral থেকে আয়</span>
+                    <strong id="ref-earned">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-head" style="margin-top:20px">
+            <div>
+                <h3 data-i18n="how_it_works">কীভাবে কাজ করে?</h3>
+                <span data-i18n="very_easy">একদম সহজ</span>
+            </div>
+        </div>
+        <section class="task" style="margin-bottom:0">
+            <div class="activity-row">
+                <div class="activity-name" data-i18n="step1">১. আপনার লিংক শেয়ার করুন</div>
+                <span class="status approved">Share</span>
+            </div>
+            <div class="proof" data-i18n="step1_desc">বন্ধু আপনার লিংক থেকে Join করবে।</div>
+        </section>
+        <section class="task" style="margin-bottom:0;margin-top:8px">
+            <div class="activity-row">
+                <div class="activity-name" data-i18n="step2">২. নতুন সদস্য পাবেন ১০ Coins</div>
+                <span class="status approved">New User</span>
+            </div>
+            <div class="proof" data-i18n="step2_desc">প্রতিটি নতুন সদস্যের শুরুতে ১০ Coins থাকবে।</div>
+        </section>
+        <section class="task" style="margin-bottom:0;margin-top:8px">
+            <div class="activity-row">
+                <div class="activity-name" data-i18n="step3">৩. আপনি পাবেন ৫০ Coins</div>
+                <span class="status approved">+50</span>
+            </div>
+            <div class="proof" data-i18n="step3_desc">Referral সফলভাবে রেকর্ড হলে ৫০ Coins যোগ হবে।</div>
+        </section>
+    </main>
+
+    <!-- CREATE -->
+    <main class="view" id="view-create">
+        <div class="section-head">
+            <div>
+                <h3 data-i18n="create_task">নতুন টাস্ক দিন</h3>
+                <span data-i18n="create_desc">অন্যরা আপনার কাজ সম্পন্ন করবে</span>
+            </div>
+        </div>
+
+        <section class="form-card">
+            <div class="field">
+                <label class="label" data-i18n="task_title">টাস্ক টাইটেল</label>
+                <input class="input" id="create-title" data-i18n-placeholder="task_title_placeholder" placeholder="যেমন: Telegram Bot Join করুন">
+            </div>
+            <div class="field">
+                <label class="label" data-i18n="link">লিংক</label>
+                <input class="input" type="url" id="create-link" placeholder="https://t.me/your_bot">
+            </div>
+            <div class="field">
+                <label class="label" data-i18n="what_to_do">কি করতে হবে?</label>
+                <textarea class="textarea" id="create-desc" data-i18n-placeholder="task_steps_placeholder" placeholder="১. লিংকে যান&#10;২. Start/Join করুন&#10;৩. প্রয়োজন হলে প্রুফ দিন"></textarea>
+            </div>
+            <div class="field">
+                <label class="label" data-i18n="task_type">টাস্কের ধরন</label>
+                <select class="input" id="create-type" onchange="handleTaskTypeChange()">
+                    <option value="general" data-i18n="task_type_general">সাধারণ টাস্ক</option>
+                    <option value="telegram" data-i18n="task_type_telegram">Telegram Channel/Group</option>
+                </select>
+                <div class="field-help" data-i18n="task_type_help">Telegram Channel/Group নিলে সদস্যতা server-side যাচাই হবে; Bot-কে ওই chat-এর admin হতে হবে।</div>
+            </div>
+            <div class="field" id="verification-field" style="display:none">
+                <label class="label" data-i18n="verification_chat">Telegram Channel/Group Username</label>
+                <input class="input" id="verification-chat" placeholder="@yourchannel">
+                <div class="field-help" data-i18n="verification_help">Link থেকে username পাওয়া গেলে এটি নিজে থেকে পূরণ হয়ে যাবে।</div>
+            </div>
+            <div class="field">
+                <label class="label" data-i18n="how_many_people">কতজন মানুষ প্রয়োজন?</label>
+                <input class="input" type="number" id="create-slots" value="1" min="1" oninput="updateCostCalculation()">
+            </div>
+            <div class="cost">
+                <span data-i18n="total_cost">মোট খরচ</span>
+                <strong id="total-cost-text">1 Token</strong>
+            </div>
+            <div class="warning" data-i18n="create_warning">Task publish করার আগে তথ্য ও link ঠিক আছে কিনা যাচাই করুন। ভুয়া বা বিভ্রান্তিকর task দেবেন না।</div>
+            <div class="ad-gate" id="publish-ad-gate">
+                <div class="ad-gate-top">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <div><div class="ad-gate-title" data-i18n="publish_ad_title">Publish unlock</div><div class="ad-gate-note" data-i18n="publish_ad_note">Publish করার আগে ১০ সেকেন্ডের ad দেখতে হবে।</div></div>
+                </div>
+                <button class="action-btn" id="watch-publish-ad-btn" onclick="startRequiredAd('publish')"><i class="fa-solid fa-play"></i> <span data-i18n="watch_ad_10">১০ সেকেন্ডের Ad দেখুন</span></button>
+                <div class="gate-status" id="publish-gate-status" data-i18n="publish_locked">Ad দেখা হয়নি — Publish locked</div>
+            </div>
+            <button class="action-btn primary submit hidden" id="publish-task-btn" onclick="submitNewTask()">
+                <i class="fa-solid fa-paper-plane"></i> <span data-i18n="publish_task">টাস্ক পাবলিশ করুন</span>
+            </button>
+        </section>
+    </main>
+
+    <!-- ACTIVITY -->
+    <main class="view" id="view-activity">
+        <div class="section-head">
+            <div>
+                <h3 data-i18n="my_activity">আমার অ্যাক্টিভিটি</h3>
+                <span data-i18n="activity_desc">আপনার কাজ ও টাস্কের হিসাব</span>
+            </div>
+        </div>
+
+        <div class="activity-block">
+            <div class="activity-title green" data-i18n="submitted_proofs">আপনার জমা দেওয়া প্রুফ</div>
+            <div id="my-proofs-container"></div>
+        </div>
+
+        <div class="activity-block">
+            <div class="activity-title blue" data-i18n="published_tasks">আপনার প্রকাশিত টাস্ক</div>
+            <div id="my-tasks-container"></div>
+        </div>
+    </main>
+</div>
+
+<!-- PROOF MODAL -->
+<div class="overlay" id="proof-modal">
+    <div class="sheet">
+        <div class="sheet-head">
+            <h3 id="modal-task-title" data-i18n="submit_proof_title">টাস্ক প্রুফ জমা দিন</h3>
+            <button class="close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="field">
+            <label class="label" data-i18n="proof_or_username">প্রুফ / Telegram Username</label>
+            <textarea id="modal-proof-text" class="textarea" data-i18n-placeholder="proof_placeholder" placeholder="যেমন: Joined as @your_username"></textarea>
+        </div>
+        <button class="action-btn primary" id="modal-submit-btn" onclick="confirmProofSubmission()">
+            <i class="fa-solid fa-check"></i> <span data-i18n="submit_proof">প্রুফ জমা দিন</span>
+        </button>
     </div>
+</div>
 
-    <!-- Available Tasks Section -->
-    <div id="tasks-section">
-        <h3>অন্যদের টাস্ক করে টোকেন আয় করুন</h3>
-        <div id="task-list">লোড হচ্ছে...</div>
+
+<!-- REPORT MODAL -->
+<div class="overlay" id="report-modal">
+    <div class="sheet">
+        <div class="sheet-head">
+            <h3 data-i18n="report_user_title">User Report</h3>
+            <button class="close" onclick="closeReportModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="warning" data-i18n="report_warning">শুধু সত্যিকারের সমস্যা হলে রিপোর্ট করুন। মিথ্যা/হয়রানিমূলক রিপোর্ট পাঠাবেন না।</div>
+        <div class="field">
+            <label class="label" data-i18n="report_reason">কারণ</label>
+            <div class="report-options" id="report-options">
+                <button type="button" class="report-option active" data-code="reward" onclick="selectReportReason(this)" data-i18n="report_reward">Reward / Coin issue</button>
+                <button type="button" class="report-option" data-code="wrong_action" onclick="selectReportReason(this)" data-i18n="report_wrong">ভুলভাবে task reject</button>
+                <button type="button" class="report-option" data-code="fraud" onclick="selectReportReason(this)" data-i18n="report_fraud">প্রতারণামূলক task</button>
+                <button type="button" class="report-option" data-code="abuse" onclick="selectReportReason(this)" data-i18n="report_abuse">Harassment / Abuse</button>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" data-i18n="report_details">বিস্তারিত</label>
+            <textarea id="report-details" class="textarea" maxlength="1000" data-i18n-placeholder="report_placeholder" placeholder="কি হয়েছে তা পরিষ্কারভাবে লিখুন..."></textarea>
+        </div>
+        <button class="action-btn primary" id="report-submit-btn" onclick="submitReport()"><i class="fa-solid fa-flag"></i> <span data-i18n="send_report">রিপোর্ট পাঠান</span></button>
     </div>
+</div>
 
-    <!-- Create Task Section -->
-    <div id="create-section" class="hidden">
-        <h3>নতুন টাস্ক পাবলিশ করুন</h3>
-        <p>১টি টাস্ক/স্লট = ১ টোকেন</p>
-        <input type="text" id="t-title" placeholder="টাস্কের নাম (যেমন: Join My Bot)">
-        <textarea id="t-desc" rows="3" placeholder="বিস্তারিত ডেসক্রিপশন..."></textarea>
-        <input type="url" id="t-link" placeholder="রেফার লিংক বা বট লিংক">
-        <input type="number" id="t-slots" placeholder="কতজন জয়েন করাতে চান?" min="1" value="1">
-        <button class="btn" onclick="createTask()">পাবলিশ করুন</button>
+<!-- AD MODAL -->
+<div class="overlay locked" id="ad-modal">
+    <div class="sheet ad-sheet">
+        <div class="sheet-head">
+            <h3 id="ad-title" data-i18n="ad_title">দয়া করে Ad দেখুন</h3>
+        </div>
+        <div class="ad-frame-wrap">
+            <iframe id="ad-frame" title="Advertisement" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen"></iframe>
+            <div class="ad-overlay"><div class="ad-count" id="ad-count">10</div></div>
+        </div>
+        <div class="ad-footer" id="ad-footer"><b data-i18n="ad_footer_1">১০ সেকেন্ড পূর্ণ না হওয়া পর্যন্ত এই gate বন্ধ করলে unlock হবে না।</b><br><span data-i18n="ad_footer_2">Ad এখানে Mini App-এর ভেতরেই লোড হচ্ছে।</span></div>
+        <button class="action-btn primary hidden" id="ad-done-btn" onclick="finishAdEarlyUi()"><i class="fa-solid fa-check"></i> <span data-i18n="continue_btn">Continue</span></button>
     </div>
+</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+<div class="banned-screen" id="banned-screen"><div class="banned-card"><i class="fa-solid fa-shield-halved"></i><h2 data-i18n="account_restricted">Account Restricted</h2><p data-i18n="account_restricted_note">এই অ্যাকাউন্টে বর্তমানে Mini App ব্যবহার সীমিত করা হয়েছে।</p></div></div>
 
-        // ⚠️ আপনার Python API সার্ভারের লিংক এখানে দিন 
-        // (যেহেতু আপনি নিজে হোস্ট করবেন, আপনার সার্ভারের আইপি বা ডোমেইন এখানে দিবেন)
-        const API_URL = "http://127.0.0.1:5000/api"; 
-        
-        let user = tg.initDataUnsafe.user || { id: 123456, first_name: "Test User" }; // Fallback for browser testing
+<!-- SETTINGS MODAL -->
+<div class="overlay" id="settings-modal">
+    <div class="sheet">
+        <div class="sheet-head">
+            <h3 data-i18n="settings_title">সেটিংস</h3>
+            <button class="close" onclick="closeSettings()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
 
-        // টোকেন লোড করা
-        async function loadUser() {
-            try {
-                let res = await fetch(`${API_URL}/user/${user.id}`);
-                let data = await res.json();
-                if (data.success) document.getElementById('token-balance').innerText = data.tokens;
-            } catch (e) { console.error("Error loading user", e); }
+        <div class="field">
+            <label class="label" data-i18n="language">ভাষা</label>
+            <select class="input" id="language-select" onchange="setLanguage(this.value)">
+                <option value="auto" data-i18n="auto_detect">Automatic</option>
+                <option value="en">English</option>
+                <option value="bn">বাংলা</option>
+                <option value="ar">العربية</option>
+                <option value="hi">हिन्दी</option>
+                <option value="zh">中文</option>
+                <option value="ne">नेपाली</option>
+                <option value="ru">Русский</option>
+            </select>
+            <small class="muted" data-i18n="language_note">Automatic হলে Telegram/browser locale দেখে ভাষা বেছে নেওয়া হবে। পছন্দ করলে ভাষা হাতে স্থির করে দিতে পারবেন।</small>
+        </div>
+
+        <div class="field">
+            <label class="label" data-i18n="api_url">API URL</label>
+            <input class="input" id="api-url-input" data-i18n-placeholder="api_placeholder" placeholder="http://YOUR_IP:5000/api">
+        </div>
+        <div class="field">
+            <label class="label" data-i18n="bot_username_optional">Telegram Bot Username (ঐচ্ছিক)</label>
+            <input class="input" id="bot-username-input" data-i18n-placeholder="bot_username_placeholder" placeholder="your_bot_username">
+        </div>
+        <p class="sheet-note" data-i18n="ref_link_note">Referral link-এর Telegram format বানাতে Bot Username দিন। না দিলে এই Web App-এর নিজের referral URL ব্যবহার হবে।</p>
+
+        <button class="action-btn primary" onclick="saveSettings()">
+            <i class="fa-solid fa-check"></i> <span data-i18n="save">সেভ করুন</span>
+        </button>
+        <p class="sheet-note" style="margin-bottom:0" data-i18n="server_reward_note">নতুন user-এর ১০ Coins এবং সফল referral-এর ৫০ Coins server-side API থেকেই যোগ করা উচিত।</p>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="nav">
+    <button class="nav-item active" onclick="switchTab('tasks',this)"><i class="fa-solid fa-list-check"></i><span data-i18n="nav_tasks">কাজ</span></button>
+    <button class="nav-item" onclick="switchTab('referral',this)"><i class="fa-solid fa-user-group"></i><span data-i18n="nav_referral">রেফার</span></button>
+    <button class="nav-item" onclick="switchTab('create',this)"><i class="fa-solid fa-circle-plus"></i><span data-i18n="nav_create">টাস্ক দিন</span></button>
+    <button class="nav-item" onclick="switchTab('activity',this)"><i class="fa-solid fa-chart-line"></i><span data-i18n="nav_activity">অ্যাক্টিভিটি</span></button>
+</nav>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) {
+    tg.ready();
+    tg.expand();
+}
+
+const DEFAULT_API = "http://localhost:5000/api";
+let BASE_API_URL = localStorage.getItem('P2P_API_URL') || DEFAULT_API;
+let BOT_USERNAME = (localStorage.getItem('P2P_BOT_USERNAME') || 'P2PRefer1bot').replace(/^@/,'').trim();
+
+const WELCOME_TOKENS = 10;
+const REFERRAL_REWARD = 50;
+
+const LANGS = {
+    en:{name:'English',dir:'ltr',locale:'en'},
+    bn:{name:'বাংলা',dir:'ltr',locale:'bn-BD'},
+    ar:{name:'العربية',dir:'rtl',locale:'ar'},
+    hi:{name:'हिन्दी',dir:'ltr',locale:'hi-IN'},
+    zh:{name:'中文',dir:'ltr',locale:'zh-CN'},
+    ne:{name:'नेपाली',dir:'ltr',locale:'ne-NP'},
+    ru:{name:'Русский',dir:'ltr',locale:'ru-RU'}
+};
+
+const I18N = {
+    en:{
+        brand_tagline:'Earn • Refer • Grow',settings:'Settings',loading:'Loading…',your_coins:'Your Coins',welcome_text:'<b>New member?</b> Your account starts with <b>10 Coins</b>.',
+        today_tasks:"Today's Tasks",tasks_desc:'Complete tasks and earn Coins',refresh:'Refresh',invite_friend:'Invite Friends 🎁',share_your_link:'Share your referral link',per_new_member:'50 Coins for each new member',ref_join_desc:'When someone joins through your referral link',successful_referral_reward:'Reward for a successful referral',creating_link:'Creating link…',copy_referral:'Copy referral link',share_with_friends:'Share with friends',referrals:'Your Referrals',referral_earnings:'Referral Earnings',how_it_works:'How it works',very_easy:'Very easy',
+        step1:'1. Share your link',step1_desc:'Your friend joins through your link.',step2:'2. New member gets 10 Coins',step2_desc:'Every new member starts with 10 Coins.',step3:'3. You get 50 Coins',step3_desc:'50 Coins are added when the referral is recorded successfully.',
+        create_task:'Create a Task',create_desc:'Others will complete your task',task_title:'Task Title',task_title_placeholder:'e.g. Join my Telegram Bot',link:'Link',what_to_do:'What needs to be done?',task_steps_placeholder:'1. Open the link\n2. Start/Join\n3. Submit proof if needed',how_many_people:'How many people?',total_cost:'Total Cost',publish_task:'Publish Task',my_activity:'My Activity',activity_desc:'Your submissions and published tasks',submitted_proofs:'Your Submitted Proofs',published_tasks:'Your Published Tasks',submit_proof_title:'Submit Task Proof',proof_or_username:'Proof / Telegram Username',proof_placeholder:'e.g. Joined as @your_username',submit_proof:'Submit Proof',settings_title:'Settings',api_url:'API URL',bot_username_optional:'Telegram Bot Username (optional)',ref_link_note:'Add your Bot Username to create Telegram referral links. Otherwise the Web App URL will be used.',save:'Save',server_reward_note:'The 10 Coins welcome reward and 50 Coins referral reward must be awarded by the server/API.',nav_tasks:'Tasks',nav_referral:'Referral',nav_create:'Create',nav_activity:'Activity',language:'Language',auto_detect:'Automatic',language_note:'Automatic mode uses Telegram/browser locale signals. You can also choose a language manually.',api_placeholder:'http://YOUR_IP:5000/api',bot_username_placeholder:'your_bot_username',
+        no_tasks:'No new tasks right now. Please check again later.',go_link:'Open Link',give_proof:'Submit Proof',no_extra:'No additional instructions were provided.',server_error:'Could not connect to the server. Check the API URL in Settings.',proof_required:'Please enter proof or a username.',submitting:'Submitting…',proof_sent:'Proof submitted ✅',proof_failed:'Proof was not submitted.',task_title_link:'Please enter both the title and link.',task_published:'Task published ✅',task_publish_failed:'Could not publish the task.',saving:'Saving…',settings_saved:'Settings saved ✅',link_copied:'Referral link copied ✅',copy_prompt:'Copy your referral link:',share_message:'I am using P2P Refer. Join with my link and start with 10 Coins 🎁',link_copy_fallback:'Link copied. Send it to your friends ✅',no_submissions:'You have not completed any tasks yet.',no_published:'You have not published any tasks yet.',activity_failed:'Could not load activity.',status_approved:'Approved ✅',status_rejected:'Rejected',status_pending:'Pending ⏳',proof_label:'Proof:',remaining:'remaining',tokens:'Tokens',token:'Token',task_title_error:'Task title must be at least 3 characters.',link_required:'Please enter a valid link.',report_failed:'Could not submit the report.'
+    },
+    bn:{
+        brand_tagline:'আয় • রেফার • এগিয়ে যান',settings:'সেটিংস',loading:'লোড হচ্ছে…',your_coins:'আপনার Coins',welcome_text:'<b>নতুন সদস্য?</b> অ্যাকাউন্ট খুললেই শুরু হবে <b>১০ Coins</b> দিয়ে।',
+        today_tasks:'আজকের কাজ',tasks_desc:'কাজ শেষ করুন, Coins জমা করুন',refresh:'রিফ্রেশ',invite_friend:'বন্ধুকে আনুন 🎁',share_your_link:'আপনার referral link শেয়ার করুন',per_new_member:'প্রতি নতুন সদস্যে ৫০ Coins',ref_join_desc:'আপনার referral link দিয়ে কেউ যোগ দিলে',successful_referral_reward:'একজন সফল referral-এর পুরস্কার',creating_link:'লিংক তৈরি হচ্ছে…',copy_referral:'Referral link কপি করুন',share_with_friends:'বন্ধুদের সাথে লিংক শেয়ার করুন',referrals:'আপনার Referral',referral_earnings:'Referral থেকে আয়',how_it_works:'কীভাবে কাজ করে?',very_easy:'একদম সহজ',
+        step1:'১. আপনার লিংক শেয়ার করুন',step1_desc:'বন্ধু আপনার লিংক থেকে Join করবে।',step2:'২. নতুন সদস্য পাবেন ১০ Coins',step2_desc:'প্রতিটি নতুন সদস্যের শুরুতে ১০ Coins থাকবে।',step3:'৩. আপনি পাবেন ৫০ Coins',step3_desc:'Referral সফলভাবে রেকর্ড হলে ৫০ Coins যোগ হবে।',
+        create_task:'নতুন টাস্ক দিন',create_desc:'অন্যরা আপনার কাজ সম্পন্ন করবে',task_title:'টাস্ক টাইটেল',task_title_placeholder:'যেমন: Telegram Bot Join করুন',link:'লিংক',what_to_do:'কি করতে হবে?',task_steps_placeholder:'১. লিংকে যান\n২. Start/Join করুন\n৩. প্রয়োজন হলে প্রুফ দিন',how_many_people:'কতজন মানুষ প্রয়োজন?',total_cost:'মোট খরচ',publish_task:'টাস্ক পাবলিশ করুন',my_activity:'আমার অ্যাক্টিভিটি',activity_desc:'আপনার কাজ ও টাস্কের হিসাব',submitted_proofs:'আপনার জমা দেওয়া প্রুফ',published_tasks:'আপনার প্রকাশিত টাস্ক',submit_proof_title:'টাস্ক প্রুফ জমা দিন',proof_or_username:'প্রুফ / Telegram Username',proof_placeholder:'যেমন: Joined as @your_username',submit_proof:'প্রুফ জমা দিন',settings_title:'সেটিংস',api_url:'API URL',bot_username_optional:'Telegram Bot Username (ঐচ্ছিক)',ref_link_note:'Referral link-এর Telegram format বানাতে Bot Username দিন। না দিলে Web App-এর URL ব্যবহার হবে।',save:'সেভ করুন',server_reward_note:'১০ Coins welcome reward এবং ৫০ Coins referral reward server/API থেকেই দিতে হবে।',nav_tasks:'কাজ',nav_referral:'রেফার',nav_create:'টাস্ক দিন',nav_activity:'অ্যাক্টিভিটি',language:'ভাষা',auto_detect:'স্বয়ংক্রিয়',language_note:'Automatic মোডে Telegram/browser locale দেখে ভাষা বেছে নেওয়া হবে। চাইলে হাতে ভাষা স্থির করতে পারবেন।',api_placeholder:'http://YOUR_IP:5000/api',bot_username_placeholder:'your_bot_username',
+        no_tasks:'এই মুহূর্তে নতুন কোনো কাজ নেই। পরে আবার দেখুন।',go_link:'লিংকে যান',give_proof:'প্রুফ দিন',no_extra:'কাজটির জন্য কোনো অতিরিক্ত নির্দেশনা দেওয়া হয়নি।',server_error:'সার্ভারের সাথে সংযোগ হচ্ছে না। Settings থেকে API URL দেখুন।',proof_required:'প্রুফ বা Username লিখুন।',submitting:'জমা হচ্ছে…',proof_sent:'প্রুফ জমা হয়েছে ✅',proof_failed:'প্রুফ জমা হয়নি।',task_title_link:'টাইটেল আর লিংক দুটোই দিন।',task_published:'টাস্ক প্রকাশ হয়েছে ✅',task_publish_failed:'টাস্ক প্রকাশ করা যায়নি।',settings_saved:'সেটিংস সেভ হয়েছে ✅',link_copied:'Referral link কপি হয়েছে ✅',copy_prompt:'Referral link কপি করুন:',share_message:'আমি P2P Refer ব্যবহার করছি। আমার লিংক দিয়ে Join করলে আপনি ১০ Coins দিয়ে শুরু করতে পারবেন 🎁',link_copy_fallback:'Link কপি হয়েছে, বন্ধুদের পাঠিয়ে দিন ✅',no_submissions:'এখনো কোনো টাস্ক কমপ্লিট করেননি।',no_published:'আপনি এখনো কোনো টাস্ক প্রকাশ করেননি।',activity_failed:'অ্যাক্টিভিটি লোড করা যায়নি।',status_approved:'Approved ✅',status_rejected:'Rejected',status_pending:'Pending ⏳',proof_label:'প্রুফ:',remaining:'বাকি',tokens:'Tokens',token:'Token',task_title_error:'টাস্ক টাইটেল কমপক্ষে ৩ অক্ষরের হতে হবে।',link_required:'সঠিক লিংক দিন।',report_failed:'রিপোর্ট পাঠানো যায়নি।'
+    },
+    ar:{
+        brand_tagline:'اربح • أحِل • انمُ',settings:'الإعدادات',loading:'جارٍ التحميل…',your_coins:'عملاتك',welcome_text:'<b>عضو جديد؟</b> يبدأ حسابك بـ <b>10 عملات</b>.',today_tasks:'مهام اليوم',tasks_desc:'أكمل المهام واربح العملات',refresh:'تحديث',invite_friend:'ادعُ أصدقاءك 🎁',share_your_link:'شارك رابط الإحالة',per_new_member:'50 عملة لكل عضو جديد',ref_join_desc:'عندما ينضم شخص عبر رابط الإحالة الخاص بك',successful_referral_reward:'مكافأة الإحالة الناجحة',creating_link:'جارٍ إنشاء الرابط…',copy_referral:'نسخ رابط الإحالة',share_with_friends:'شارك مع الأصدقاء',referrals:'إحالاتك',referral_earnings:'أرباح الإحالة',how_it_works:'كيف يعمل؟',very_easy:'سهل جدًا',step1:'1. شارك رابطك',step1_desc:'ينضم صديقك عبر رابطك.',step2:'2. العضو الجديد يحصل على 10 عملات',step2_desc:'يبدأ كل عضو جديد بـ 10 عملات.',step3:'3. تحصل على 50 عملة',step3_desc:'تُضاف 50 عملة عند تسجيل الإحالة بنجاح.',create_task:'إنشاء مهمة',create_desc:'سيكمل الآخرون مهمتك',task_title:'عنوان المهمة',task_title_placeholder:'مثال: انضم إلى بوت تيليجرام',link:'الرابط',what_to_do:'ماذا يجب أن تفعل؟',task_steps_placeholder:'1. افتح الرابط\n2. ابدأ/انضم\n3. أرسل الإثبات عند الحاجة',how_many_people:'كم شخصًا تحتاج؟',total_cost:'التكلفة الإجمالية',publish_task:'نشر المهمة',my_activity:'نشاطي',activity_desc:'إثباتاتك والمهام المنشورة',submitted_proofs:'الإثباتات التي أرسلتها',published_tasks:'المهام التي نشرتها',submit_proof_title:'إرسال إثبات المهمة',proof_or_username:'الإثبات / اسم مستخدم تيليجرام',proof_placeholder:'مثال: Joined as @your_username',submit_proof:'إرسال الإثبات',settings_title:'الإعدادات',api_url:'رابط API',bot_username_optional:'اسم مستخدم بوت تيليجرام (اختياري)',ref_link_note:'أضف اسم مستخدم البوت لإنشاء روابط إحالة تيليجرام. وإلا سيُستخدم رابط تطبيق الويب.',save:'حفظ',server_reward_note:'يجب أن يمنح الخادم/API مكافأة الترحيب 10 عملات ومكافأة الإحالة 50 عملة.',nav_tasks:'المهام',nav_referral:'الإحالة',nav_create:'إنشاء',nav_activity:'النشاط',language:'اللغة',auto_detect:'تلقائي',language_note:'الوضع التلقائي يستخدم لغة Telegram والمتصفح. ويمكنك اختيار اللغة يدويًا.',api_placeholder:'http://YOUR_IP:5000/api',bot_username_placeholder:'your_bot_username',no_tasks:'لا توجد مهام جديدة الآن. تحقق مرة أخرى لاحقًا.',go_link:'فتح الرابط',give_proof:'إرسال إثبات',no_extra:'لا توجد تعليمات إضافية.',server_error:'تعذر الاتصال بالخادم. تحقق من رابط API في الإعدادات.',proof_required:'اكتب الإثبات أو اسم المستخدم.',submitting:'جارٍ الإرسال…',proof_sent:'تم إرسال الإثبات ✅',proof_failed:'لم يتم إرسال الإثبات.',task_title_link:'أدخل العنوان والرابط.',task_published:'تم نشر المهمة ✅',task_publish_failed:'تعذر نشر المهمة.',settings_saved:'تم حفظ الإعدادات ✅',link_copied:'تم نسخ رابط الإحالة ✅',copy_prompt:'انسخ رابط الإحالة:',share_message:'أنا أستخدم P2P Refer. انضم عبر الرابط الخاص بي وابدأ بـ 10 عملات 🎁',link_copy_fallback:'تم نسخ الرابط. أرسله إلى أصدقائك ✅',no_submissions:'لم تكمل أي مهمة بعد.',no_published:'لم تنشر أي مهمة بعد.',activity_failed:'تعذر تحميل النشاط.',status_approved:'تمت الموافقة ✅',status_rejected:'مرفوض',status_pending:'قيد الانتظار ⏳',proof_label:'الإثبات:',remaining:'متبقي',tokens:'عملات',token:'عملة',task_title_error:'يجب أن يكون عنوان المهمة 3 أحرف على الأقل.',link_required:'أدخل رابطًا صالحًا.'
+    },
+    hi:{
+        brand_tagline:'कमाएँ • रेफर करें • बढ़ें',settings:'सेटिंग्स',loading:'लोड हो रहा है…',your_coins:'आपके Coins',welcome_text:'<b>नए सदस्य?</b> आपका अकाउंट <b>10 Coins</b> से शुरू होता है।',today_tasks:'आज के काम',tasks_desc:'काम पूरा करें और Coins कमाएँ',refresh:'रिफ्रेश',invite_friend:'दोस्तों को आमंत्रित करें 🎁',share_your_link:'अपना रेफरल लिंक साझा करें',per_new_member:'हर नए सदस्य पर 50 Coins',ref_join_desc:'जब कोई आपके रेफरल लिंक से जुड़ता है',successful_referral_reward:'सफल रेफरल का इनाम',creating_link:'लिंक बनाया जा रहा है…',copy_referral:'रेफरल लिंक कॉपी करें',share_with_friends:'दोस्तों के साथ शेयर करें',referrals:'आपके रेफरल',referral_earnings:'रेफरल से कमाई',how_it_works:'यह कैसे काम करता है?',very_easy:'बहुत आसान',step1:'1. अपना लिंक शेयर करें',step1_desc:'आपका दोस्त आपके लिंक से जुड़ेगा।',step2:'2. नए सदस्य को 10 Coins',step2_desc:'हर नया सदस्य 10 Coins से शुरू करता है।',step3:'3. आपको 50 Coins',step3_desc:'रेफरल सफल होने पर 50 Coins जुड़ेंगे।',create_task:'नया टास्क दें',create_desc:'दूसरे लोग आपका टास्क पूरा करेंगे',task_title:'टास्क टाइटल',task_title_placeholder:'जैसे: Telegram Bot Join करें',link:'लिंक',what_to_do:'क्या करना है?',task_steps_placeholder:'1. लिंक खोलें\n2. Start/Join करें\n3. जरूरत हो तो प्रूफ दें',how_many_people:'कितने लोगों की जरूरत है?',total_cost:'कुल लागत',publish_task:'टास्क पब्लिश करें',my_activity:'मेरी एक्टिविटी',activity_desc:'आपके प्रूफ और पब्लिश किए गए टास्क',submitted_proofs:'आपके जमा किए गए प्रूफ',published_tasks:'आपके पब्लिश किए गए टास्क',submit_proof_title:'टास्क प्रूफ जमा करें',proof_or_username:'प्रूफ / Telegram Username',proof_placeholder:'जैसे: Joined as @your_username',submit_proof:'प्रूफ जमा करें',settings_title:'सेटिंग्स',api_url:'API URL',bot_username_optional:'Telegram Bot Username (वैकल्पिक)',ref_link_note:'Telegram रेफरल लिंक के लिए Bot Username दें। नहीं तो Web App URL उपयोग होगा।',save:'सेव करें',server_reward_note:'10 Coins का welcome reward और 50 Coins का referral reward server/API से ही देना चाहिए।',nav_tasks:'काम',nav_referral:'रेफरल',nav_create:'टास्क दें',nav_activity:'एक्टिविटी',language:'भाषा',auto_detect:'ऑटोमैटिक',language_note:'Automatic mode Telegram/browser locale देखकर भाषा चुनता है। आप भाषा मैन्युअल भी चुन सकते हैं।',api_placeholder:'http://YOUR_IP:5000/api',bot_username_placeholder:'your_bot_username',no_tasks:'अभी कोई नया काम नहीं है। बाद में फिर देखें।',go_link:'लिंक खोलें',give_proof:'प्रूफ दें',no_extra:'कोई अतिरिक्त निर्देश नहीं दिए गए।',server_error:'सर्वर से कनेक्ट नहीं हो सका। Settings में API URL जाँचें।',proof_required:'प्रूफ या Username लिखें।',submitting:'जमा हो रहा है…',proof_sent:'प्रूफ जमा हो गया ✅',proof_failed:'प्रूफ जमा नहीं हुआ।',task_title_link:'टाइटल और लिंक दोनों दें।',task_published:'टास्क पब्लिश हो गया ✅',task_publish_failed:'टास्क पब्लिश नहीं हो सका।',settings_saved:'सेटिंग्स सेव हो गई ✅',link_copied:'रेफरल लिंक कॉपी हो गया ✅',copy_prompt:'रेफरल लिंक कॉपी करें:',share_message:'मैं P2P Refer इस्तेमाल कर रहा हूँ। मेरे लिंक से जुड़ें और 10 Coins से शुरू करें 🎁',link_copy_fallback:'लिंक कॉपी हो गया, दोस्तों को भेजें ✅',no_submissions:'आपने अभी कोई टास्क पूरा नहीं किया है।',no_published:'आपने अभी कोई टास्क पब्लिश नहीं किया है।',activity_failed:'एक्टिविटी लोड नहीं हुई।',status_approved:'Approved ✅',status_rejected:'Rejected',status_pending:'Pending ⏳',proof_label:'प्रूफ:',remaining:'बाकी',tokens:'Tokens',token:'Token',task_title_error:'टास्क टाइटल कम से कम 3 अक्षरों का होना चाहिए।',link_required:'सही लिंक दें।'
+    },
+    zh:{
+        brand_tagline:'赚取 • 邀请 • 成长',settings:'设置',loading:'正在加载…',your_coins:'你的金币',welcome_text:'<b>新成员？</b> 你的账户将从 <b>10 个金币</b> 开始。',today_tasks:'今日任务',tasks_desc:'完成任务，赚取金币',refresh:'刷新',invite_friend:'邀请朋友 🎁',share_your_link:'分享你的邀请链接',per_new_member:'每位新成员奖励 50 金币',ref_join_desc:'有人通过你的邀请链接加入时',successful_referral_reward:'成功邀请奖励',creating_link:'正在生成链接…',copy_referral:'复制邀请链接',share_with_friends:'分享给朋友',referrals:'你的邀请人数',referral_earnings:'邀请收益',how_it_works:'如何运作？',very_easy:'非常简单',step1:'1. 分享你的链接',step1_desc:'朋友通过你的链接加入。',step2:'2. 新成员获得 10 金币',step2_desc:'每位新成员都会从 10 个金币开始。',step3:'3. 你获得 50 金币',step3_desc:'邀请成功记录后会增加 50 个金币。',create_task:'创建任务',create_desc:'其他人会完成你的任务',task_title:'任务标题',task_title_placeholder:'例如：加入我的 Telegram Bot',link:'链接',what_to_do:'需要做什么？',task_steps_placeholder:'1. 打开链接\n2. Start/Join\n3. 需要时提交证明',how_many_people:'需要多少人？',total_cost:'总成本',publish_task:'发布任务',my_activity:'我的活动',activity_desc:'你的提交和已发布任务',submitted_proofs:'你提交的证明',published_tasks:'你发布的任务',submit_proof_title:'提交任务证明',proof_or_username:'证明 / Telegram 用户名',proof_placeholder:'例如：Joined as @your_username',submit_proof:'提交证明',settings_title:'设置',api_url:'API 地址',bot_username_optional:'Telegram Bot 用户名（可选）',ref_link_note:'填写 Bot Username 可生成 Telegram 邀请链接，否则使用 Web App 链接。',save:'保存',server_reward_note:'10 金币欢迎奖励和 50 金币邀请奖励必须由服务器/API 发放。',nav_tasks:'任务',nav_referral:'邀请',nav_create:'创建',nav_activity:'活动',language:'语言',auto_detect:'自动',language_note:'自动模式会根据 Telegram/浏览器语言信号选择语言，也可以手动选择。',api_placeholder:'http://YOUR_IP:5000/api',bot_username_placeholder:'your_bot_username',no_tasks:'暂时没有新任务，请稍后再试。',go_link:'打开链接',give_proof:'提交证明',no_extra:'没有提供其他说明。',server_error:'无法连接服务器，请在设置中检查 API 地址。',proof_required:'请输入证明或用户名。',submitting:'正在提交…',proof_sent:'证明已提交 ✅',proof_failed:'证明提交失败。',task_title_link:'请填写标题和链接。',task_published:'任务已发布 ✅',task_publish_failed:'任务发布失败。',settings_saved:'设置已保存 ✅',link_copied:'邀请链接已复制 ✅',copy_prompt:'复制邀请链接：',share_message:'我正在使用 P2P Refer。通过我的链接加入，并从 10 个金币开始 🎁',link_copy_fallback:'链接已复制，发给你的朋友吧 ✅',no_submissions:'你还没有完成任何任务。',no_published:'你还没有发布任何任务。',activity_failed:'无法加载活动记录。',status_approved:'已通过 ✅',status_rejected:'已拒绝',status_pending:'待处理 ⏳',proof_label:'证明：',remaining:'剩余',tokens:'金币',token:'金币',task_title_error:'任务标题至少需要 3 个字符。',link_required:'请输入有效链接。'
+    },
+    ne:{
+        brand_tagline:'कमाउनुहोस् • रेफर गर्नुहोस् • बढ्नुहोस्',settings:'सेटिङ',loading:'लोड हुँदैछ…',your_coins:'तपाईंका Coins',welcome_text:'<b>नयाँ सदस्य?</b> तपाईंको खाता <b>१० Coins</b> बाट सुरु हुन्छ।',today_tasks:'आजका कामहरू',tasks_desc:'काम पूरा गर्नुहोस् र Coins कमाउनुहोस्',refresh:'रिफ्रेस',invite_friend:'साथीलाई आमन्त्रित गर्नुहोस् 🎁',share_your_link:'आफ्नो रेफरल लिङ्क साझा गर्नुहोस्',per_new_member:'प्रत्येक नयाँ सदस्यमा ५० Coins',ref_join_desc:'कसैले तपाईंको रेफरल लिङ्कबाट जोडिँदा',successful_referral_reward:'सफल रेफरलको पुरस्कार',creating_link:'लिङ्क बनाउँदैछ…',copy_referral:'रेफरल लिङ्क कपी गर्नुहोस्',share_with_friends:'साथीसँग साझा गर्नुहोस्',referrals:'तपाईंका रेफरल',referral_earnings:'रेफरलबाट आम्दानी',how_it_works:'कसरी काम गर्छ?',very_easy:'धेरै सजिलो',step1:'१. आफ्नो लिङ्क साझा गर्नुहोस्',step1_desc:'तपाईंको साथी तपाईंको लिङ्कबाट जोडिन्छ।',step2:'२. नयाँ सदस्यले १० Coins पाउँछ',step2_desc:'हरेक नयाँ सदस्य १० Coins बाट सुरु हुन्छ।',step3:'३. तपाईंले ५० Coins पाउनुहुन्छ',step3_desc:'रेफरल सफलतापूर्वक रेकर्ड भएपछि ५० Coins थपिन्छ।',create_task:'नयाँ टास्क दिनुहोस्',create_desc:'अरूले तपाईंको काम पूरा गर्नेछन्',task_title:'टास्क शीर्षक',task_title_placeholder:'जस्तै: मेरो Telegram Bot Join गर्नुहोस्',link:'लिङ्क',what_to_do:'के गर्नुपर्छ?',task_steps_placeholder:'१. लिङ्क खोल्नुहोस्\n२. Start/Join गर्नुहोस्\n३. आवश्यक भए प्रमाण दिनुहोस्',how_many_people:'कति जना चाहिन्छ?',total_cost:'कुल खर्च',publish_task:'टास्क प्रकाशित गर्नुहोस्',my_activity:'मेरो गतिविधि',activity_desc:'तपाईंका प्रमाण र प्रकाशित टास्क',submitted_proofs:'तपाईंले पठाएका प्रमाण',published_tasks:'तपाईंले प्रकाशित गरेका टास्क',submit_proof_title:'टास्क प्रमाण पठाउनुहोस्',proof_or_username:'प्रमाण / Telegram Username',proof_placeholder:'जस्तै: Joined as @your_username',submit_proof:'प्रमाण पठाउनुहोस्',settings_title:'सेटिङ',api_url:'API URL',bot_username_optional:'Telegram Bot Username (वैकल्पिक)',ref_link_note:'Telegram रेफरल लिङ्क बनाउन Bot Username दिनुहोस्। नदिए Web App URL प्रयोग हुनेछ।',save:'सेभ गर्नुहोस्',server_reward_note:'१० Coins स्वागत पुरस्कार र ५० Coins रेफरल पुरस्कार server/API बाट नै दिनुपर्छ।',nav_tasks:'काम',nav_referral:'रेफरल',nav_create:'टास्क',nav_activity:'गतिविधि',language:'भाषा',auto_detect:'स्वचालित',language_note:'Automatic मोडले Telegram/browser locale हेरेर भाषा छान्छ। चाहनुहुन्छ भने हातैले भाषा रोज्न सक्नुहुन्छ।',api_placeholder:'http://YOUR_IP:5000/api',bot_username_placeholder:'your_bot_username',no_tasks:'अहिले नयाँ काम छैन। पछि फेरि हेर्नुहोस्।',go_link:'लिङ्क खोल्नुहोस्',give_proof:'प्रमाण दिनुहोस्',no_extra:'थप निर्देशन दिइएको छैन।',server_error:'सर्भरसँग जडान हुन सकेन। Settings मा API URL जाँच गर्नुहोस्।',proof_required:'प्रमाण वा Username लेख्नुहोस्।',submitting:'पठाउँदै…',proof_sent:'प्रमाण पठाइयो ✅',proof_failed:'प्रमाण पठाउन सकिएन।',task_title_link:'टाइटल र लिङ्क दुवै दिनुहोस्।',task_published:'टास्क प्रकाशित भयो ✅',task_publish_failed:'टास्क प्रकाशित गर्न सकिएन।',settings_saved:'सेटिङ सेभ भयो ✅',link_copied:'रेफरल लिङ्क कपी भयो ✅',copy_prompt:'रेफरल लिङ्क कपी गर्नुहोस्:',share_message:'म P2P Refer प्रयोग गर्दैछु। मेरो लिङ्कबाट Join गर्नुहोस् र १० Coins बाट सुरु गर्नुहोस् 🎁',link_copy_fallback:'लिङ्क कपी भयो, साथीलाई पठाउनुहोस् ✅',no_submissions:'तपाईंले अहिलेसम्म कुनै काम पूरा गर्नुभएको छैन।',no_published:'तपाईंले अहिलेसम्म कुनै टास्क प्रकाशित गर्नुभएको छैन।',activity_failed:'गतिविधि लोड गर्न सकिएन।',status_approved:'स्वीकृत ✅',status_rejected:'अस्वीकृत',status_pending:'पर्खिँदै ⏳',proof_label:'प्रमाण:',remaining:'बाँकी',tokens:'Coins',token:'Coin',task_title_error:'टास्क शीर्षक कम्तीमा ३ अक्षरको हुनुपर्छ।',link_required:'सही लिङ्क दिनुहोस्।'
+    },
+    ru:{
+        brand_tagline:'Зарабатывайте • Приглашайте • Растите',settings:'Настройки',loading:'Загрузка…',your_coins:'Ваши монеты',welcome_text:'<b>Новый участник?</b> Ваш аккаунт начинается с <b>10 монет</b>.',today_tasks:'Задания на сегодня',tasks_desc:'Выполняйте задания и получайте монеты',refresh:'Обновить',invite_friend:'Пригласить друзей 🎁',share_your_link:'Поделитесь реферальной ссылкой',per_new_member:'50 монет за каждого нового участника',ref_join_desc:'Когда кто-то присоединяется по вашей реферальной ссылке',successful_referral_reward:'Награда за успешный реферал',creating_link:'Создание ссылки…',copy_referral:'Копировать реферальную ссылку',share_with_friends:'Поделиться с друзьями',referrals:'Ваши рефералы',referral_earnings:'Доход от рефералов',how_it_works:'Как это работает?',very_easy:'Очень просто',step1:'1. Поделитесь ссылкой',step1_desc:'Друг присоединится по вашей ссылке.',step2:'2. Новый участник получает 10 монет',step2_desc:'Каждый новый участник начинает с 10 монет.',step3:'3. Вы получаете 50 монет',step3_desc:'После успешной записи реферала добавляется 50 монет.',create_task:'Создать задание',create_desc:'Другие пользователи выполнят ваше задание',task_title:'Название задания',task_title_placeholder:'Например: Вступите в мой Telegram Bot',link:'Ссылка',what_to_do:'Что нужно сделать?',task_steps_placeholder:'1. Откройте ссылку\n2. Нажмите Start/Join\n3. При необходимости отправьте доказательство',how_many_people:'Сколько людей нужно?',total_cost:'Общая стоимость',publish_task:'Опубликовать задание',my_activity:'Моя активность',activity_desc:'Ваши отправки и опубликованные задания',submitted_proofs:'Отправленные доказательства',published_tasks:'Опубликованные задания',submit_proof_title:'Отправить доказательство задания',proof_or_username:'Доказательство / Telegram Username',proof_placeholder:'Например: Joined as @your_username',submit_proof:'Отправить доказательство',settings_title:'Настройки',api_url:'URL API',bot_username_optional:'Имя пользователя Telegram-бота (необязательно)',ref_link_note:'Укажите имя пользователя бота для Telegram-реферальных ссылок. Иначе будет использован URL Web App.',save:'Сохранить',server_reward_note:'Награда 10 монет за регистрацию и 50 монет за реферала должна начисляться сервером/API.',nav_tasks:'Задания',nav_referral:'Реферал',nav_create:'Создать',nav_activity:'Активность',language:'Язык',auto_detect:'Автоматически',language_note:'Автоматический режим использует язык Telegram/браузера. Также можно выбрать язык вручную.',api_placeholder:'http://YOUR_IP:5000/api',bot_username_placeholder:'your_bot_username',no_tasks:'Сейчас нет новых заданий. Попробуйте позже.',go_link:'Открыть ссылку',give_proof:'Отправить доказательство',no_extra:'Дополнительных инструкций нет.',server_error:'Не удалось подключиться к серверу. Проверьте URL API в настройках.',proof_required:'Введите доказательство или имя пользователя.',submitting:'Отправка…',proof_sent:'Доказательство отправлено ✅',proof_failed:'Не удалось отправить доказательство.',task_title_link:'Введите название и ссылку.',task_published:'Задание опубликовано ✅',task_publish_failed:'Не удалось опубликовать задание.',settings_saved:'Настройки сохранены ✅',link_copied:'Реферальная ссылка скопирована ✅',copy_prompt:'Скопируйте реферальную ссылку:',share_message:'Я использую P2P Refer. Присоединяйтесь по моей ссылке и начните с 10 монет 🎁',link_copy_fallback:'Ссылка скопирована. Отправьте её друзьям ✅',no_submissions:'Вы ещё не выполнили ни одного задания.',no_published:'Вы ещё не опубликовали ни одного задания.',activity_failed:'Не удалось загрузить активность.',status_approved:'Одобрено ✅',status_rejected:'Отклонено',status_pending:'Ожидание ⏳',proof_label:'Доказательство:',remaining:'осталось',tokens:'Монет',token:'Монета',task_title_error:'Название задания должно содержать не менее 3 символов.',link_required:'Введите корректную ссылку.'
+    }
+};
+
+const REGION_TO_LANG = {
+    BD:'bn', IN:'hi', CN:'zh', NP:'ne', RU:'ru',
+    SA:'ar', AE:'ar', QA:'ar', KW:'ar', OM:'ar', BH:'ar', JO:'ar', EG:'ar', MA:'ar', DZ:'ar', TN:'ar'
+};
+const TIMEZONE_TO_LANG = {
+    'Asia/Dhaka':'bn','Asia/Kolkata':'hi','Asia/Calcutta':'hi','Asia/Kathmandu':'ne','Asia/Shanghai':'zh','Asia/Chongqing':'zh','Asia/Urumqi':'zh','Europe/Moscow':'ru'
+};
+
+const demoUser = {id:999888, first_name:"Demo User", username:"demouser", language_code:"en"};
+const user = tg?.initDataUnsafe?.user || demoUser;
+let currentActiveTaskId = null;
+let currentLanguage = 'en';
+
+function normalizeTag(tag){
+    return String(tag||'').trim().replace('_','-');
+}
+function detectLanguage(){
+    const rawTags=[];
+    if(user?.language_code) rawTags.push(user.language_code);
+    if(navigator.language) rawTags.push(navigator.language);
+    if(Array.isArray(navigator.languages)) rawTags.push(...navigator.languages);
+    for(const raw of rawTags){
+        const tag=normalizeTag(raw);
+        const parts=tag.split('-');
+        const base=(parts[0]||'').toLowerCase();
+        const region=(parts.find(x=>x.length===2)||'').toUpperCase();
+        if(region && REGION_TO_LANG[region]) return REGION_TO_LANG[region];
+        if(['bn','hi','ar','zh','ne','ru'].includes(base)) return base;
+    }
+    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+    return TIMEZONE_TO_LANG[tz] || 'en';
+}
+function getSavedLanguage(){
+    const saved=localStorage.getItem('P2P_LANGUAGE');
+    if(saved==='auto' || LANGS[saved]) return saved;
+    return 'auto';
+}
+function applyTranslations(){
+    const dict=I18N[currentLanguage] || I18N.en;
+    document.documentElement.lang=LANGS[currentLanguage].locale;
+    document.documentElement.dir=LANGS[currentLanguage].dir;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key=el.getAttribute('data-i18n');
+        if(dict[key]!=null) el.innerHTML=dict[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+        const key=el.getAttribute('data-i18n-placeholder');
+        if(dict[key]!=null) el.placeholder=dict[key];
+    });
+    document.querySelectorAll('[data-i18n-aria-label]').forEach(el=>{
+        const key=el.getAttribute('data-i18n-aria-label');
+        if(dict[key]!=null) el.setAttribute('aria-label',dict[key]);
+    });
+    const sel=document.getElementById('language-select');
+    if(sel) sel.value=localStorage.getItem('P2P_LANGUAGE') || 'auto';
+    const name=user.first_name || t('friend');
+    document.getElementById('user-name').textContent=name;
+    document.getElementById('user-id-text').textContent=`ID: ${user.id}`;
+    document.getElementById('user-avatar').textContent=(name||'U').charAt(0).toUpperCase();
+    updateCostCalculation();
+}
+function setLanguage(value){
+    localStorage.setItem('P2P_LANGUAGE', value);
+    currentLanguage=value==='auto'?detectLanguage():value;
+    applyTranslations();
+    toast(t('settings_saved'));
+    loadTasks();
+    loadActivity();
+    loadReferralStats();
+}
+function t(key, vars={}){
+    const dict=I18N[currentLanguage] || I18N.en;
+    let out=dict[key] ?? I18N.en[key] ?? key;
+    Object.entries(vars).forEach(([k,v])=>out=out.replace(new RegExp(`\\{${k}\\}`,'g'),String(v)));
+    return out;
+}
+function esc(value){
+    return String(value ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
+}
+function toast(message){
+    const el=document.getElementById('toast'); el.textContent=message; el.classList.add('show');
+    clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>el.classList.remove('show'),2300);
+}
+function haptic(type='light'){try{tg?.HapticFeedback?.impactOccurred(type)}catch(e){}}
+function getReferralCode(){const params=new URLSearchParams(location.search);const fromUrl=params.get('ref');if(fromUrl)return fromUrl;const fromTelegram=tg?.initDataUnsafe?.start_param||'';if(String(fromTelegram).startsWith('ref_'))return String(fromTelegram).slice(4).split('.')[0];return '';}
+function getReferralSignature(){const params=new URLSearchParams(location.search);const sig=params.get('sig');if(sig)return sig;const fromTelegram=tg?.initDataUnsafe?.start_param||'';if(String(fromTelegram).startsWith('ref_'))return String(fromTelegram).slice(4).split('.')[1]||'';return '';}
+function apiHeaders(){
+    const headers={'Content-Type':'application/json'};
+    if(tg?.initData) headers['X-Telegram-Init-Data']=tg.initData;
+    return headers;
+}
+function getReferralLink(){
+    const code=String(user.id);
+    if(BOT_USERNAME) return `https://t.me/${BOT_USERNAME}?start=ref_${encodeURIComponent(code)}`;
+    const url=new URL(location.href); url.searchParams.set('ref',code); return url.toString();
+}
+function copyReferral(){
+    const link=getReferralLink();
+    navigator.clipboard?.writeText(link).then(()=>{toast(t('link_copied'));haptic('light')}).catch(()=>{window.prompt(t('copy_prompt'),link)});
+}
+function shareReferral(){
+    const link=getReferralLink(); const msg=`${t('share_message')}\n\n${link}`;
+    try{
+        if(tg?.openTelegramLink && BOT_USERNAME) tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`);
+        else if(navigator.share) navigator.share({title:'P2P Refer',text:msg,url:link}).catch(()=>{});
+        else {copyReferral();toast(t('link_copy_fallback'))}
+    }catch(e){copyReferral()}
+    haptic('medium');
+}
+function openSettings(){document.getElementById('settings-modal').classList.add('active')}
+function closeSettings(){document.getElementById('settings-modal').classList.remove('active')}
+function saveSettings(){
+    BASE_API_URL=document.getElementById('api-url-input').value.trim()||DEFAULT_API;
+    BOT_USERNAME=document.getElementById('bot-username-input').value.trim().replace(/^@/,'');
+    localStorage.setItem('P2P_API_URL',BASE_API_URL); localStorage.setItem('P2P_BOT_USERNAME',BOT_USERNAME);
+    closeSettings(); toast(t('settings_saved')); loadUserData(); loadReferralStats(); loadTasks();
+}
+
+document.getElementById('api-url-input').value=BASE_API_URL;
+document.getElementById('bot-username-input').value=BOT_USERNAME || 'P2PRefer1bot';
+currentLanguage=(getSavedLanguage()==='auto'?detectLanguage():getSavedLanguage())||'en';
+applyTranslations();
+document.getElementById('ref-link').textContent=getReferralLink();
+
+function switchTab(tabId,el){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.getElementById(`view-${tabId}`).classList.add('active'); el?.classList.add('active'); haptic('light');
+    if(tabId==='tasks') loadTasks(); if(tabId==='referral') loadReferralStats(); if(tabId==='activity') loadActivity();
+}
+
+async function loadConfig(){
+    try{
+        const res=await fetch(`${BASE_API_URL}/config`);
+        const data=await res.json();
+        if(data?.bot_username){
+            BOT_USERNAME=String(data.bot_username).replace(/^@/,'').trim();
+            localStorage.setItem('P2P_BOT_USERNAME',BOT_USERNAME);
+            document.getElementById('bot-username-input').value=BOT_USERNAME;
+            document.getElementById('ref-link').textContent=getReferralLink();
         }
-
-        // টাস্ক লোড করা
-        async function loadTasks() {
-            try {
-                let res = await fetch(`${API_URL}/tasks`);
-                let data = await res.json();
-                let list = document.getElementById('task-list');
-                list.innerHTML = "";
-                
-                if (data.tasks.length === 0) {
-                    list.innerHTML = "<p>বর্তমানে কোনো টাস্ক নেই।</p>"; return;
-                }
-
-                data.tasks.forEach(t => {
-                    list.innerHTML += `
-                        <div class="card">
-                            <h4>${t.title}</h4>
-                            <p>${t.description}</p>
-                            <a href="${t.link}" target="_blank"><button class="btn" style="background:#28a745;">লিংকে যান</button></a>
-                            <input type="text" id="proof-${t.id}" placeholder="প্রুফ দিন (আপনার টেলিগ্রাম ইউজারনেম)">
-                            <button class="btn" onclick="submitProof(${t.id})">সম্পন্ন করেছি (Submit Proof)</button>
-                        </div>
-                    `;
-                });
-            } catch (e) { console.error("Error loading tasks", e); }
+    }catch(e){}
+}
+async function loadUserData(){
+    try{
+        const initPayload={referrer_id:getReferralCode()||null,referral_sig:getReferralSignature()||null};
+        const initRes=await fetch(`${BASE_API_URL}/init`,{method:'POST',headers:apiHeaders(),body:JSON.stringify(initPayload)});
+        const initData=await initRes.json().catch(()=>null);
+        if(initRes.ok && initData?.success && typeof initData.tokens!=='undefined'){
+            animateValue('token-count',Number(document.getElementById('token-count').textContent)||0,Number(initData.tokens),500);
+            applyReferralStats(initData);
+            return;
         }
+        const res=await fetch(`${BASE_API_URL}/me`,{headers:apiHeaders()});
+        const data=await res.json();
+        if(res.ok){animateValue('token-count',Number(document.getElementById('token-count').textContent)||0,Number(data.tokens)||0,500);applyReferralStats(data)}
+    }catch(err){console.error('API Error',err)}
+}
+function applyReferralStats(data){
+    if(typeof data.referrals_count!=='undefined') document.getElementById('ref-count').textContent=Number(data.referrals_count)||0;
+    if(typeof data.referral_earnings!=='undefined') document.getElementById('ref-earned').textContent=Number(data.referral_earnings)||0;
+    document.getElementById('ref-link').textContent=data.referral_link||getReferralLink();
+}
+async function loadReferralStats(){
+    document.getElementById('ref-link').textContent=getReferralLink();
+    try{const res=await fetch(`${BASE_API_URL}/referral/${user.id}`,{headers:apiHeaders()}); const data=await res.json(); if(data?.success) applyReferralStats(data)}catch(err){}
+}
+function animateValue(id,start,end,duration){
+    const obj=document.getElementById(id); if(start===end){obj.textContent=end;return} const range=end-start; const steps=Math.max(1,Math.min(Math.abs(range),40)); const step=range/steps; let current=start,count=0;
+    const timer=setInterval(()=>{count++;current=count>=steps?end:current+step;obj.textContent=Math.round(current);if(count>=steps)clearInterval(timer)},Math.max(16,Math.floor(duration/steps)));
+}
+function updateCostCalculation(){
+    const slots=Math.max(1,parseInt(document.getElementById('create-slots').value)||1);
+    document.getElementById('total-cost-text').textContent=`${slots} ${slots>1?t('tokens'):t('token')}`;
+}
+async function loadTasks(withSpin=false){
+    const container=document.getElementById('tasks-container'); const refresh=document.getElementById('refresh-btn');
+    if(withSpin){refresh.classList.add('spin');setTimeout(()=>refresh.classList.remove('spin'),650);haptic('light')}
+    container.innerHTML=`<div class="skeleton" style="height:126px;margin-bottom:11px"></div><div class="skeleton" style="height:126px"></div>`;
+    try{
+        const res=await fetch(`${BASE_API_URL}/tasks`,{headers:apiHeaders()}); const data=await res.json();
+        const items=Array.isArray(data.tasks)?data.tasks:(Array.isArray(data.items)?data.items:null);
+        if(!data.success && !data.ok || !Array.isArray(items) || !items.length){container.innerHTML=`<div class="empty"><i class="fa-regular fa-face-smile"></i><p>${t('no_tasks')}</p></div>`;return}
+        container.innerHTML='';
+        items.forEach((task,idx)=>{
+            const title=task.title||''; const desc=task.description||''; const slotsLeft=task.slots_left??task.remaining_slots??0; const link=task.link||task.target_url||task.share_url||'';
+            const card=document.createElement('article'); card.className='task';
+            card.innerHTML=`<div class="task-head"><div class="task-title">${esc(title)}</div><span class="slots"><i class="fa-solid fa-users"></i> ${esc(slotsLeft)} ${esc(t('remaining'))}</span></div><div class="task-desc">${esc(desc||t('no_extra'))}</div><div class="task-actions"><button class="action-btn" data-link="${esc(link)}" onclick="openDirectLink(this.dataset.link)"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${esc(t('go_link'))}</button><button class="action-btn primary" data-id="${Number(task.id)||0}" data-title="${esc(title)}" onclick="openProofModal(this.dataset.id,this.dataset.title)"><i class="fa-solid fa-circle-check"></i> ${esc(t('give_proof'))}</button></div>`;
+            card.style.animationDelay=`${idx*40}ms`; container.appendChild(card);
+        });
+    }catch(err){container.innerHTML=`<div class="empty"><i class="fa-solid fa-plug-circle-xmark" style="color:var(--danger)"></i><p>${t('server_error')}</p></div>`}
+}
+function openDirectLink(url){if(!url)return;try{if(String(url).includes('t.me')&&tg?.openTelegramLink)tg.openTelegramLink(url);else if(tg?.openLink)tg.openLink(url);else window.open(url,'_blank','noopener')}catch(e){window.open(url,'_blank','noopener')}haptic('light')}
+function openProofModal(taskId,title){currentActiveTaskId=Number(taskId);document.getElementById('modal-task-title').textContent=title||t('submit_proof_title');document.getElementById('modal-proof-text').value='';document.getElementById('proof-modal').classList.add('active');haptic('medium')}
+function closeModal(){document.getElementById('proof-modal').classList.remove('active')}
+async function confirmProofSubmission(){
+    const proofText=document.getElementById('modal-proof-text').value.trim(); if(!proofText){toast(t('proof_required'));return}
+    const btn=document.getElementById('modal-submit-btn');btn.disabled=true;btn.innerHTML=`<i class="fa-solid fa-circle-notch fa-spin"></i> ${esc(t('submitting'))}`;
+    try{
+        const res=await fetch(`${BASE_API_URL}/tasks/${currentActiveTaskId}/complete`,{method:'POST',headers:apiHeaders(),body:JSON.stringify({proof_username:user.username||user.first_name||'Telegram User',proof_text:proofText})});
+        const data=await res.json(); toast(data.message||(data.success?t('proof_sent'):t('proof_failed')));
+        if(data.success||data.ok){closeModal();loadTasks();loadUserData();haptic('success')}
+    }catch(e){toast(t('proof_failed'))}finally{btn.disabled=false;btn.innerHTML=`<i class="fa-solid fa-check"></i> ${esc(t('submit_proof'))}`}
+}
+function submitNewTask(){return submitNewTaskInner()}
+async function submitNewTaskInner(){
+    const title=document.getElementById('create-title').value.trim();const link=document.getElementById('create-link').value.trim();const desc=document.getElementById('create-desc').value.trim();const slots=Math.max(1,parseInt(document.getElementById('create-slots').value)||1);
+    if(!title||!link){toast(t('task_title_link'));return}
+    try{
+        const res=await fetch(`${BASE_API_URL}/tasks`,{method:'POST',headers:apiHeaders(),body:JSON.stringify({title,description:desc,target_url:link,max_slots:slots})}); const data=await res.json();
+        toast(data.message||(data.success?t('task_published'):t('task_publish_failed')));
+        if(data.success||data.ok){document.getElementById('create-title').value='';document.getElementById('create-link').value='';document.getElementById('create-desc').value='';document.getElementById('create-slots').value='1';updateCostCalculation();loadUserData();switchTab('tasks',document.querySelector('.nav-item'));haptic('success')}
+    }catch(e){toast(t('task_publish_failed'))}
+}
+async function loadActivity(){
+    const p=document.getElementById('my-proofs-container');const tbox=document.getElementById('my-tasks-container');p.innerHTML='<div class="skeleton" style="height:76px"></div>';tbox.innerHTML='<div class="skeleton" style="height:76px"></div>';
+    try{
+        const [proofRes,tasksRes]=await Promise.all([fetch(`${BASE_API_URL}/my/completions`,{headers:apiHeaders()}),fetch(`${BASE_API_URL}/my/tasks`,{headers:apiHeaders()})]);
+        const proofData=await proofRes.json(); const myTaskData=await tasksRes.json();
+        if(!proofRes.ok || !tasksRes.ok) throw new Error('activity failed');
+        p.innerHTML=''; const submissions=Array.isArray(proofData.items)?proofData.items:[];
+        if(!submissions.length)p.innerHTML=`<div class="empty"><p>${t('no_submissions')}</p></div>`; else submissions.forEach(item=>{const cls=item.status==='approved'?'approved':item.status==='rejected'?'rejected':'pending';const label=item.status==='approved'?t('status_approved'):item.status==='rejected'?t('status_rejected'):t('status_pending');p.innerHTML+=`<div class="activity-item"><div class="activity-row"><div class="activity-name">${esc(item.task_title||item.title||'')}</div><span class="status ${cls}">${esc(label)}</span></div><div class="proof">${esc(t('proof_label'))} ${esc(item.proof_text||'')}</div></div>`});
+        tbox.innerHTML='';const myTasks=Array.isArray(myTaskData.items)?myTaskData.items:[];
+        if(!myTasks.length)tbox.innerHTML=`<div class="empty"><p>${t('no_published')}</p></div>`;else myTasks.forEach(item=>{const left=item.slots_left??item.remaining_slots??0; tbox.innerHTML+=`<div class="activity-item"><div class="activity-row"><div class="activity-name">${esc(item.title||'')}</div><span class="status approved">${esc(left)}/${esc(item.slots_total??item.max_slots??0)} ${esc(t('remaining'))}</span></div></div>`});
+    }catch(e){p.innerHTML=`<div class="empty"><p>${t('activity_failed')}</p></div>`;tbox.innerHTML=`<div class="empty"><p>${t('activity_failed')}</p></div>`}
+}
+document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el && !el.classList.contains('locked'))el.classList.remove('active')}));
 
-        // টাস্ক তৈরি করা
-        async function createTask() {
-            let title = document.getElementById('t-title').value;
-            let desc = document.getElementById('t-desc').value;
-            let link = document.getElementById('t-link').value;
-            let slots = document.getElementById('t-slots').value;
 
-            if(!title || !desc || !link) return tg.showAlert("সবগুলো ঘর পূরণ করুন!");
+/* ==========================================================
+   PUBLISH-READY FEATURE LAYER
+   ========================================================== */
+const AD_NETWORK_URL = "https://www.profitableratecpmnetwork.com/ubupygs3?key=511d31b0135289fc6ee4ff0f18b63a18";
+let reportTarget = {userId:null, taskId:null};
+let reportReason = 'reward';
+let adState = {kind:null, sessionId:null, timer:null, finished:false, pendingAction:null, pendingProof:null};
 
-            let res = await fetch(`${API_URL}/task/create`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: user.id, title: title, description: desc, link: link, slots: slots })
-            });
-            let data = await res.json();
-            tg.showAlert(data.message);
-            if(data.success) {
-                switchTab('tasks');
-                loadUser();
-            }
-        }
+const EXTRA_I18N = {
+ en:{task_type:'Task type',task_type_general:'General task',task_type_telegram:'Telegram Channel/Group',task_type_help:'Telegram Channel/Group tasks are verified server-side; the bot must be an admin in that chat.',verification_chat:'Telegram Channel/Group username',verification_help:'The username can be filled automatically from the link when possible.',publish_ad_title:'Publish unlock',publish_ad_note:'Watch a 10-second ad before publishing a task.',watch_ad_10:'Watch 10-second Ad',publish_locked:'Ad not watched — Publish locked',publish_unlocked:'Ad complete — Publish unlocked',ad_title:'Please watch the Ad',ad_footer_1:'The gate unlocks after 10 seconds.',ad_footer_2:'The Ad is loaded inside the Mini App.',continue_btn:'Continue',report:'Report',report_user_title:'Report user',report_warning:'Only report genuine problems. Do not send false or harassing reports.',report_reason:'Reason',report_reward:'Reward / Coin issue',report_wrong:'Incorrect task rejection',report_fraud:'Misleading / fraudulent task',report_abuse:'Harassment / Abuse',report_details:'Details',report_placeholder:'Explain clearly what happened…',send_report:'Send report',report_sent:'Report submitted ✅',report_already:'You already reported this user.',account_restricted:'Account Restricted',account_restricted_note:'This account is currently restricted from using the Mini App.',notice:'Notice',auto_ad_soon:'You completed 5 tasks. Watch the next 10-second ad to continue.',ad_required:'A 10-second ad is required before your next action.',create_warning:'Check the task details and link before publishing. Do not publish misleading or fake tasks.'},
+ bn:{task_type:'টাস্কের ধরন',task_type_general:'সাধারণ টাস্ক',task_type_telegram:'Telegram Channel/Group',task_type_help:'Telegram Channel/Group task হলে server-side সদস্যতা যাচাই হবে; ওই chat-এ bot-কে admin হতে হবে।',verification_chat:'Telegram Channel/Group Username',verification_help:'Link থেকে username পাওয়া গেলে এটি নিজে থেকে পূরণ হবে।',publish_ad_title:'Publish unlock',publish_ad_note:'টাস্ক publish করার আগে ১০ সেকেন্ডের ad দেখতে হবে।',watch_ad_10:'১০ সেকেন্ডের Ad দেখুন',publish_locked:'Ad দেখা হয়নি — Publish locked',publish_unlocked:'Ad সম্পন্ন — Publish unlocked',ad_title:'দয়া করে Ad দেখুন',ad_footer_1:'১০ সেকেন্ড পূর্ণ হলে gate unlock হবে।',ad_footer_2:'Ad Mini App-এর ভেতরেই লোড হচ্ছে।',continue_btn:'চালিয়ে যান',report:'রিপোর্ট',report_user_title:'ইউজার রিপোর্ট',report_warning:'শুধু সত্যিকারের সমস্যা হলে রিপোর্ট করুন। মিথ্যা বা হয়রানিমূলক রিপোর্ট পাঠাবেন না।',report_reason:'কারণ',report_reward:'Reward / Coin সমস্যা',report_wrong:'ভুলভাবে task reject',report_fraud:'ভুল/প্রতারণামূলক task',report_abuse:'Harassment / Abuse',report_details:'বিস্তারিত',report_placeholder:'কি হয়েছে পরিষ্কারভাবে লিখুন…',send_report:'রিপোর্ট পাঠান',report_sent:'রিপোর্ট জমা হয়েছে ✅',report_already:'এই ইউজারকে আপনি আগেই রিপোর্ট করেছেন।',account_restricted:'অ্যাকাউন্ট সীমিত',account_restricted_note:'এই অ্যাকাউন্টে বর্তমানে Mini App ব্যবহার সীমিত করা হয়েছে।',notice:'নোটিশ',auto_ad_soon:'আপনি ৫টি task complete করেছেন। চালিয়ে যেতে পরের ১০ সেকেন্ডের ad দেখুন।',ad_required:'পরবর্তী কাজের আগে ১০ সেকেন্ডের ad দরকার।',create_warning:'Publish করার আগে task-এর তথ্য ও link ঠিক আছে কিনা যাচাই করুন। ভুয়া বা বিভ্রান্তিকর task দেবেন না।',report_failed:'রিপোর্ট পাঠানো যায়নি।'},
+ ar:{task_type:'نوع المهمة',task_type_general:'مهمة عامة',task_type_telegram:'قناة/مجموعة Telegram',task_type_help:'يتم التحقق من مهام Telegram على الخادم؛ يجب أن يكون البوت مشرفًا في الدردشة.',verification_chat:'اسم مستخدم قناة/مجموعة Telegram',verification_help:'سيتم تعبئة اسم المستخدم من الرابط تلقائيًا عند الإمكان.',publish_ad_title:'فتح النشر',publish_ad_note:'شاهد إعلانًا لمدة 10 ثوانٍ قبل النشر.',watch_ad_10:'شاهد إعلان 10 ثوانٍ',publish_locked:'الإعلان لم يُشاهد — النشر مقفل',publish_unlocked:'اكتمل الإعلان — النشر متاح',ad_title:'يرجى مشاهدة الإعلان',ad_footer_1:'يتم الفتح بعد 10 ثوانٍ.',ad_footer_2:'يتم تحميل الإعلان داخل التطبيق المصغر.',continue_btn:'متابعة',report:'إبلاغ',report_user_title:'الإبلاغ عن مستخدم',report_warning:'أبلغ فقط عن مشكلة حقيقية. لا ترسل بلاغات كاذبة أو مضايقة.',report_reason:'السبب',report_reward:'مشكلة مكافأة/عملات',report_wrong:'رفض غير صحيح للمهمة',report_fraud:'مهمة مضللة/احتيالية',report_abuse:'مضايقة/إساءة',report_details:'التفاصيل',report_placeholder:'اشرح ما حدث بوضوح…',send_report:'إرسال البلاغ',report_sent:'تم إرسال البلاغ ✅',report_already:'لقد أبلغت عن هذا المستخدم بالفعل.',account_restricted:'الحساب مقيّد',account_restricted_note:'تم تقييد استخدام هذا الحساب للتطبيق المصغر.',notice:'إشعار',auto_ad_soon:'لقد أكملت 5 مهام. شاهد الإعلان التالي لمدة 10 ثوانٍ للمتابعة.',ad_required:'يلزم مشاهدة إعلان لمدة 10 ثوانٍ قبل المتابعة.'},
+ hi:{task_type:'टास्क प्रकार',task_type_general:'सामान्य टास्क',task_type_telegram:'Telegram Channel/Group',task_type_help:'Telegram टास्क की जाँच server-side होगी; bot को उस chat में admin होना चाहिए.',verification_chat:'Telegram Channel/Group username',verification_help:'संभव होने पर link से username अपने आप भर जाएगा.',publish_ad_title:'Publish unlock',publish_ad_note:'Task publish करने से पहले 10 सेकंड का ad देखें.',watch_ad_10:'10 सेकंड का Ad देखें',publish_locked:'Ad नहीं देखा — Publish locked',publish_unlocked:'Ad पूरा — Publish unlocked',ad_title:'कृपया Ad देखें',ad_footer_1:'10 सेकंड बाद unlock होगा.',ad_footer_2:'Ad Mini App के अंदर load हो रहा है.',continue_btn:'जारी रखें',report:'Report',report_user_title:'User report',report_warning:'सिर्फ वास्तविक समस्या की report करें.',report_reason:'कारण',report_reward:'Reward / Coin समस्या',report_wrong:'गलत task rejection',report_fraud:'भ्रामक task',report_abuse:'Harassment / Abuse',report_details:'विवरण',report_placeholder:'क्या हुआ साफ़ लिखें…',send_report:'Report भेजें',report_sent:'Report भेज दी गई ✅',report_already:'आप इस user को पहले ही report कर चुके हैं।',account_restricted:'Account Restricted',account_restricted_note:'इस account का Mini App उपयोग restricted है।',notice:'Notice',auto_ad_soon:'आपने 5 tasks पूरे किए। आगे बढ़ने के लिए अगला 10 सेकंड का ad देखें।',ad_required:'आगे बढ़ने से पहले 10 सेकंड का ad आवश्यक है।'},
+ zh:{task_type:'任务类型',task_type_general:'普通任务',task_type_telegram:'Telegram 频道/群组',task_type_help:'Telegram 任务将在服务器端验证；机器人必须是该聊天的管理员。',verification_chat:'Telegram 频道/群组用户名',verification_help:'如果链接中有用户名，系统会自动填写。',publish_ad_title:'解锁发布',publish_ad_note:'发布任务前请观看 10 秒广告。',watch_ad_10:'观看 10 秒广告',publish_locked:'未观看广告 — 发布已锁定',publish_unlocked:'广告完成 — 可以发布',ad_title:'请观看广告',ad_footer_1:'10 秒后解锁。',ad_footer_2:'广告在 Mini App 内加载。',continue_btn:'继续',report:'举报',report_user_title:'举报用户',report_warning:'仅举报真实问题。',report_reason:'原因',report_reward:'奖励/金币问题',report_wrong:'错误拒绝任务',report_fraud:'误导/欺诈任务',report_abuse:'骚扰/滥用',report_details:'详情',report_placeholder:'请清楚说明发生了什么…',send_report:'发送举报',report_sent:'举报已提交 ✅',report_already:'你已经举报过此用户。',account_restricted:'账户受限',account_restricted_note:'此账户目前无法使用 Mini App。',notice:'公告',auto_ad_soon:'你已完成 5 个任务。继续前请观看下一个 10 秒广告。',ad_required:'继续前需要观看 10 秒广告。'},
+ ne:{task_type:'कार्य प्रकार',task_type_general:'सामान्य कार्य',task_type_telegram:'Telegram Channel/Group',task_type_help:'Telegram task को server-side जाँच गरिन्छ; bot उक्त chat को admin हुनुपर्छ।',verification_chat:'Telegram Channel/Group username',verification_help:'सम्भव भए link बाट username स्वतः भरिन्छ।',publish_ad_title:'Publish unlock',publish_ad_note:'Task publish गर्नुअघि 10 सेकेन्डको ad हेर्नुहोस्।',watch_ad_10:'10 सेकेन्डको Ad हेर्नुहोस्',publish_locked:'Ad नहेरेको — Publish locked',publish_unlocked:'Ad पूरा — Publish खुल्यो',ad_title:'कृपया Ad हेर्नुहोस्',ad_footer_1:'10 सेकेन्डपछि unlock हुनेछ।',ad_footer_2:'Ad Mini App भित्रै load हुँदैछ।',continue_btn:'जारी राख्नुहोस्',report:'Report',report_user_title:'User report',report_warning:'वास्तविक समस्या मात्र report गर्नुहोस्।',report_reason:'कारण',report_reward:'Reward / Coin समस्या',report_wrong:'गलत task rejection',report_fraud:'भ्रामक task',report_abuse:'Harassment / Abuse',report_details:'विवरण',report_placeholder:'के भयो स्पष्ट लेख्नुहोस्…',send_report:'Report पठाउनुहोस्',report_sent:'Report पठाइयो ✅',report_already:'तपाईंले यो user लाई पहिले नै report गर्नुभएको छ।',account_restricted:'Account Restricted',account_restricted_note:'यो account को Mini App प्रयोग सीमित गरिएको छ।',notice:'Notice',auto_ad_soon:'तपाईंले 5 tasks पूरा गर्नुभयो। अगाडि बढ्न अर्को 10 सेकेन्डको ad हेर्नुहोस्।',ad_required:'अगाडि बढ्न 10 सेकेन्डको ad आवश्यक छ।'},
+ ru:{task_type:'Тип задания',task_type_general:'Обычное задание',task_type_telegram:'Telegram-канал/группа',task_type_help:'Telegram-задания проверяются на сервере; бот должен быть администратором чата.',verification_chat:'Имя пользователя канала/группы Telegram',verification_help:'Имя пользователя будет заполнено автоматически из ссылки, если возможно.',publish_ad_title:'Разблокировка публикации',publish_ad_note:'Перед публикацией задания посмотрите рекламу 10 секунд.',watch_ad_10:'Смотреть рекламу 10 секунд',publish_locked:'Реклама не просмотрена — публикация заблокирована',publish_unlocked:'Реклама завершена — публикация доступна',ad_title:'Пожалуйста, посмотрите рекламу',ad_footer_1:'Разблокировка после 10 секунд.',ad_footer_2:'Реклама загружается внутри Mini App.',continue_btn:'Продолжить',report:'Пожаловаться',report_user_title:'Жалоба на пользователя',report_warning:'Жалуйтесь только на реальные проблемы.',report_reason:'Причина',report_reward:'Проблема с наградой/монетами',report_wrong:'Неверный отказ по заданию',report_fraud:'Вводящее в заблуждение задание',report_abuse:'Домогательства/злоупотребление',report_details:'Подробности',report_placeholder:'Чётко опишите, что произошло…',send_report:'Отправить жалобу',report_sent:'Жалоба отправлена ✅',report_already:'Вы уже жаловались на этого пользователя.',account_restricted:'Аккаунт ограничен',account_restricted_note:'Использование Mini App для этого аккаунта ограничено.',notice:'Уведомление',auto_ad_soon:'Вы выполнили 5 заданий. Посмотрите следующую рекламу 10 секунд, чтобы продолжить.',ad_required:'Перед продолжением требуется 10-секундная реклама.'}
+};
+for(const k of Object.keys(EXTRA_I18N)){I18N[k]={...(I18N[k]||{}),...EXTRA_I18N[k]};}
 
-        // প্রুফ সাবমিট করা
-        async function submitProof(taskId) {
-            let proof = document.getElementById(`proof-${taskId}`).value;
-            if(!proof) return tg.showAlert("অনুগ্রহ করে প্রুফ হিসেবে আপনার নাম/ইউজারনেম দিন!");
+// Improve automatic locale selection: Telegram language -> browser language -> timezone.
+function detectLanguage(){
+    const tgLang = tg?.initDataUnsafe?.user?.language_code || '';
+    const candidates = [tgLang, navigator.language || '', ...(navigator.languages||[])].filter(Boolean);
+    for(const c of candidates){const b=String(c).toLowerCase().split('-')[0]; if(LANGS[b]) return b;}
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if(/^Asia\/Dhaka$/.test(tz)) return 'bn';
+    if(/^Asia\/(Kolkata|Calcutta)$/.test(tz)) return 'hi';
+    if(/^Asia\/Kathmandu$/.test(tz)) return 'ne';
+    if(/^Asia\/(Shanghai|Chongqing|Harbin|Urumqi)$/.test(tz)) return 'zh';
+    if(/^Europe\/Moscow$/.test(tz)) return 'ru';
+    if(/^Asia\/(Riyadh|Kuwait|Qatar|Bahrain|Dubai|Muscat|Baghdad|Amman|Beirut|Damascus)$/.test(tz)) return 'ar';
+    return 'en';
+}
 
-            let res = await fetch(`${API_URL}/task/submit`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task_id: taskId, worker_id: user.id, worker_name: user.first_name, proof_text: proof })
-            });
-            let data = await res.json();
-            tg.showAlert(data.message);
-            if(data.success) loadTasks();
-        }
+// Keep preferred language on the server too.
+async function persistLanguage(code){
+    try{await fetch(`${BASE_API_URL}/language`,{method:'POST',headers:{...apiHeaders(),'Content-Type':'application/json'},body:JSON.stringify({language_code:code})});}catch(e){}
+}
+const _setLanguageOriginal = window.setLanguage;
+window.setLanguage = function(code){
+    if(code==='auto') currentLanguage=detectLanguage(); else currentLanguage=LANGS[code]?code:'en';
+    localStorage.setItem('P2P_LANGUAGE',code);
+    applyTranslations();
+    document.getElementById('language-select').value=code;
+    persistLanguage(currentLanguage);
+    toast(t('settings_saved'));
+};
 
-        function switchTab(tab) {
-            document.getElementById('tasks-section').classList.add('hidden');
-            document.getElementById('create-section').classList.add('hidden');
-            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tab + '-section').classList.remove('hidden');
-            event.target.classList.add('active');
-            if(tab === 'tasks') loadTasks();
-        }
+function showBannedScreen(){document.getElementById('banned-screen').classList.add('active');document.body.style.overflow='hidden';}
+function handleInitFailure(res,data){if(res.status===403||data?.banned||data?.detail==='ACCOUNT_BANNED'){showBannedScreen();return true}return false;}
 
-        // ইনিশিয়াল লোড
-        loadUser();
-        loadTasks();
-    </script>
+async function loadNotices(){
+    const box=document.getElementById('notice-area'); if(!box)return;
+    try{const res=await fetch(`${BASE_API_URL}/notices`,{headers:apiHeaders()});const data=await res.json();
+        const items=Array.isArray(data.items)?data.items:[]; box.innerHTML='';
+        items.slice(0,3).forEach(n=>{box.innerHTML+=`<div class="notice-card"><i class="fa-solid fa-bell"></i><div><strong>${esc(n.title||t('notice'))}</strong><p>${esc(n.body||'')}</p></div></div>`});
+    }catch(e){box.innerHTML='';}
+}
+
+function handleTaskTypeChange(){
+    const type=document.getElementById('create-type').value;
+    document.getElementById('verification-field').style.display=type==='telegram'?'block':'none';
+    autoFillVerificationFromLink();
+}
+function autoFillVerificationFromLink(){
+    if(document.getElementById('create-type').value!=='telegram')return;
+    const link=document.getElementById('create-link').value.trim();
+    if(!link)return;
+    try{const u=new URL(link);if((u.hostname==='t.me'||u.hostname==='telegram.me')&&u.pathname.split('/')[1]){const user='@'+u.pathname.split('/')[1].replace(/^@/,''); if(!document.getElementById('verification-chat').value)document.getElementById('verification-chat').value=user;}}catch(e){}
+}
+document.getElementById('create-link')?.addEventListener('input',autoFillVerificationFromLink);
+
+function openReportModal(userId,taskId){
+    reportTarget={userId:Number(userId)||0,taskId:Number(taskId)||null};
+    reportReason='reward';
+    document.querySelectorAll('.report-option').forEach((b,i)=>b.classList.toggle('active',i===0));
+    document.getElementById('report-details').value='';
+    document.getElementById('report-modal').classList.add('active'); haptic('medium');
+}
+function closeReportModal(){document.getElementById('report-modal').classList.remove('active')}
+function selectReportReason(btn){document.querySelectorAll('.report-option').forEach(b=>b.classList.remove('active'));btn.classList.add('active');reportReason=btn.dataset.code||'reward'}
+async function submitReport(){
+    if(!reportTarget.userId){return}
+    const details=document.getElementById('report-details').value.trim(); if(details.length<5){toast(t('report_details'));return}
+    const btn=document.getElementById('report-submit-btn');btn.disabled=true;
+    try{const res=await fetch(`${BASE_API_URL}/reports`,{method:'POST',headers:apiHeaders(),body:JSON.stringify({reported_user_id:reportTarget.userId,task_id:reportTarget.taskId,category:reportReason,details})});const data=await res.json();
+        if(data.ok){toast(t('report_sent'));closeReportModal();loadTasks();}else if(data.detail==='REPORT_ALREADY_SENT' || data.message==='REPORT_ALREADY_SENT'){toast(t('report_already'));}else{toast(data.message||t('proof_failed'))}
+    }catch(e){toast(t('server_error'))}finally{btn.disabled=false}
+}
+
+function setAdBackGuard(active){
+    if(active){
+        try{history.pushState({p2pAd:true},'',location.href);}catch(e){}
+        if(tg?.BackButton){tg.BackButton.show(); if(!window.__p2pBackHandler){window.__p2pBackHandler=()=>{if(adState.sessionId){try{history.pushState({p2pAd:true},'',location.href)}catch(e){};toast(t('ad_required'));}};tg.BackButton.onClick(window.__p2pBackHandler)}}
+    }else{
+        if(tg?.BackButton&&window.__p2pBackHandler){tg.BackButton.offClick(window.__p2pBackHandler);tg.BackButton.hide();window.__p2pBackHandler=null;}
+    }
+}
+window.addEventListener('popstate',()=>{if(adState.sessionId){try{history.pushState({p2pAd:true},'',location.href)}catch(e){}}});
+
+async function startRequiredAd(kind, pendingAction=null){
+    try{
+        const s=await fetch(`${BASE_API_URL}/ad/start?kind=${encodeURIComponent(kind)}`,{method:'POST',headers:apiHeaders()});
+        const d=await s.json(); if(d.ticket){adState={...adState,kind,sessionId:null,finished:true,pendingAction}; if(kind==='publish')unlockPublish(d.ticket);return d.ticket;}
+        if(!d.session_id){toast(t('ad_required'));return null}
+        adState={kind,sessionId:d.session_id,timer:null,finished:false,pendingAction,pendingProof:adState.pendingProof};
+        openAdModal();
+        const started=Date.now();
+        const seconds=Number(d.seconds)||10;
+        document.getElementById('ad-count').textContent=seconds;
+        adState.timer=setInterval(async()=>{
+            const left=Math.max(0,seconds-Math.floor((Date.now()-started)/1000));
+            document.getElementById('ad-count').textContent=left;
+            if(left<=0){clearInterval(adState.timer);await finishAdSession();}
+        },250);
+        return null;
+    }catch(e){toast(t('server_error'));return null}
+}
+function openAdModal(){document.getElementById('ad-frame').src=AD_NETWORK_URL;document.getElementById('ad-modal').classList.add('active');document.getElementById('ad-done-btn').classList.add('hidden');setAdBackGuard(true);haptic('medium')}
+async function finishAdSession(){if(adState.finished||!adState.sessionId)return;adState.finished=true;clearInterval(adState.timer);try{const res=await fetch(`${BASE_API_URL}/ad/finish?session_id=${encodeURIComponent(adState.sessionId)}`,{method:'POST',headers:apiHeaders()});const d=await res.json();if(!res.ok){adState.finished=false;toast(t('ad_required'));return}
+        const ticket=d.ticket;const kind=adState.kind;const pending=adState.pendingAction;document.getElementById('ad-modal').classList.remove('active');setAdBackGuard(false);
+        if(kind==='publish')unlockPublish(ticket);
+        else if(kind==='completion'&&pending==='submit'){const proof=adState.pendingProof;adState={kind:null,sessionId:null,timer:null,finished:false,pendingAction:null,pendingProof:null};await completeWithTicket(proof,ticket);return}
+        adState={kind:null,sessionId:null,timer:null,finished:false,pendingAction:null,pendingProof:null};
+    }catch(e){adState.finished=false;toast(t('server_error'));}}
+function finishAdEarlyUi(){finishAdSession()}
+function unlockPublish(ticket){window.publishAdTicket=ticket;document.getElementById('publish-task-btn').classList.remove('hidden');document.getElementById('publish-ad-gate').querySelector('#publish-gate-status').textContent=t('publish_unlocked');document.getElementById('watch-publish-ad-btn').classList.add('hidden');haptic('success')}
+
+async function ensureCompletionAdThenSubmit(proof){
+    const s=await fetch(`${BASE_API_URL}/ad/status?kind=completion`,{headers:apiHeaders()});const d=await s.json().catch(()=>({}));
+    if(d.ticket){return completeWithTicket(proof,d.ticket)}
+    if(d.required){adState.pendingProof=proof;await startRequiredAd('completion','submit');return}
+    return completeWithTicket(proof,null);
+}
+async function completeWithTicket(proof,adTicket){
+    const btn=document.getElementById('modal-submit-btn');btn.disabled=true;btn.innerHTML=`<i class="fa-solid fa-circle-notch fa-spin"></i> ${esc(t('submitting'))}`;
+    try{const res=await fetch(`${BASE_API_URL}/tasks/${currentActiveTaskId}/complete`,{method:'POST',headers:{...apiHeaders(),'Content-Type':'application/json'},body:JSON.stringify({proof_username:user.username||user.first_name||'Telegram User',proof_text:proof,ad_ticket:adTicket})});const data=await res.json();
+        if(res.status===409&&data.detail==='COMPLETION_AD_REQUIRED'){adState.pendingProof=proof;await startRequiredAd('completion','submit');return}
+        if(!res.ok){toast(localizeApiError(data.detail)||t('proof_failed'));return}
+        toast(t('proof_sent'));closeModal();loadTasks();loadUserData();loadActivity();
+        if(data.completion_ad_due){toast(t('auto_ad_soon'));setTimeout(()=>startRequiredAd('completion'),250)}
+    }catch(e){toast(t('proof_failed'))}finally{btn.disabled=false;btn.innerHTML=`<i class="fa-solid fa-check"></i> ${esc(t('submit_proof'))}`}
+}
+function localizeApiError(code){const map={NO_TOKEN:t('task_publish_failed'),BOT_MUST_BE_ADMIN:t('task_publish_failed'),TELEGRAM_CHAT_REQUIRED:t('task_publish_failed'),NOT_A_MEMBER:t('proof_failed'),MEMBERSHIP_CHECK_FAILED:t('proof_failed'),ALREADY_COMPLETED:t('proof_failed'),OWN_TASK:t('proof_failed'),TASK_FULL:t('proof_failed'),PUBLISH_AD_REQUIRED:t('ad_required'),SELF_REPORT:t('report_failed'),USER_NOT_FOUND:t('report_failed'),TASK_NOT_FOUND:t('report_failed')};return map[code]||''}
+
+const _confirmProofSubmissionOriginal = window.confirmProofSubmission;
+window.confirmProofSubmission = async function(){
+    const proofText=document.getElementById('modal-proof-text').value.trim();if(!proofText){toast(t('proof_required'));return}
+    await ensureCompletionAdThenSubmit(proofText);
+};
+
+const _submitNewTaskOriginal = window.submitNewTask;
+window.submitNewTask = async function(){
+    if(!window.publishAdTicket){toast(t('ad_required'));await startRequiredAd('publish');return}
+    const title=document.getElementById('create-title').value.trim();const link=document.getElementById('create-link').value.trim();const desc=document.getElementById('create-desc').value.trim();const slots=Math.max(1,parseInt(document.getElementById('create-slots').value)||1);const taskType=document.getElementById('create-type').value;const verification=document.getElementById('verification-chat').value.trim();
+    if(!title||!link){toast(t('task_title_link'));return}
+    try{const res=await fetch(`${BASE_API_URL}/tasks`,{method:'POST',headers:{...apiHeaders(),'Content-Type':'application/json'},body:JSON.stringify({title,description:desc,target_url:link,max_slots:slots,task_type:taskType,verification_chat:verification||null,ad_ticket:window.publishAdTicket})});const data=await res.json();
+        if(res.status===409&&data.detail==='PUBLISH_AD_REQUIRED'){window.publishAdTicket=null;unlockPublish(null);await startRequiredAd('publish');return}
+        if(!res.ok){toast(localizeApiError(data.detail)||t('task_publish_failed'));return}
+        window.publishAdTicket=null;document.getElementById('publish-task-btn').classList.add('hidden');document.getElementById('publish-ad-gate').querySelector('#watch-publish-ad-btn').classList.remove('hidden');document.getElementById('publish-gate-status').textContent=t('publish_locked');
+        document.getElementById('create-title').value='';document.getElementById('create-link').value='';document.getElementById('create-desc').value='';document.getElementById('create-slots').value='1';document.getElementById('create-type').value='general';document.getElementById('verification-chat').value='';handleTaskTypeChange();updateCostCalculation();toast(t('task_published'));loadUserData();switchTab('tasks',document.querySelector('.nav-item'));haptic('success');
+    }catch(e){toast(t('task_publish_failed'))}
+};
+
+const _loadTasksOriginal = window.loadTasks;
+window.loadTasks = async function(withSpin=false){
+    const container=document.getElementById('tasks-container');const refresh=document.getElementById('refresh-btn');if(withSpin){refresh.classList.add('spin');setTimeout(()=>refresh.classList.remove('spin'),650)}container.innerHTML=`<div class="skeleton" style="height:126px;margin-bottom:11px"></div><div class="skeleton" style="height:126px"></div>`;
+    try{const res=await fetch(`${BASE_API_URL}/tasks`,{headers:apiHeaders()});const data=await res.json();if(handleInitFailure(res,data))return;const items=Array.isArray(data.items)?data.items:[];
+        if(!items.length){container.innerHTML=`<div class="empty"><i class="fa-regular fa-face-smile"></i><p>${t('no_tasks')}</p></div>`;return}
+        container.innerHTML='';items.forEach((task,idx)=>{const card=document.createElement('article');card.className='task';card.innerHTML=`<div class="task-head"><div><div class="task-title">${esc(task.title||'')}</div><div class="task-owner">${esc(task.owner_name||'')}</div></div><span class="slots"><i class="fa-solid fa-users"></i> ${esc(task.remaining_slots??0)} ${esc(t('remaining'))}</span></div><div class="task-desc">${esc(task.description||t('no_extra'))}</div><div class="task-actions"><button class="action-btn" data-link="${esc(task.target_url||'')}" onclick="openDirectLink(this.dataset.link)"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${esc(t('go_link'))}</button><button class="action-btn primary" data-id="${Number(task.id)||0}" data-title="${esc(task.title||'')}" onclick="openProofModal(this.dataset.id,this.dataset.title)"><i class="fa-solid fa-circle-check"></i> ${esc(t('give_proof'))}</button><button class="report-link" onclick="openReportModal(${Number(task.owner_id)||0},${Number(task.id)||0})"><i class="fa-regular fa-flag"></i> ${esc(t('report'))}</button></div>`;card.style.animationDelay=`${idx*40}ms`;container.appendChild(card)})
+    }catch(e){container.innerHTML=`<div class="empty"><i class="fa-solid fa-plug-circle-xmark"></i><p>${t('server_error')}</p></div>`}
+};
+
+const _loadActivityOriginal = window.loadActivity;
+window.loadActivity = async function(){
+    const p=document.getElementById('my-proofs-container');const tbox=document.getElementById('my-tasks-container');p.innerHTML='<div class="skeleton" style="height:76px"></div>';tbox.innerHTML='<div class="skeleton" style="height:76px"></div>';
+    try{const [proofRes,tasksRes]=await Promise.all([fetch(`${BASE_API_URL}/my/completions`,{headers:apiHeaders()}),fetch(`${BASE_API_URL}/my/tasks`,{headers:apiHeaders()})]);const proofData=await proofRes.json();const myTaskData=await tasksRes.json();
+        p.innerHTML='';const submissions=Array.isArray(proofData.items)?proofData.items:[];
+        if(!submissions.length)p.innerHTML=`<div class="empty"><p>${t('no_submissions')}</p></div>`;else submissions.forEach(item=>{const cls='approved';p.innerHTML+=`<div class="activity-item"><div class="activity-row"><div class="activity-name">${esc(item.task_title||'')}</div><span class="status ${cls}">${esc(t('status_approved'))}</span></div><div class="proof">${esc(t('proof_label'))} ${esc(item.proof_text||'')}</div><button class="report-link" onclick="openReportModal(${Number(item.owner_id)||0},${Number(item.task_id)||0})"><i class="fa-regular fa-flag"></i> ${esc(t('report'))}</button></div>`});
+        tbox.innerHTML='';const myTasks=Array.isArray(myTaskData.items)?myTaskData.items:[];if(!myTasks.length)tbox.innerHTML=`<div class="empty"><p>${t('no_published')}</p></div>`;else myTasks.forEach(item=>{const left=item.remaining_slots??0;tbox.innerHTML+=`<div class="activity-item"><div class="activity-row"><div class="activity-name">${esc(item.title||'')}</div><span class="status approved">${esc(left)}/${esc(item.max_slots||0)} ${esc(t('remaining'))}</span></div></div>`})
+    }catch(e){p.innerHTML=`<div class="empty"><p>${t('activity_failed')}</p></div>`;tbox.innerHTML=`<div class="empty"><p>${t('activity_failed')}</p></div>`}
+};
+
+const _loadUserDataOriginal = window.loadUserData;
+window.loadUserData = async function(){
+    try{const initPayload={referrer_id:getReferralCode()||null,referral_sig:getReferralSignature()||null};const initRes=await fetch(`${BASE_API_URL}/init`,{method:'POST',headers:{...apiHeaders(),'Content-Type':'application/json'},body:JSON.stringify(initPayload)});const initData=await initRes.json().catch(()=>null);if(handleInitFailure(initRes,initData))return;if(initData?.success){animateValue('token-count',Number(document.getElementById('token-count').textContent)||0,user.tokens,500);applyReferralStats(initData);if(initData.language_code&&!localStorage.getItem('P2P_LANGUAGE')){currentLanguage=normalizeLanguageCode(initData.language_code);applyTranslations();}}}
+    catch(e){console.error(e)}
+};
+
+// Start-up refinements
+loadNotices();handleTaskTypeChange();
+
+loadConfig();loadUserData();loadReferralStats();loadTasks();
+</script>
 </body>
 </html>
