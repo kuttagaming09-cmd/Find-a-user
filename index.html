@@ -1,396 +1,179 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <title>PulseTap Studio Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0e1621" />
+  <title>Ads to Income BD — P2P Tasks</title>
   <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Separate hosting: define window.APP_CONFIG = {API_BASE_URL: "https://YOUR-BACKEND-DOMAIN"} before the app script below. -->
   <style>
-    :root{--bg:#07111f;--card:#0f1d31;--card2:#0b1728;--line:#1e3452;--cyan:#22d3ee;--green:#34d399;--yellow:#facc15}
+    :root{
+      --bg:#0e1621;--surface:#17212b;--surface2:#202b36;--text:#f3f5f7;--muted:#93a0ad;
+      --accent:#2aabee;--accent2:#168acd;--danger:#ff5c5c;--success:#33c46e;--border:#2b3946;
+      --shadow:0 12px 30px rgba(0,0,0,.22);--radius:18px;
+    }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -10%,#164e63 0,#07111f 42%,#050b14 100%);color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden}
-    body{user-select:none;touch-action:manipulation}
-    input{user-select:text}
-    button{touch-action:manipulation}
-    .app{min-height:100dvh;max-width:520px;margin:0 auto;padding:14px 14px 96px}
-    .glass{background:rgba(15,29,49,.82);border:1px solid rgba(102,126,162,.25);box-shadow:0 15px 40px rgba(0,0,0,.28);backdrop-filter:blur(14px)}
-    .coin-glow{filter:drop-shadow(0 0 18px rgba(34,211,238,.3))}
-    .tap-btn{width:min(72vw,280px);height:min(72vw,280px);border-radius:50%;background:radial-gradient(circle at 35% 25%,#67e8f9 0,#0891b2 24%,#155e75 54%,#0b1630 100%);border:5px solid #a5f3fc;box-shadow:0 0 0 10px rgba(34,211,238,.08),0 0 70px rgba(34,211,238,.28),inset 0 0 50px rgba(255,255,255,.12);transition:transform .08s}
-    .tap-btn:active{transform:scale(.965)}
-    .pulse-ring{animation:pulseRing 2s infinite}
-    @keyframes pulseRing{0%,100%{box-shadow:0 0 0 0 rgba(34,211,238,.2),0 0 70px rgba(34,211,238,.22)}50%{box-shadow:0 0 0 16px rgba(34,211,238,.03),0 0 90px rgba(34,211,238,.38)}}
-    .floating{position:fixed;z-index:90;pointer-events:none;font-weight:900;font-size:20px;color:#67e8f9;text-shadow:0 0 15px rgba(34,211,238,.7);animation:float .75s ease-out forwards}
-    @keyframes float{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-84px) scale(1.15)}}
-    .nav{position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(492px,calc(100vw - 20px));z-index:55}
-    .nav button{min-height:56px}
-    .modal{position:fixed;inset:0;z-index:70;background:rgba(2,8,23,.96);backdrop-filter:blur(18px);display:none;padding:16px;overflow:auto}
-    .modal.show{display:flex}
-    .sheet{width:min(100%,500px);margin:auto}
-    .ad-overlay{position:fixed;inset:0;z-index:120;background:#020817;display:none;flex-direction:column}
-    .ad-overlay.show{display:flex}
-    .ad-frame{width:100%;flex:1;border:0;background:#06101e}
-    .ad-top{padding:12px 14px;background:#0b1730;border-bottom:1px solid #1e3452;display:flex;align-items:center;justify-content:space-between}
-    .ad-bottom{padding:14px;background:#0b1730;border-top:1px solid #1e3452}
-    .hidden2{display:none!important}
-    .status-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-    .status-on{background:#34d399;box-shadow:0 0 12px #34d399}
-    .status-off{background:#fb7185;box-shadow:0 0 12px #fb7185}
-    .tiny-scroll{max-height:55vh;overflow:auto}
-    .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#22d3ee,#2563eb);display:grid;place-items:center;box-shadow:0 8px 28px rgba(34,211,238,.25)}
-    .energy-bar{height:8px;background:#081321;border-radius:999px;overflow:hidden;border:1px solid #1f3550}.energy-fill{height:100%;background:linear-gradient(90deg,#22d3ee,#60a5fa);transition:width .2s}
+    html,body{margin:0;padding:0;min-height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+    button,input,textarea{font:inherit}
+    button{border:0;cursor:pointer}
+    .wrap{max-width:900px;margin:0 auto;padding:14px 14px 28px}
+    .topbar{position:sticky;top:0;z-index:10;padding:8px 0 12px;background:linear-gradient(var(--bg) 78%,transparent);backdrop-filter:blur(8px)}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.2px}.brand small{color:var(--muted)}
+    .user-chip{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--border);max-width:55%}
+    .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-weight:800;color:white;flex:0 0 30px}
+    .user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+    .balance{margin-top:14px;display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .balance-card{padding:17px}.eyebrow{font-size:12px;color:var(--muted)}.tokens{font-size:34px;font-weight:900;margin:2px 0}.hint{font-size:12px;color:var(--muted);line-height:1.45}
+    .quick{display:flex;flex-direction:column;gap:9px;padding:13px}.btn{min-height:44px;padding:0 14px;border-radius:13px;background:var(--surface2);color:var(--text);font-weight:750;border:1px solid var(--border)}
+    .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{background:transparent;color:var(--danger);border-color:rgba(255,92,92,.35)}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .searchrow{display:flex;gap:9px;margin:14px 0}.search{flex:1;min-height:45px;padding:0 13px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:none}.search:focus{border-color:var(--accent)}
+    .tabs{display:flex;gap:7px;overflow:auto;padding-bottom:2px}.tab{padding:9px 13px;border-radius:999px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-weight:700;white-space:nowrap}.tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
+    .section-title{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}.section-title h2{font-size:16px;margin:0}.section-title span{font-size:12px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:620px){.grid{grid-template-columns:1fr}.balance{grid-template-columns:1fr}.quick{display:grid;grid-template-columns:1fr 1fr}}
+    .task{padding:14px;min-height:205px;display:flex;flex-direction:column}.task h3{margin:8px 0 6px;font-size:16px;line-height:1.25}.task p{margin:0;color:#c7d0d8;font-size:13px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:12px}.pill{font-size:11px;border-radius:999px;padding:6px 8px;background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.pill.accent{color:#dff5ff;border-color:rgba(42,171,238,.35)}
+    .task-actions{display:flex;gap:8px;margin-top:10px}.task-actions .btn{flex:1;min-height:40px;font-size:13px}
+    .empty{text-align:center;padding:35px 16px;color:var(--muted);border:1px dashed var(--border);border-radius:var(--radius)}
+    .overlay{position:fixed;inset:0;display:none;z-index:30;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);align-items:flex-end;justify-content:center}.overlay.show{display:flex}
+    .sheet{width:min(900px,100%);max-height:92vh;overflow:auto;background:var(--bg);border:1px solid var(--border);border-bottom:0;border-radius:22px 22px 0 0;padding:15px}.handle{width:44px;height:4px;background:var(--border);border-radius:9px;margin:0 auto 14px}.sheet h2{margin:0 0 5px;font-size:20px}.sheet .sub{color:var(--muted);font-size:12px;margin-bottom:16px}
+    .field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:750;margin-bottom:6px;color:#cbd4db}.field input,.field textarea,.field select{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:13px;padding:11px 12px;outline:none}.field textarea{min-height:105px;resize:vertical}.field input:focus,.field textarea:focus{border-color:var(--accent)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}@media(max-width:440px){.row2{grid-template-columns:1fr}}
+    .actions{display:flex;gap:8px;margin-top:15px}.actions .btn{flex:1}
+    .detail{padding:4px 0 18px}.detail h2{font-size:23px;line-height:1.2}.detail p{white-space:pre-wrap;color:#d4dbe0;line-height:1.55;font-size:14px}.urlbox{padding:11px;border:1px solid var(--border);background:var(--surface);border-radius:13px;font-size:12px;word-break:break-all;color:#b8e7fb;margin:10px 0}
+    .slotbar{height:9px;background:var(--surface2);border-radius:999px;overflow:hidden;margin-top:9px}.slotfill{height:100%;background:var(--accent);width:0;transition:width .25s ease}
+    .notice{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:60;padding:12px 14px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);box-shadow:var(--shadow);display:none;font-size:13px}.notice.show{display:block}.notice.ok{border-color:rgba(51,196,110,.4)}.notice.err{border-color:rgba(255,92,92,.4)}
+    .loader{text-align:center;color:var(--muted);padding:32px}.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}
+    .locked{padding:45px 18px;text-align:center}.locked h2{margin-bottom:8px}.locked p{color:var(--muted);line-height:1.55;font-size:14px}
   </style>
 </head>
 <body>
-<div id="app" class="app">
-  <header class="glass rounded-3xl p-4 flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="brand-mark" aria-label="PulseTap logo">
-        <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
-          <circle cx="32" cy="32" r="23" fill="none" stroke="white" stroke-width="5" opacity=".95"/>
-          <path d="M24 33h7l4-12 6 18h-7l-3 10-7-16z" fill="white"/>
-        </svg>
-      </div>
-      <div class="min-w-0">
-        <div id="name" class="font-black text-base truncate">Gamer</div>
-        <div class="text-xs text-slate-400 flex items-center gap-2 mt-1"><span id="netDot" class="status-dot status-off"></span><span id="netText">Checking connection...</span></div>
-      </div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div><h1>Ads to Income BD</h1><small>P2P Referral Tasks</small></div>
+      <div class="user-chip" id="userChip" style="display:none"><div class="avatar" id="avatar">U</div><span id="userName">User</span></div>
     </div>
-    <button id="dailyBtn" class="bg-gradient-to-r from-emerald-500 to-green-700 rounded-2xl px-3 py-2 text-xs font-black"><i class="fa-solid fa-calendar-check mr-1"></i>Daily</button>
-  </header>
+  </div>
 
-  <section class="text-center mt-5">
-    <div class="text-xs text-slate-400">YOUR COINS</div>
-    <div id="coins" class="text-5xl font-black tracking-tight coin-glow mt-1">0</div>
-    <div class="flex justify-center gap-2 mt-2 flex-wrap">
-      <span class="px-3 py-1 rounded-full text-xs border border-cyan-900 bg-cyan-950/40 text-cyan-300">Level <b id="level">1</b></span>
-      <span class="px-3 py-1 rounded-full text-xs border border-slate-700 bg-slate-900/60 text-slate-200">Total taps <b id="taps">0</b></span>
-      <span id="fastBadge" class="hidden2 px-3 py-1 rounded-full text-xs border border-yellow-600/50 bg-yellow-950/30 text-yellow-300"><i class="fa-solid fa-bolt mr-1"></i>4x ACTIVE</span>
+  <div id="locked" class="card locked" style="display:none"><h2>Telegram-এর ভিতর থেকে খুলুন</h2><p>এই Mini App নিরাপদ Telegram login ব্যবহার করে। Telegram bot থেকে Mini App খুললেই আপনার balance ও tasks দেখা যাবে।</p></div>
+
+  <main id="app" style="display:none">
+    <div class="balance">
+      <div class="card balance-card"><div class="eyebrow">Available posting tokens</div><div class="tokens" id="tokens">0</div><div class="hint">১টি token = ১টি নতুন task publish করার অনুমতি। অন্যের task সফলভাবে complete করলে ১ token পাবেন।</div></div>
+      <div class="card quick"><button class="btn primary" id="newTaskBtn">+ Publish Task</button><button class="btn" id="refreshBtn">↻ Refresh</button></div>
     </div>
-    <div class="text-xs text-slate-400 mt-4">Tap energy <b id="tapEnergy">1,000</b> / <span id="tapEnergyBase">1,000</span></div>
-    <div class="energy-bar mt-2"><div id="energyFill" class="energy-fill" style="width:100%"></div></div>
-    <div class="text-[11px] text-slate-500 mt-2">Resets in <span id="energyReset">60:00</span> • Ads add <span id="adRewardTxt">100</span> energy • Ad cooldown <span id="adCooldownTxt">5:00</span></div>
-    <div class="text-xs text-slate-500 mt-3">1,000,000 Coins = 1 USDT • Withdraw fee: <span id="feeTxt">15%</span></div>
-  </section>
 
-  <section class="mt-7 flex flex-col items-center">
-    <div class="text-center mb-3">
-      <div class="text-xs text-slate-400">AUTO AD</div>
-      <div id="adTimer" class="text-lg font-black text-cyan-300">—</div>
-    </div>
-    <button id="tapBtn" class="tap-btn pulse-ring flex flex-col items-center justify-center">
-      <i class="fa-solid fa-fingerprint text-6xl text-cyan-50"></i>
-      <span class="mt-3 text-xs tracking-[.35em] font-black text-cyan-50">TAP NOW</span>
-      <span id="tapPower" class="mt-2 text-[11px] text-cyan-200">+1 / tap</span>
-    </button>
-    <div id="offlineBanner" class="hidden2 mt-4 w-full text-center bg-rose-950/70 border border-rose-700/40 rounded-2xl p-3 text-sm"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Internet connection lost. Tap sync is paused.</div>
-  </section>
+    <div class="searchrow"><input id="search" class="search" placeholder="Task title বা description খুঁজুন…" autocomplete="off"/></div>
+    <div class="tabs" id="tabs"><button class="tab active" data-tab="all">All</button><button class="tab" data-tab="available">Available</button><button class="tab" data-tab="mine">My Tasks</button><button class="tab" data-tab="completed">Completed</button></div>
 
-  <section class="grid grid-cols-2 gap-3 mt-7">
-    <button id="referBtn" class="glass rounded-2xl p-4 text-left"><div class="text-2xl text-cyan-300"><i class="fa-solid fa-user-group"></i></div><div class="font-black mt-2">Refer and Earn</div><div class="text-xs text-slate-400 mt-1">+20k / referral</div></button>
-    <button id="fastBtn" class="glass rounded-2xl p-4 text-left"><div class="text-2xl text-yellow-300"><i class="fa-solid fa-bolt"></i></div><div class="font-black mt-2">4x Fast Tap</div><div class="text-xs text-slate-400 mt-1">1 USDT</div></button>
-  </section>
+    <div class="section-title"><h2 id="sectionTitle">Available tasks</h2><span id="count">0</span></div>
+    <div id="taskList" class="grid"></div>
+  </main>
 </div>
 
-<nav class="nav glass rounded-3xl p-2 grid grid-cols-5 gap-1">
-  <button data-tab="home" class="rounded-2xl text-cyan-300 flex flex-col items-center justify-center"><i class="fa-solid fa-bolt"></i><span class="text-[10px] mt-1">Mine</span></button>
-  <button data-tab="tasks" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-list-check"></i><span class="text-[10px] mt-1">Tasks</span></button>
-  <button data-tab="ref" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-user-group"></i><span class="text-[10px] mt-1">Refer</span></button>
-  <button data-tab="wallet" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-wallet"></i><span class="text-[10px] mt-1">Wallet</span></button>
-  <button data-tab="more" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-ellipsis"></i><span class="text-[10px] mt-1">More</span></button>
-</nav>
+<div class="overlay" id="taskOverlay"><div class="sheet"><div class="handle"></div><div id="taskDetail"></div></div></div>
+<div class="overlay" id="createOverlay"><div class="sheet"><div class="handle"></div><h2>Publish a referral task</h2><div class="sub">১ token কেটে ১টি task publish হবে। Slots যত দেবেন, ততজন আলাদা user task complete করতে পারবে।</div>
+  <div class="field"><label>Title *</label><input id="fTitle" maxlength="100" placeholder="যেমন: Join my Telegram channel"/></div>
+  <div class="field"><label>Description *</label><textarea id="fDesc" maxlength="1500" placeholder="কী করতে হবে, কীভাবে proof দিতে হবে—স্পষ্টভাবে লিখুন।"></textarea></div>
+  <div class="field"><label>Direct task link *</label><input id="fUrl" maxlength="1000" placeholder="https://t.me/..." inputmode="url"/></div>
+  <div class="row2"><div class="field"><label>Maximum slots *</label><input id="fSlots" type="number" min="1" max="1000" value="1"/></div><div class="field"><label>Verification chat (optional)</label><input id="fVerifyChat" maxlength="120" placeholder="@mychannel"/></div></div>
+  <div class="hint">Verification chat দিলে backend user-এর Telegram membership check করার চেষ্টা করবে। Bot-কে target chat-এর administrator করতে হতে পারে। না দিলে proof-based completion হবে।</div>
+  <div class="actions"><button class="btn" id="cancelCreate">Cancel</button><button class="btn primary" id="publishBtn">Publish</button></div>
+</div></div>
 
-<!-- generic modal -->
-<div id="modal" class="modal">
-  <div class="sheet glass rounded-3xl p-5">
-    <div class="flex items-center justify-between mb-4"><h2 id="modalTitle" class="text-2xl font-black"></h2><button id="modalClose" class="w-10 h-10 rounded-2xl bg-slate-800">✕</button></div>
-    <div id="modalBody"></div>
-  </div>
-</div>
+<div class="overlay" id="completeOverlay"><div class="sheet"><div class="handle"></div><h2>Submit proof</h2><div class="sub" id="completeSub">Task complete করার পর proof দিন।</div>
+  <div class="field"><label>আপনার Telegram username / identity *</label><input id="pUsername" maxlength="100" placeholder="@yourusername"/></div>
+  <div class="field"><label>Proof note *</label><textarea id="pProof" maxlength="1000" placeholder="যেমন: আমি channel-এ join করেছি। অথবা অন্য কোনো প্রাসঙ্গিক proof তথ্য।"></textarea></div>
+  <div class="actions"><button class="btn" id="cancelComplete">Cancel</button><button class="btn primary" id="submitComplete">Submit & Earn 1 Token</button></div>
+</div></div>
 
-<!-- 20 second in-app ad screen -->
-<div id="adOverlay" class="ad-overlay">
-  <div class="ad-top">
-    <div><div class="font-black">Reward Advertisement</div><div class="text-[11px] text-slate-400">Complete the timer to receive tap energy</div></div>
-    <div id="adCount" class="text-xl font-black text-cyan-300">20s</div>
-  </div>
-  <iframe id="adFrame" class="ad-frame" sandbox="allow-scripts allow-forms allow-popups allow-same-origin"></iframe>
-  <div class="ad-bottom">
-    <button id="openAdBtn" class="w-full py-3 rounded-2xl bg-cyan-700/40 border border-cyan-500/30 text-cyan-100 text-sm font-bold mb-2 hidden2">Ad unavailable in frame</button>
-    <button id="adBackBtn" class="w-full py-3 rounded-2xl bg-slate-700 text-white text-sm font-black opacity-50" disabled>Back</button>
-  </div>
-</div>
-
+<div class="notice" id="notice"></div>
 <script>
 (() => {
   const tg = window.Telegram?.WebApp;
-  if (tg) { tg.ready(); tg.expand(); }
-
-  const API_BASE = ""; // same-origin by default. For GitHub Pages, set this to your HTTPS API server.
-  const state = {
-    initData: tg?.initData || "",
-    user: null, config: null, tasks: [], withdrawals: [], pendingTapDelta: 0,
-    syncing: false, online: navigator.onLine, adEnd: 0, adTimer: null, adSessionId: null, adCountdown: null, audioCtx: null,
-  };
-
+  const API = (window.APP_CONFIG?.API_BASE_URL || window.location.origin).replace(/\/$/, '');
+  const state = {user:null, tasks:[], mine:[], completed:[], tab:'all', selected:null, completionTask:null};
   const $ = id => document.getElementById(id);
-  const fmt = n => Number(n||0).toLocaleString('en-US');
-  const show = (id,v=true)=>$(id).classList.toggle('hidden2',!v);
 
-  function nativeAlert(msg){
-    if (tg?.showAlert) tg.showAlert(msg); else alert(msg);
+  if (tg) { tg.ready(); tg.expand(); }
+  const initData = tg?.initData || '';
+  if (!initData) { $('locked').style.display='block'; return; }
+
+  function notice(msg, type='ok') { const n=$('notice'); n.textContent=msg; n.className='notice show '+(type==='err'?'err':'ok'); clearTimeout(window.__nt); window.__nt=setTimeout(()=>n.className='notice',3500); }
+  function esc(s){return String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+  function api(path, opts={}) { opts.headers={...(opts.headers||{}),'X-Telegram-Init-Data':initData}; return fetch(API+path,opts).then(async r=>{let d={};try{d=await r.json()}catch{} if(!r.ok) throw new Error(d.detail||'Request failed'); return d;}); }
+
+  async function boot(){
+    try {
+      state.user = await api('/api/me');
+      $('app').style.display='block'; $('userChip').style.display='flex';
+      const display = state.user.username ? '@'+state.user.username : state.user.first_name || 'User';
+      $('userName').textContent=display; $('avatar').textContent=(state.user.first_name||'U').slice(0,1).toUpperCase(); $('tokens').textContent=state.user.tokens;
+      await loadAll();
+      const start = tg?.initDataUnsafe?.start_param || new URLSearchParams(location.search).get('task');
+      if (start) { const id = Number(String(start).replace(/^task[_-]/,'')); if(Number.isInteger(id) && id>0) openTask(id); }
+    } catch(e) { notice(e.message,'err'); $('locked').style.display='block'; }
   }
 
-  function setConnection(ok){
-    state.online = ok;
-    $('netDot').className = 'status-dot ' + (ok ? 'status-on' : 'status-off');
-    $('netText').textContent = ok ? 'Online • synced' : 'Offline • sync paused';
-    show('offlineBanner', !ok);
-    if (tg?.HapticFeedback && ok) tg.HapticFeedback.impactOccurred('light');
+  async function loadAll(){
+    $('taskList').innerHTML='<div class="loader" style="grid-column:1/-1"><div class="spinner"></div>Loading…</div>';
+    const [a,b,c] = await Promise.all([api('/api/tasks'),api('/api/my/tasks'),api('/api/my/completions')]);
+    state.tasks=a.items; state.mine=b.items; state.completed=c.items; render();
   }
 
-  function updateUI(){
-    if(!state.user || !state.config) return;
-    $('name').textContent = state.user.name || 'Gamer';
-    $('coins').textContent = fmt(state.user.coins);
-    $('taps').textContent = fmt(state.user.taps);
-    $('level').textContent = state.user.level;
-    $('feeTxt').textContent = `${state.config.withdrawFeePercent}%`;
-    $('tapEnergy').textContent = fmt(state.user.tapEnergy);
-    $('tapEnergyBase').textContent = fmt(state.config.tapEnergyBase);
-    $('adRewardTxt').textContent = fmt(state.config.adEnergyReward);
-    $('adCooldownTxt').textContent = formatSec(state.config.adCooldownSeconds);
-    const pct = state.config.tapEnergyBase > 0 ? Math.max(0, Math.min(100, (state.user.tapEnergy / state.config.tapEnergyBase) * 100)) : 0;
-    $('energyFill').style.width = pct + '%';
-    const resetLeft = Math.max(0, Number(state.user.tapEnergyResetAt || 0) - Math.floor(Date.now()/1000));
-    $('energyReset').textContent = formatSec(resetLeft);
-    const multiplier = state.user.fastTapRemaining > 0 ? state.config.fastTapMultiplier : 1;
-    $('tapPower').textContent = `+${multiplier} / tap`;
-    show('fastBadge', multiplier > 1);
+  function visible(){
+    let arr=[];
+    if(state.tab==='mine') arr=state.mine;
+    else if(state.tab==='completed') arr=state.completed.map(x=>x.task);
+    else arr=state.tasks;
+    const q=$('search').value.trim().toLowerCase();
+    if(q) arr=arr.filter(t=>(t.title+' '+t.description).toLowerCase().includes(q));
+    if(state.tab==='available') arr=arr.filter(t=>t.remaining_slots>0 && t.owner_id!==state.user.id);
+    return arr;
   }
 
-  function formatSec(sec){
-    sec = Math.max(0, Math.floor(Number(sec)||0));
-    const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
-    return h>0 ? `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  function taskCard(t){
+    const pct=t.max_slots ? Math.round((t.completed_count/t.max_slots)*100) : 0;
+    const mine=t.owner_id===state.user.id;
+    const done=state.completed.some(c=>c.task?.id===t.id);
+    return `<div class="card task"><div class="eyebrow">#${t.id} · ${esc(t.status)}</div><h3>${esc(t.title)}</h3><p>${esc(t.description)}</p><div class="slotbar"><div class="slotfill" style="width:${Math.min(100,pct)}%"></div></div><div class="meta"><span class="pill accent">${t.remaining_slots}/${t.max_slots} slots left</span><span class="pill">${mine?'Your task':done?'Completed':'Earn 1 token'}</span></div><div class="task-actions"><button class="btn" onclick="window.openTask(${t.id})">View</button>${(!mine&&!done&&t.remaining_slots>0)?`<button class="btn primary" onclick="window.startComplete(${t.id})">Complete</button>`:''}</div></div>`;
   }
 
-  function playTone(freq=520,duration=.055,type='sine',gain=.035){
-    try{
-      const C=window.AudioContext||window.webkitAudioContext;
-      if(!C) return;
-      if(!state.audioCtx) state.audioCtx=new C();
-      if(state.audioCtx.state==='suspended') state.audioCtx.resume();
-      const o=state.audioCtx.createOscillator(), g=state.audioCtx.createGain();
-      o.type=type; o.frequency.value=freq; g.gain.setValueAtTime(gain,state.audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001,state.audioCtx.currentTime+duration);
-      o.connect(g);g.connect(state.audioCtx.destination);o.start();o.stop(state.audioCtx.currentTime+duration);
-    }catch{}
+  function render(){
+    $('tokens').textContent=state.user.tokens;
+    const arr=visible(); $('count').textContent=arr.length;
+    $('sectionTitle').textContent=state.tab==='mine'?'My published tasks':state.tab==='completed'?'My completed tasks':state.tab==='available'?'Available now':'All available tasks';
+    $('taskList').innerHTML=arr.length?arr.map(taskCard).join(''):'<div class="empty" style="grid-column:1/-1">কোনো task পাওয়া যায়নি।</div>';
   }
 
-  function successSound(){ playTone(660,.07,'sine',.035); setTimeout(()=>playTone(880,.10,'sine',.03),70); }
+  window.openTask = async (id) => { try { const t=await api('/api/tasks/'+id); state.selected=t; const pct=t.max_slots?Math.round(t.completed_count/t.max_slots*100):0; const mine=t.owner_id===state.user.id; const done=state.completed.some(c=>c.task?.id===t.id); const share=t.share_url; $('taskDetail').innerHTML=`<div class="detail"><div class="eyebrow">Task #${t.id} · ${esc(t.status)}</div><h2>${esc(t.title)}</h2><p>${esc(t.description)}</p><div class="urlbox">${esc(t.target_url)}</div><div class="meta"><span class="pill accent">${t.remaining_slots}/${t.max_slots} slots left</span><span class="pill">${t.completed_count} completed</span></div><div class="slotbar"><div class="slotfill" style="width:${Math.min(100,pct)}%"></div></div><div class="actions"><button class="btn" onclick="window.visitTarget(${t.id})">Open direct link</button>${(!mine&&!done&&t.remaining_slots>0)?`<button class="btn primary" onclick="window.startComplete(${t.id})">I completed it</button>`:''}<button class="btn" onclick="window.copyShare(${JSON.stringify(share)})">Share task</button></div></div>`; show('taskOverlay'); } catch(e){notice(e.message,'err')} };
 
+  window.visitTarget = async id => { try { const t=await api('/api/tasks/'+id); if(t.target_url.startsWith('https://t.me/')) tg?.openTelegramLink ? tg.openTelegramLink(t.target_url) : window.open(t.target_url,'_blank'); else window.open(t.target_url,'_blank'); }catch(e){notice(e.message,'err')} };
+  window.copyShare = async url => { try{await navigator.clipboard.writeText(url);notice('Task share link copied.')}catch{notice(url)} };
 
-  async function api(path, body={}){
-    const res = await fetch(API_BASE + path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:state.initData,...body})});
-    let data={}; try{data=await res.json()}catch{}
-    if(!res.ok && !data.error) data.error=`HTTP ${res.status}`;
-    return data;
+  window.startComplete = id => { const t=state.tasks.find(x=>x.id===id)||state.mine.find(x=>x.id===id)||state.selected; if(!t)return; state.completionTask=t; $('completeSub').textContent=`“${t.title}” complete করার পর submitted proof যাচাই হবে। সফল হলে ১ token পাবেন।`; $('pUsername').value=state.user.username?'@'+state.user.username:''; $('pProof').value=''; show('completeOverlay'); };
+
+  async function publish(){
+    const title=$('fTitle').value.trim(), description=$('fDesc').value.trim(), target_url=$('fUrl').value.trim(), max_slots=Number($('fSlots').value), verification_chat=$('fVerifyChat').value.trim()||null;
+    if(!title||!description||!target_url||!Number.isInteger(max_slots)||max_slots<1){notice('সব required field সঠিকভাবে দিন।','err');return}
+    $('publishBtn').disabled=true;
+    try{ const r=await api('/api/tasks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,description,target_url,max_slots,verification_chat})}); notice(`Task #${r.task.id} published.`); hide('createOverlay'); ['fTitle','fDesc','fUrl','fVerifyChat'].forEach(id=>$(id).value=''); $('fSlots').value='1'; await loadAll(); }catch(e){notice(e.message,'err')}finally{$('publishBtn').disabled=false}
   }
 
-  async function bootstrap(){
-    if(!state.initData){
-      nativeAlert('এই Mini App অবশ্যই Telegram bot-এর Web App button থেকে খুলুন।');
-      return;
-    }
-    try{
-      const data = await api('/api/bootstrap');
-      if(!data.ok) throw new Error(data.error||'Authentication failed');
-      state.user=data.user; state.config=data.config; state.tasks=data.tasks||[]; state.withdrawals=data.withdrawals||[];
-      updateUI(); setConnection(true); startAdClock();
-      if(tg?.BackButton) tg.BackButton.hide();
-    }catch(e){
-      setConnection(false);
-      nativeAlert(e.message||'Server connection failed.');
-    }
+  async function complete(){
+    const t=state.completionTask;if(!t)return; const proof_username=$('pUsername').value.trim(),proof_text=$('pProof').value.trim(); if(!proof_username||!proof_text){notice('Username ও proof note দিন।','err');return}
+    $('submitComplete').disabled=true;
+    try{ const r=await api(`/api/tasks/${t.id}/complete`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({proof_username,proof_text})}); notice(r.message); hide('completeOverlay'); hide('taskOverlay'); await loadAll(); }catch(e){notice(e.message,'err')}finally{$('submitComplete').disabled=false}
   }
 
-  async function syncNow(force=false){
-    if(state.syncing || !state.online || !state.user) return;
-    if(!force && state.pendingTapDelta<=0) return;
-    state.syncing=true;
-    const delta=state.pendingTapDelta;
-    state.pendingTapDelta=0;
-    try{
-      const data=await api('/api/sync',{tapDelta:delta});
-      if(!data.ok) throw new Error(data.error||'Sync failed');
-      state.user=data.user; updateUI();
-      setConnection(true);
-    }catch(e){
-      state.pendingTapDelta += delta;
-      setConnection(false);
-    }finally{state.syncing=false}
-  }
-
-  async function heartbeat(){
-    if(!state.online || !state.user) return;
-    try{ const d=await api('/api/heartbeat'); if(!d.ok) throw new Error(); setConnection(true); }
-    catch{ setConnection(false); }
-  }
-
-  function floatCoin(x,y,count){
-    const el=document.createElement('div'); el.className='floating'; el.textContent=`+${count}`; el.style.left=(x-8)+'px'; el.style.top=(y-14)+'px'; document.body.appendChild(el); setTimeout(()=>el.remove(),750);
-  }
-
-  let activePointers=new Set();
-  let lastTapUi=0;
-  $('tapBtn').addEventListener('pointerdown', (e)=>{
-    if(!state.user || !state.config || !state.online) return;
-    if(state.user.tapEnergy<=0){ playTone(220,.07,'square',.025); return nativeAlert('Hourly tap energy is empty. Watch a reward ad or wait for the next reset.'); }
-    if(activePointers.size >= (state.user.fastTapRemaining>0 ? 4 : 2)) return;
-    const now=performance.now();
-    if(now-lastTapUi<18) return;
-    lastTapUi=now;
-    activePointers.add(e.pointerId);
-    const multiplier = state.user.fastTapRemaining>0 ? state.config.fastTapMultiplier : 1;
-    state.pendingTapDelta += 1;
-    state.user.taps += 1;
-    state.user.tapEnergy = Math.max(0, state.user.tapEnergy - 1);
-    state.user.coins += multiplier;
-    state.user.level = Math.min(100,1+Math.floor(state.user.taps/1000));
-    updateUI(); floatCoin(e.clientX,e.clientY,multiplier);
-    playTone(430 + Math.min(260,e.pressure*120),.045,'triangle',.028);
-    if(tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-  });
-  ['pointerup','pointercancel','pointerleave'].forEach(ev=>$('tapBtn').addEventListener(ev,e=>activePointers.delete(e.pointerId)));
-
-
-  setInterval(()=>syncNow(false), 1800);
-  setInterval(()=>heartbeat(), 2200);
-  window.addEventListener('online',()=>{setConnection(true);syncNow(true);});
-  window.addEventListener('offline',()=>{setConnection(false); nativeAlert('Network connection lost. Tap sync has been paused.');});
-  document.addEventListener('visibilitychange',()=>{ if(document.hidden) syncNow(true); else { heartbeat(); bootstrap(); }});
-
-  async function claimDaily(){
-    const d=await api('/api/daily-claim');
-    if(!d.ok) return nativeAlert(d.error||'Daily unavailable');
-    state.user=d.user; updateUI(); nativeAlert(d.message); successSound(); if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
-  }
-  $('dailyBtn').onclick=claimDaily;
-
-  function openModal(title, html){$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('modal').classList.add('show'); if(tg?.BackButton)tg.BackButton.show();}
-  function closeModal(){ $('modal').classList.remove('show'); if(tg?.BackButton)tg.BackButton.hide(); }
-  $('modalClose').onclick=closeModal;
-  if(tg?.BackButton) tg.BackButton.onClick(()=>{ if($('modal').classList.contains('show'))closeModal(); else if($('adOverlay').classList.contains('show'))closeAd(); });
-
-  function tasksView(){
-    const rows=state.tasks.map(t=>`<div class="bg-slate-950/60 rounded-2xl p-4 border border-slate-800 mb-3"><div class="font-black">${esc(t.title)}</div><div class="text-xs text-yellow-300 mt-1">+${fmt(t.reward)} Coins</div><div class="flex gap-2 mt-3"><button class="open-task flex-1 bg-blue-700 rounded-xl py-2 text-xs font-black" data-link="${escAttr(t.link)}">Open</button><button class="claim-task flex-1 bg-emerald-700 rounded-xl py-2 text-xs font-black" data-id="${t.id}" ${t.claimed?'disabled':''}>${t.claimed?'Claimed':'Claim'}</button></div></div>`).join('');
-    openModal('Tasks',rows||'<div class="text-slate-400">No active tasks.</div>');
-    document.querySelectorAll('.open-task').forEach(b=>b.onclick=()=>{const link=b.dataset.link; if(tg?.openLink)tg.openLink(link);else window.open(link,'_blank')});
-    document.querySelectorAll('.claim-task').forEach(b=>b.onclick=async()=>{const d=await api('/api/task-claim',{taskId:b.dataset.id}); nativeAlert(d.message||d.error); if(d.ok){state.user=d.user;b.disabled=true;b.textContent='Claimed';updateUI();}});
-  }
-
-  function referralView(){
-    const botLink = state.config.botUsername ? `https://t.me/${state.config.botUsername}?start=ref_${state.user.userId}` : `https://t.me/YourBotUsername?start=ref_${state.user.userId}`;
-    const left=state.config.referralsLeft;
-    openModal('Refer and Earn',`<div class="rounded-2xl bg-cyan-950/20 border border-cyan-900 p-4"><div class="font-black text-cyan-200 text-lg">+${fmt(state.config.referrerReward)} Coins per successful referral</div><div class="text-xs text-slate-300 mt-2">New user receives +${fmt(state.config.referredReward)} Coins.</div><div class="text-xs text-yellow-300 mt-2">Both rewards unlock only after the referred user completes ${fmt(state.config.refUnlockTaps)} taps.</div></div><div class="mt-4 rounded-2xl bg-slate-950 p-4"><div class="text-xs text-slate-400">Successful referrals</div><div class="text-3xl font-black mt-1">${state.user.successfulReferrals} / ${state.config.maxReferrals}</div><div class="text-xs text-slate-500 mt-1">Remaining slots: ${left}</div></div>${left>0?`<button id="shareRef" class="w-full mt-4 bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl py-3 font-black"><i class="fa-solid fa-share-nodes mr-1"></i>Share Referral Link</button><div class="text-[11px] text-slate-500 mt-2 break-all">${esc(botLink)}</div>`:`<div class="mt-4 rounded-2xl border border-rose-800/40 bg-rose-950/20 p-4 text-rose-200 text-sm font-bold">You have reached the ${state.config.maxReferrals}-referral limit.</div>`}`);
-    const btn=document.getElementById('shareRef');
-    if(btn) btn.onclick=()=>{const share=`https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodeURIComponent('Join PulseTap Studio')}`; if(tg?.openTelegramLink)tg.openTelegramLink(share);else if(navigator.share)navigator.share({url:botLink,text:'Join PulseTap Studio'});else navigator.clipboard?.writeText(botLink).then(()=>nativeAlert('Referral link copied.'));};
-  }
-
-
-  function walletView(){
-    const fee=state.config.withdrawFeePercent;
-    const min=state.config.minWithdrawCoins;
-    openModal('Wallet and Withdraw',`<div class="rounded-2xl bg-slate-950 p-4"><div class="text-xs text-slate-400">Gross balance</div><div class="text-3xl font-black">${(state.user.coins/state.config.conversionCoins).toFixed(6)} USDT</div><div class="text-xs text-slate-500 mt-1">Rate: ${fmt(state.config.conversionCoins)} Coins = 1 USDT</div></div><div class="rounded-2xl bg-amber-950/20 border border-amber-700/30 p-4 mt-3 text-sm">Withdrawal fee: <b>${fee}%</b>. Minimum: <b>${fmt(min)} Coins</b>. ${state.user.successfulReferrals < state.config.minReferralsForWithdraw ? `<br><br>Before withdrawal you need at least <b>${state.config.minReferralsForWithdraw}</b> successful referral.`:''}</div><div class="mt-4"><label class="text-xs text-slate-400">EVM Wallet Address</label><input id="wdAddr" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded-2xl p-3 outline-none" placeholder="0x..."/><label class="text-xs text-slate-400 block mt-3">Coins to withdraw</label><input id="wdAmount" type="number" min="${min}" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded-2xl p-3 outline-none" placeholder="1000000"/><button id="wdSubmit" class="w-full mt-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-green-700 font-black">Send Withdraw Request</button></div><div class="mt-6"><div class="font-black mb-2">Recent requests</div>${state.withdrawals.length?state.withdrawals.map(w=>`<div class="bg-slate-950 rounded-2xl p-3 mb-2 text-xs"><div class="flex justify-between"><b>#${w.id}</b><span>${esc(w.status)}</span></div><div class="text-slate-400 mt-1">${Number(w.net_usdt).toFixed(6)} USDT net • ${fmt(w.amount_coins)} coins</div>${w.tx_hash?`<div class="text-cyan-300 mt-1 break-all">${esc(w.tx_hash)}</div>`:''}</div>`).join(''):'<div class="text-slate-500 text-sm">No requests yet.</div>'}</div>`);
-    $('wdSubmit').onclick=async()=>{const addr=$('wdAddr').value.trim(), amount=Number($('wdAmount').value||0);const d=await api('/api/withdraw',{address:addr,amountCoins:amount});nativeAlert(d.message||d.error);if(d.ok){state.user=d.user;const b=await api('/api/bootstrap');if(b.ok){state.withdrawals=b.withdrawals||[];state.tasks=b.tasks||[];state.config=b.config||state.config}updateUI();successSound();walletView();}};
-  }
-
-
-  function fastTapView(){
-    if(state.user.fastTapRemaining>0){return openModal('Fast Tap',`<div class="rounded-2xl bg-yellow-950/20 border border-yellow-700/30 p-4"><div class="text-xl font-black text-yellow-200">${state.config.fastTapMultiplier}x Fast Tap Active</div><div class="text-sm text-slate-300 mt-2">Remaining: ${formatSec(state.user.fastTapRemaining)}</div></div>`)}
-    openModal('Buy 4x Fast Tap',`<div class="rounded-2xl bg-slate-950 p-4"><div class="text-4xl font-black text-cyan-300">${state.config.fastTapPriceUsdt} USDT</div><div class="text-sm text-slate-300 mt-1">Activate ${state.config.fastTapMultiplier}x tap for ${state.config.fastTapDurationHours} hours.</div></div><div class="mt-4 text-xs text-slate-400">Pay the exact amount to this treasury address on the configured EVM network, then paste the transaction hash below.</div><div class="mt-3 bg-slate-950 rounded-2xl p-3 break-all text-xs border border-slate-800">${esc(state.config.treasuryAddress)}</div><input id="txHash" class="w-full mt-4 bg-slate-950 border border-slate-700 rounded-2xl p-3 outline-none" placeholder="Transaction hash 0x..."/><button id="verifyPay" class="w-full mt-3 py-3 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-700 font-black">Verify Payment and Activate</button><div class="text-[11px] text-slate-500 mt-3">Payment verification checks the configured USDT transfer. Never enter a private key or seed phrase.</div>`);
-    $('verifyPay').onclick=async()=>{const tx=$('txHash').value.trim();if(!tx)return nativeAlert('Transaction hash দিন।');$('verifyPay').disabled=true;const d=await api('/api/fasttap/verify',{txHash:tx});nativeAlert(d.message||d.error);$('verifyPay').disabled=false;if(d.ok){state.user=d.user;updateUI();successSound();fastTapView();}};
-  }
-
-
-  function moreView(){
-    openModal('More',`<div class="grid gap-3"><button id="notifBtn" class="bg-slate-950 rounded-2xl p-4 text-left"><b>Notifications</b><div class="text-xs text-slate-500 mt-1">Recent bot alerts</div></button><button id="refreshBtn" class="bg-slate-950 rounded-2xl p-4 text-left"><b>Refresh Data</b><div class="text-xs text-slate-500 mt-1">Re-sync with server</div></button><button id="rulesBtn" class="bg-slate-950 rounded-2xl p-4 text-left"><b>Rules</b><div class="text-xs text-slate-500 mt-1">Referral, withdrawal and reward rules</div></button></div>`);
-    $('notifBtn').onclick=async()=>{const d=await api('/api/notifications');openModal('Notifications',d.notifications?.length?d.notifications.map(n=>`<div class="bg-slate-950 rounded-2xl p-3 mb-2 text-sm">${esc(n.message)}<div class="text-[10px] text-slate-600 mt-2">${esc(n.created_at)}</div></div>`).join(''):'<div class="text-slate-500">No notifications.</div>')};
-    $('refreshBtn').onclick=async()=>{await bootstrap();nativeAlert('Data refreshed')};
-    $('rulesBtn').onclick=()=>openModal('Rules',`<div class="text-sm leading-6 text-slate-300">Referral reward unlocks after ${fmt(state.config.refUnlockTaps)} taps by the referred user.<br>A user can have at most ${state.config.maxReferrals} successful referrals.<br>Minimum withdrawal is ${fmt(state.config.minWithdrawCoins)} Coins.<br>Withdrawal fee is ${state.config.withdrawFeePercent}%.<br>${fmt(state.config.conversionCoins)} Coins = 1 USDT.<br>Hourly tap energy starts at ${fmt(state.config.tapEnergyBase)} and resets every hour.<br>Each completed reward ad adds ${fmt(state.config.adEnergyReward)} energy, with a ${formatSec(state.config.adCooldownSeconds)} cooldown.<br>Fast Tap is a paid feature and requires blockchain payment verification.</div>`);
-  }
-
-
-  function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-  const escAttr=esc;
-
-  function activateTab(tab){
-    document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('text-cyan-300',b.dataset.tab===tab));
-    document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('text-slate-400',b.dataset.tab!==tab));
-    if(tab==='tasks')tasksView();
-    if(tab==='ref')referralView();
-    if(tab==='wallet')walletView();
-    if(tab==='more')moreView();
-    if(tab==='home')closeModal();
-  }
-  document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>activateTab(b.dataset.tab));
-  $('referBtn').onclick=()=>activateTab('ref');
-  $('fastBtn').onclick=fastTapView;
-
-  function startAdClock(){
-    if(!state.config || !state.user) return;
-    clearInterval(state.adTimer);
-    state.adEnd=Date.now() + Math.max(0, Number(state.user.adCooldownRemaining||0))*1000;
-    const tick=()=>{
-      const sec=Math.max(0,Math.ceil((state.adEnd-Date.now())/1000));
-      $('adTimer').textContent=sec<=0?'Ready':formatSec(sec);
-      if(sec<=0){ clearInterval(state.adTimer); startAd(); }
-    };
-    tick();
-    state.adTimer=setInterval(tick,1000);
-  }
-
-  async function startAd(){
-    if($('adOverlay').classList.contains('show')) return;
-    const d=await api('/api/ad/start');
-    if(!d.ok){ startAdClock(); return nativeAlert(d.error||'Reward ad is not ready.'); }
-    state.adSessionId=d.sessionId;
-    $('adFrame').src=d.adUrl || 'about:blank';
-    $('adOverlay').classList.add('show');
-    $('adBackBtn').disabled=true; $('adBackBtn').classList.add('opacity-50'); show('openAdBtn',false);
-    let sec=Number(d.duration||20);
-    $('adCount').textContent=formatSec(sec);
-    if(tg?.BackButton)tg.BackButton.show();
-    clearInterval(state.adCountdown);
-    state.adCountdown=setInterval(async()=>{
-      sec--; $('adCount').textContent=formatSec(Math.max(0,sec));
-      if(sec<=0){
-        clearInterval(state.adCountdown);
-        const claim=await api('/api/ad/claim',{sessionId:state.adSessionId});
-        if(claim.ok){ state.user=claim.user; updateUI(); successSound(); nativeAlert(claim.message); }
-        else nativeAlert(claim.error||'Ad reward could not be claimed.');
-        $('adBackBtn').disabled=false; $('adBackBtn').classList.remove('opacity-50');
-        startAdClock();
-      }
-    },1000);
-    $('adBackBtn').onclick=closeAd;
-    // Deliberately no tg.openLink/window.open: the reward ad stays in the Mini App frame.
-  }
-  function closeAd(){
-    clearInterval(state.adCountdown);
-    $('adOverlay').classList.remove('show'); $('adFrame').src='about:blank';
-    if(tg?.BackButton)tg.BackButton.hide();
-    startAdClock();
-  }
-
-
-  setInterval(()=>{ if(state.user){ updateUI(); } },1000);
-
-  // Prevent accidental navigation while keeping the app responsive.
-  window.addEventListener('beforeunload',()=>{try{navigator.sendBeacon(API_BASE+'/api/heartbeat',JSON.stringify({initData:state.initData}))}catch{}});
-  bootstrap();
+  function show(id){$(id).classList.add('show')} function hide(id){$(id).classList.remove('show')}
+  $('newTaskBtn').onclick=()=>{if(state.user.tokens<1){notice('Publish করতে অন্তত ১ token দরকার। অন্যের task complete করে token earn করুন.','err');return}show('createOverlay')}; $('cancelCreate').onclick=()=>hide('createOverlay'); $('cancelComplete').onclick=()=>hide('completeOverlay'); $('submitComplete').onclick=complete; $('publishBtn').onclick=publish; $('refreshBtn').onclick=()=>loadAll().catch(e=>notice(e.message,'err'));
+  $('search').oninput=render; $('tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.tab=b.dataset.tab;render()};
+  document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')}));
+  boot();
 })();
 </script>
 </body>
