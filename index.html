@@ -1,180 +1,59 @@
 <!doctype html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0e1621" />
-  <title>Ads to Income BD — P2P Tasks</title>
-  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
-  <!-- Separate hosting: define window.APP_CONFIG = {API_BASE_URL: "https://YOUR-BACKEND-DOMAIN"} before the app script below. -->
-  <style>
-    :root{
-      --bg:#0e1621;--surface:#17212b;--surface2:#202b36;--text:#f3f5f7;--muted:#93a0ad;
-      --accent:#2aabee;--accent2:#168acd;--danger:#ff5c5c;--success:#33c46e;--border:#2b3946;
-      --shadow:0 12px 30px rgba(0,0,0,.22);--radius:18px;
-    }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;padding:0;min-height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-    button,input,textarea{font:inherit}
-    button{border:0;cursor:pointer}
-    .wrap{max-width:900px;margin:0 auto;padding:14px 14px 28px}
-    .topbar{position:sticky;top:0;z-index:10;padding:8px 0 12px;background:linear-gradient(var(--bg) 78%,transparent);backdrop-filter:blur(8px)}
-    .brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.2px}.brand small{color:var(--muted)}
-    .user-chip{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--border);max-width:55%}
-    .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-weight:800;color:white;flex:0 0 30px}
-    .user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
-    .balance{margin-top:14px;display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .balance-card{padding:17px}.eyebrow{font-size:12px;color:var(--muted)}.tokens{font-size:34px;font-weight:900;margin:2px 0}.hint{font-size:12px;color:var(--muted);line-height:1.45}
-    .quick{display:flex;flex-direction:column;gap:9px;padding:13px}.btn{min-height:44px;padding:0 14px;border-radius:13px;background:var(--surface2);color:var(--text);font-weight:750;border:1px solid var(--border)}
-    .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{background:transparent;color:var(--danger);border-color:rgba(255,92,92,.35)}.btn:disabled{opacity:.45;cursor:not-allowed}
-    .searchrow{display:flex;gap:9px;margin:14px 0}.search{flex:1;min-height:45px;padding:0 13px;border-radius:13px;border:1px solid var(--border);background:var(--surface);color:var(--text);outline:none}.search:focus{border-color:var(--accent)}
-    .tabs{display:flex;gap:7px;overflow:auto;padding-bottom:2px}.tab{padding:9px 13px;border-radius:999px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-weight:700;white-space:nowrap}.tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}.section-title h2{font-size:16px;margin:0}.section-title span{font-size:12px;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:620px){.grid{grid-template-columns:1fr}.balance{grid-template-columns:1fr}.quick{display:grid;grid-template-columns:1fr 1fr}}
-    .task{padding:14px;min-height:205px;display:flex;flex-direction:column}.task h3{margin:8px 0 6px;font-size:16px;line-height:1.25}.task p{margin:0;color:#c7d0d8;font-size:13px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:12px}.pill{font-size:11px;border-radius:999px;padding:6px 8px;background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.pill.accent{color:#dff5ff;border-color:rgba(42,171,238,.35)}
-    .task-actions{display:flex;gap:8px;margin-top:10px}.task-actions .btn{flex:1;min-height:40px;font-size:13px}
-    .empty{text-align:center;padding:35px 16px;color:var(--muted);border:1px dashed var(--border);border-radius:var(--radius)}
-    .overlay{position:fixed;inset:0;display:none;z-index:30;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);align-items:flex-end;justify-content:center}.overlay.show{display:flex}
-    .sheet{width:min(900px,100%);max-height:92vh;overflow:auto;background:var(--bg);border:1px solid var(--border);border-bottom:0;border-radius:22px 22px 0 0;padding:15px}.handle{width:44px;height:4px;background:var(--border);border-radius:9px;margin:0 auto 14px}.sheet h2{margin:0 0 5px;font-size:20px}.sheet .sub{color:var(--muted);font-size:12px;margin-bottom:16px}
-    .field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:750;margin-bottom:6px;color:#cbd4db}.field input,.field textarea,.field select{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:13px;padding:11px 12px;outline:none}.field textarea{min-height:105px;resize:vertical}.field input:focus,.field textarea:focus{border-color:var(--accent)}
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}@media(max-width:440px){.row2{grid-template-columns:1fr}}
-    .actions{display:flex;gap:8px;margin-top:15px}.actions .btn{flex:1}
-    .detail{padding:4px 0 18px}.detail h2{font-size:23px;line-height:1.2}.detail p{white-space:pre-wrap;color:#d4dbe0;line-height:1.55;font-size:14px}.urlbox{padding:11px;border:1px solid var(--border);background:var(--surface);border-radius:13px;font-size:12px;word-break:break-all;color:#b8e7fb;margin:10px 0}
-    .slotbar{height:9px;background:var(--surface2);border-radius:999px;overflow:hidden;margin-top:9px}.slotfill{height:100%;background:var(--accent);width:0;transition:width .25s ease}
-    .notice{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:60;padding:12px 14px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);box-shadow:var(--shadow);display:none;font-size:13px}.notice.show{display:block}.notice.ok{border-color:rgba(51,196,110,.4)}.notice.err{border-color:rgba(255,92,92,.4)}
-    .loader{text-align:center;color:var(--muted);padding:32px}.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}
-    .locked{padding:45px 18px;text-align:center}.locked h2{margin-bottom:8px}.locked p{color:var(--muted);line-height:1.55;font-size:14px}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1621">
+<title>Ads to Income BD</title>
+<script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+<script>
+/* IMPORTANT: this is the Mini App URL, not the Python API URL. */
+window.APP_CONFIG = {
+  MINI_APP_URL: "https://kuttagaming09-cmd.github.io/Find-a-user/",
+  /* When your Python API gets a public HTTPS URL, put it here. */
+  API_BASE_URL: ""
+};
+</script>
+<style>
+:root{--bg:#0e1621;--card:#17212b;--card2:#202b36;--text:#f5f7f9;--muted:#95a2af;--blue:#2aabee;--green:#35c978;--red:#ff6262;--border:#2b3946}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}.wrap{max-width:850px;margin:auto;padding:14px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{font-weight:900;font-size:19px}.muted{color:var(--muted);font-size:12px}.user{display:none;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border);padding:7px 10px;border-radius:99px}.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--blue);font-weight:800}.balance{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.card{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:15px}.tokens{font-size:34px;font-weight:900}.btn{width:100%;min-height:44px;border-radius:12px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-weight:800;margin-top:8px}.primary{background:var(--blue);border-color:var(--blue)}.search{width:100%;padding:13px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:white;outline:0}.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}.tab{white-space:nowrap;padding:9px 13px;border-radius:99px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-weight:800}.tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.task h3{font-size:16px;margin:7px 0}.task p{font-size:13px;color:#cbd3da;line-height:1.5}.pill{display:inline-block;font-size:11px;color:var(--muted);background:var(--card2);padding:6px 8px;border-radius:99px;margin:3px 3px 0 0}.overlay{display:none;position:fixed;inset:0;background:#000a;z-index:20;align-items:end}.overlay.show{display:flex}.sheet{width:100%;max-height:92vh;overflow:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:17px}.sheet h2{margin-top:0}.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}.field input,.field textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:#fff}.field textarea{min-height:110px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.url{word-break:break-all;background:var(--card);padding:11px;border-radius:12px;font-size:12px;color:#bde9fa}.empty{text-align:center;color:var(--muted);padding:30px}.notice{display:none;position:fixed;left:12px;right:12px;bottom:15px;z-index:50;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--border)}.notice.show{display:block}@media(max-width:600px){.grid,.balance{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <div class="wrap">
-  <div class="topbar">
-    <div class="brand">
-      <div><h1>Ads to Income BD</h1><small>P2P Referral Tasks</small></div>
-      <div class="user-chip" id="userChip" style="display:none"><div class="avatar" id="avatar">U</div><span id="userName">User</span></div>
-    </div>
-  </div>
-
-  <div id="locked" class="card locked" style="display:none"><h2>Telegram-এর ভিতর থেকে খুলুন</h2><p>এই Mini App নিরাপদ Telegram login ব্যবহার করে। Telegram bot থেকে Mini App খুললেই আপনার balance ও tasks দেখা যাবে।</p></div>
-
+  <div class="top"><div><div class="brand">Ads to Income BD</div><div class="muted">P2P Referral Tasks</div></div><div class="user" id="user"><div class="avatar" id="avatar">U</div><span id="username">User</span></div></div>
+  <div id="message" class="card" style="margin-top:14px">Connecting to Telegram…</div>
   <main id="app" style="display:none">
-    <div class="balance">
-      <div class="card balance-card"><div class="eyebrow">Available posting tokens</div><div class="tokens" id="tokens">0</div><div class="hint">১টি token = ১টি নতুন task publish করার অনুমতি। অন্যের task সফলভাবে complete করলে ১ token পাবেন।</div></div>
-      <div class="card quick"><button class="btn primary" id="newTaskBtn">+ Publish Task</button><button class="btn" id="refreshBtn">↻ Refresh</button></div>
-    </div>
-
-    <div class="searchrow"><input id="search" class="search" placeholder="Task title বা description খুঁজুন…" autocomplete="off"/></div>
-    <div class="tabs" id="tabs"><button class="tab active" data-tab="all">All</button><button class="tab" data-tab="available">Available</button><button class="tab" data-tab="mine">My Tasks</button><button class="tab" data-tab="completed">Completed</button></div>
-
-    <div class="section-title"><h2 id="sectionTitle">Available tasks</h2><span id="count">0</span></div>
-    <div id="taskList" class="grid"></div>
+    <div class="balance"><div class="card"><div class="muted">Available tokens</div><div class="tokens" id="tokens">0</div><div class="muted">১ token = ১টি task publish</div></div><div class="card"><button class="btn primary" id="newTask">+ Publish Task</button><button class="btn" id="refresh">↻ Refresh</button></div></div>
+    <input class="search" id="search" placeholder="Task খুঁজুন…">
+    <div class="tabs"><button class="tab active" data-tab="all">All</button><button class="tab" data-tab="available">Available</button><button class="tab" data-tab="mine">My Tasks</button><button class="tab" data-tab="completed">Completed</button></div>
+    <h3 id="heading">Available tasks</h3><div id="list" class="grid"></div>
   </main>
 </div>
 
-<div class="overlay" id="taskOverlay"><div class="sheet"><div class="handle"></div><div id="taskDetail"></div></div></div>
-<div class="overlay" id="createOverlay"><div class="sheet"><div class="handle"></div><h2>Publish a referral task</h2><div class="sub">১ token কেটে ১টি task publish হবে। Slots যত দেবেন, ততজন আলাদা user task complete করতে পারবে।</div>
-  <div class="field"><label>Title *</label><input id="fTitle" maxlength="100" placeholder="যেমন: Join my Telegram channel"/></div>
-  <div class="field"><label>Description *</label><textarea id="fDesc" maxlength="1500" placeholder="কী করতে হবে, কীভাবে proof দিতে হবে—স্পষ্টভাবে লিখুন।"></textarea></div>
-  <div class="field"><label>Direct task link *</label><input id="fUrl" maxlength="1000" placeholder="https://t.me/..." inputmode="url"/></div>
-  <div class="row2"><div class="field"><label>Maximum slots *</label><input id="fSlots" type="number" min="1" max="1000" value="1"/></div><div class="field"><label>Verification chat (optional)</label><input id="fVerifyChat" maxlength="120" placeholder="@mychannel"/></div></div>
-  <div class="hint">Verification chat দিলে backend user-এর Telegram membership check করার চেষ্টা করবে। Bot-কে target chat-এর administrator করতে হতে পারে। না দিলে proof-based completion হবে।</div>
-  <div class="actions"><button class="btn" id="cancelCreate">Cancel</button><button class="btn primary" id="publishBtn">Publish</button></div>
-</div></div>
-
-<div class="overlay" id="completeOverlay"><div class="sheet"><div class="handle"></div><h2>Submit proof</h2><div class="sub" id="completeSub">Task complete করার পর proof দিন।</div>
-  <div class="field"><label>আপনার Telegram username / identity *</label><input id="pUsername" maxlength="100" placeholder="@yourusername"/></div>
-  <div class="field"><label>Proof note *</label><textarea id="pProof" maxlength="1000" placeholder="যেমন: আমি channel-এ join করেছি। অথবা অন্য কোনো প্রাসঙ্গিক proof তথ্য।"></textarea></div>
-  <div class="actions"><button class="btn" id="cancelComplete">Cancel</button><button class="btn primary" id="submitComplete">Submit & Earn 1 Token</button></div>
-</div></div>
-
+<div class="overlay" id="create"><div class="sheet"><h2>Publish Referral Task</h2><div class="muted">১ token খরচ হবে।</div><div class="field"><label>Title</label><input id="title" maxlength="100"></div><div class="field"><label>Description</label><textarea id="desc" maxlength="1500"></textarea></div><div class="field"><label>Direct Link</label><input id="url" placeholder="https://t.me/..." inputmode="url"></div><div class="row"><div class="field"><label>Maximum slots</label><input id="slots" type="number" min="1" max="1000" value="1"></div><div class="field"><label>Verification chat (optional)</label><input id="verify" placeholder="@channel"></div></div><button class="btn primary" id="publish">Publish</button><button class="btn" onclick="hide('create')">Cancel</button></div></div>
+<div class="overlay" id="detail"><div class="sheet" id="detailBody"></div></div>
+<div class="overlay" id="complete"><div class="sheet"><h2>Submit Proof</h2><div class="muted" id="completeTitle"></div><div class="field"><label>Your Telegram username / identity</label><input id="proofUser"></div><div class="field"><label>Proof</label><textarea id="proofText" placeholder="যেমন: @username / confirmation / কীভাবে কাজটি করেছেন"></textarea></div><button class="btn primary" id="submitProof">Submit & Get 1 Token</button><button class="btn" onclick="hide('complete')">Cancel</button></div></div>
 <div class="notice" id="notice"></div>
+
 <script>
-(() => {
-  const tg = window.Telegram?.WebApp;
-  const API = (window.APP_CONFIG?.API_BASE_URL || window.location.origin).replace(/\/$/, '');
-  const state = {user:null, tasks:[], mine:[], completed:[], tab:'all', selected:null, completionTask:null};
-  const $ = id => document.getElementById(id);
-
-  if (tg) { tg.ready(); tg.expand(); }
-  const initData = tg?.initData || '';
-  if (!initData) { $('locked').style.display='block'; return; }
-
-  function notice(msg, type='ok') { const n=$('notice'); n.textContent=msg; n.className='notice show '+(type==='err'?'err':'ok'); clearTimeout(window.__nt); window.__nt=setTimeout(()=>n.className='notice',3500); }
-  function esc(s){return String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-  function api(path, opts={}) { opts.headers={...(opts.headers||{}),'X-Telegram-Init-Data':initData}; return fetch(API+path,opts).then(async r=>{let d={};try{d=await r.json()}catch{} if(!r.ok) throw new Error(d.detail||'Request failed'); return d;}); }
-
-  async function boot(){
-    try {
-      state.user = await api('/api/me');
-      $('app').style.display='block'; $('userChip').style.display='flex';
-      const display = state.user.username ? '@'+state.user.username : state.user.first_name || 'User';
-      $('userName').textContent=display; $('avatar').textContent=(state.user.first_name||'U').slice(0,1).toUpperCase(); $('tokens').textContent=state.user.tokens;
-      await loadAll();
-      const start = tg?.initDataUnsafe?.start_param || new URLSearchParams(location.search).get('task');
-      if (start) { const id = Number(String(start).replace(/^task[_-]/,'')); if(Number.isInteger(id) && id>0) openTask(id); }
-    } catch(e) { notice(e.message,'err'); $('locked').style.display='block'; }
-  }
-
-  async function loadAll(){
-    $('taskList').innerHTML='<div class="loader" style="grid-column:1/-1"><div class="spinner"></div>Loading…</div>';
-    const [a,b,c] = await Promise.all([api('/api/tasks'),api('/api/my/tasks'),api('/api/my/completions')]);
-    state.tasks=a.items; state.mine=b.items; state.completed=c.items; render();
-  }
-
-  function visible(){
-    let arr=[];
-    if(state.tab==='mine') arr=state.mine;
-    else if(state.tab==='completed') arr=state.completed.map(x=>x.task);
-    else arr=state.tasks;
-    const q=$('search').value.trim().toLowerCase();
-    if(q) arr=arr.filter(t=>(t.title+' '+t.description).toLowerCase().includes(q));
-    if(state.tab==='available') arr=arr.filter(t=>t.remaining_slots>0 && t.owner_id!==state.user.id);
-    return arr;
-  }
-
-  function taskCard(t){
-    const pct=t.max_slots ? Math.round((t.completed_count/t.max_slots)*100) : 0;
-    const mine=t.owner_id===state.user.id;
-    const done=state.completed.some(c=>c.task?.id===t.id);
-    return `<div class="card task"><div class="eyebrow">#${t.id} · ${esc(t.status)}</div><h3>${esc(t.title)}</h3><p>${esc(t.description)}</p><div class="slotbar"><div class="slotfill" style="width:${Math.min(100,pct)}%"></div></div><div class="meta"><span class="pill accent">${t.remaining_slots}/${t.max_slots} slots left</span><span class="pill">${mine?'Your task':done?'Completed':'Earn 1 token'}</span></div><div class="task-actions"><button class="btn" onclick="window.openTask(${t.id})">View</button>${(!mine&&!done&&t.remaining_slots>0)?`<button class="btn primary" onclick="window.startComplete(${t.id})">Complete</button>`:''}</div></div>`;
-  }
-
-  function render(){
-    $('tokens').textContent=state.user.tokens;
-    const arr=visible(); $('count').textContent=arr.length;
-    $('sectionTitle').textContent=state.tab==='mine'?'My published tasks':state.tab==='completed'?'My completed tasks':state.tab==='available'?'Available now':'All available tasks';
-    $('taskList').innerHTML=arr.length?arr.map(taskCard).join(''):'<div class="empty" style="grid-column:1/-1">কোনো task পাওয়া যায়নি।</div>';
-  }
-
-  window.openTask = async (id) => { try { const t=await api('/api/tasks/'+id); state.selected=t; const pct=t.max_slots?Math.round(t.completed_count/t.max_slots*100):0; const mine=t.owner_id===state.user.id; const done=state.completed.some(c=>c.task?.id===t.id); const share=t.share_url; $('taskDetail').innerHTML=`<div class="detail"><div class="eyebrow">Task #${t.id} · ${esc(t.status)}</div><h2>${esc(t.title)}</h2><p>${esc(t.description)}</p><div class="urlbox">${esc(t.target_url)}</div><div class="meta"><span class="pill accent">${t.remaining_slots}/${t.max_slots} slots left</span><span class="pill">${t.completed_count} completed</span></div><div class="slotbar"><div class="slotfill" style="width:${Math.min(100,pct)}%"></div></div><div class="actions"><button class="btn" onclick="window.visitTarget(${t.id})">Open direct link</button>${(!mine&&!done&&t.remaining_slots>0)?`<button class="btn primary" onclick="window.startComplete(${t.id})">I completed it</button>`:''}<button class="btn" onclick="window.copyShare(${JSON.stringify(share)})">Share task</button></div></div>`; show('taskOverlay'); } catch(e){notice(e.message,'err')} };
-
-  window.visitTarget = async id => { try { const t=await api('/api/tasks/'+id); if(t.target_url.startsWith('https://t.me/')) tg?.openTelegramLink ? tg.openTelegramLink(t.target_url) : window.open(t.target_url,'_blank'); else window.open(t.target_url,'_blank'); }catch(e){notice(e.message,'err')} };
-  window.copyShare = async url => { try{await navigator.clipboard.writeText(url);notice('Task share link copied.')}catch{notice(url)} };
-
-  window.startComplete = id => { const t=state.tasks.find(x=>x.id===id)||state.mine.find(x=>x.id===id)||state.selected; if(!t)return; state.completionTask=t; $('completeSub').textContent=`“${t.title}” complete করার পর submitted proof যাচাই হবে। সফল হলে ১ token পাবেন।`; $('pUsername').value=state.user.username?'@'+state.user.username:''; $('pProof').value=''; show('completeOverlay'); };
-
-  async function publish(){
-    const title=$('fTitle').value.trim(), description=$('fDesc').value.trim(), target_url=$('fUrl').value.trim(), max_slots=Number($('fSlots').value), verification_chat=$('fVerifyChat').value.trim()||null;
-    if(!title||!description||!target_url||!Number.isInteger(max_slots)||max_slots<1){notice('সব required field সঠিকভাবে দিন।','err');return}
-    $('publishBtn').disabled=true;
-    try{ const r=await api('/api/tasks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,description,target_url,max_slots,verification_chat})}); notice(`Task #${r.task.id} published.`); hide('createOverlay'); ['fTitle','fDesc','fUrl','fVerifyChat'].forEach(id=>$(id).value=''); $('fSlots').value='1'; await loadAll(); }catch(e){notice(e.message,'err')}finally{$('publishBtn').disabled=false}
-  }
-
-  async function complete(){
-    const t=state.completionTask;if(!t)return; const proof_username=$('pUsername').value.trim(),proof_text=$('pProof').value.trim(); if(!proof_username||!proof_text){notice('Username ও proof note দিন।','err');return}
-    $('submitComplete').disabled=true;
-    try{ const r=await api(`/api/tasks/${t.id}/complete`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({proof_username,proof_text})}); notice(r.message); hide('completeOverlay'); hide('taskOverlay'); await loadAll(); }catch(e){notice(e.message,'err')}finally{$('submitComplete').disabled=false}
-  }
-
-  function show(id){$(id).classList.add('show')} function hide(id){$(id).classList.remove('show')}
-  $('newTaskBtn').onclick=()=>{if(state.user.tokens<1){notice('Publish করতে অন্তত ১ token দরকার। অন্যের task complete করে token earn করুন.','err');return}show('createOverlay')}; $('cancelCreate').onclick=()=>hide('createOverlay'); $('cancelComplete').onclick=()=>hide('completeOverlay'); $('submitComplete').onclick=complete; $('publishBtn').onclick=publish; $('refreshBtn').onclick=()=>loadAll().catch(e=>notice(e.message,'err'));
-  $('search').oninput=render; $('tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.tab=b.dataset.tab;render()};
-  document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')}));
-  boot();
-})();
+const tg=window.Telegram?.WebApp;
+const API=(window.APP_CONFIG.API_BASE_URL||'').replace(/\/$/,'');
+const $=id=>document.getElementById(id);
+let state={user:null,tasks:[],mine:[],completed:[],tab:'all',selected:null};
+function notice(t){$('notice').textContent=t;$('notice').classList.add('show');setTimeout(()=>$('notice').classList.remove('show'),3000)}
+function hide(id){$(id).classList.remove('show')} function show(id){$(id).classList.add('show')}
+function esc(s){return String(s??'').replace(/[&<>'"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[x]))}
+function api(path,opt={}){if(!API) return Promise.reject(new Error('Python API URL এখনো বসানো হয়নি।'));opt.headers={...(opt.headers||{}),'X-Telegram-Init-Data':tg?.initData||''};return fetch(API+path,opt).then(async r=>{let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.detail||'Server error');return d})}
+async function load(){let m=await api('/api/me');state.user=m;$('tokens').textContent=m.tokens;$('username').textContent=m.username?'@'+m.username:m.first_name;$('avatar').textContent=(m.first_name||'U')[0].toUpperCase();$('user').style.display='flex';let [a,b,c]=await Promise.all([api('/api/tasks'),api('/api/my/tasks'),api('/api/my/completions')]);state.tasks=a.items||[];state.mine=b.items||[];state.completed=c.items||[];render()}
+function render(){let q=$('search').value.toLowerCase();let done=new Set(state.completed.map(x=>x.task_id));let arr=state.tab==='mine'?state.mine:state.tab==='completed'?state.completed.map(x=>({id:x.task_id,title:x.title,description:x.description,target_url:x.target_url,max_slots:x.max_slots,completed_count:x.completed_count,remaining_slots:Math.max(0,x.max_slots-x.completed_count),status:x.status,owner_id:x.owner_id})):state.tasks;if(q)arr=arr.filter(x=>(x.title+' '+x.description).toLowerCase().includes(q));$('heading').textContent=state.tab==='mine'?'My Tasks':state.tab==='completed'?'Completed Tasks':'Available tasks';$('list').innerHTML=arr.length?arr.map(t=>{let mine=t.owner_id===state.user.id,d=done.has(t.id);return `<div class="card task"><div class="muted">#${t.id}</div><h3>${esc(t.title)}</h3><p>${esc(t.description)}</p><span class="pill">${t.remaining_slots??0}/${t.max_slots} slots left</span><span class="pill">${mine?'Your task':d?'Completed':'Earn 1 token'}</span><button class="btn" onclick="openTask(${t.id})">View</button>${!mine&&!d&&(t.remaining_slots??0)>0?`<button class="btn primary" onclick="startComplete(${t.id})">Complete</button>`:''}</div>`}).join(''):'<div class="empty">কোনো task পাওয়া যায়নি।</div>'}
+async function openTask(id){try{let t=await api('/api/tasks/'+id);state.selected=t;$('detailBody').innerHTML=`<h2>${esc(t.title)}</h2><p>${esc(t.description)}</p><div class="url">${esc(t.target_url)}</div><div><span class="pill">${t.remaining_slots}/${t.max_slots} slots left</span></div><button class="btn primary" onclick="openLink(${JSON.stringify(t.target_url)})">Open Direct Link</button>${t.owner_id!==state.user.id?`<button class="btn" onclick="startComplete(${t.id})">I Completed It</button>`:''}<button class="btn" onclick="hide('detail')">Close</button>`;show('detail')}catch(e){notice(e.message)}}
+function openLink(url){if(url.startsWith('https://t.me/')&&tg?.openTelegramLink)tg.openTelegramLink(url);else window.open(url,'_blank')}
+function startComplete(id){let t=state.tasks.find(x=>x.id===id)||state.selected;if(!t)return;state.selected=t;$('completeTitle').textContent=t.title;$('proofUser').value=state.user.username?'@'+state.user.username:'';$('proofText').value='';hide('detail');show('complete')}
+$('newTask').onclick=()=>{if(!state.user||state.user.tokens<1)return notice('Publish করতে ১ token দরকার।');show('create')};$('refresh').onclick=()=>load().catch(e=>notice(e.message));$('search').oninput=render;
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.tab=b.dataset.tab;render()});
+$('publish').onclick=async()=>{let p={title:$('title').value.trim(),description:$('desc').value.trim(),target_url:$('url').value.trim(),max_slots:Number($('slots').value),verification_chat:$('verify').value.trim()||null};if(!p.title||!p.description||!p.target_url)return notice('সব তথ্য পূরণ করুন।');try{await api('/api/tasks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});hide('create');notice('Task published!');await load()}catch(e){notice(e.message)}};
+$('submitProof').onclick=async()=>{if(!state.selected)return;let p={proof_username:$('proofUser').value.trim(),proof_text:$('proofText').value.trim()};if(!p.proof_username||!p.proof_text)return notice('Proof পূরণ করুন।');try{let r=await api('/api/tasks/'+state.selected.id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});hide('complete');notice(r.message||'Success!');await load()}catch(e){notice(e.message)}};
+(async()=>{if(!tg){$('message').textContent='এই পেজটি Telegram Mini App হিসেবে খুলুন।';return}tg.ready();tg.expand();if(!tg.initData){$('message').textContent='Telegram-এর ভিতর থেকে Mini App খুলুন।';return}if(!API){$('message').innerHTML='<b>Mini App connected.</b><br><br>Python API URL এখনো বসানো হয়নি। Pydroid 3-এর Python server-এর public HTTPS URL পাওয়ার পর HTML-এর <code>API_BASE_URL</code>-এ বসাতে হবে।';return}try{$('message').style.display='none';$('app').style.display='block';await load()}catch(e){$('message').textContent=e.message}})();
 </script>
 </body>
 </html>
