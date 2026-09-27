@@ -1,59 +1,166 @@
-<!doctype html>
-<html lang="bn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0e1621">
-<title>Ads to Income BD</title>
-<script src="https://telegram.org/js/telegram-web-app.js?63"></script>
-<script>
-/* IMPORTANT: this is the Mini App URL, not the Python API URL. */
-window.APP_CONFIG = {
-  MINI_APP_URL: "https://kuttagaming09-cmd.github.io/Find-a-user/",
-  /* When your Python API gets a public HTTPS URL, put it here. */
-  API_BASE_URL: ""
-};
-</script>
-<style>
-:root{--bg:#0e1621;--card:#17212b;--card2:#202b36;--text:#f5f7f9;--muted:#95a2af;--blue:#2aabee;--green:#35c978;--red:#ff6262;--border:#2b3946}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}.wrap{max-width:850px;margin:auto;padding:14px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{font-weight:900;font-size:19px}.muted{color:var(--muted);font-size:12px}.user{display:none;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border);padding:7px 10px;border-radius:99px}.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--blue);font-weight:800}.balance{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.card{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:15px}.tokens{font-size:34px;font-weight:900}.btn{width:100%;min-height:44px;border-radius:12px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-weight:800;margin-top:8px}.primary{background:var(--blue);border-color:var(--blue)}.search{width:100%;padding:13px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:white;outline:0}.tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}.tab{white-space:nowrap;padding:9px 13px;border-radius:99px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-weight:800}.tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.task h3{font-size:16px;margin:7px 0}.task p{font-size:13px;color:#cbd3da;line-height:1.5}.pill{display:inline-block;font-size:11px;color:var(--muted);background:var(--card2);padding:6px 8px;border-radius:99px;margin:3px 3px 0 0}.overlay{display:none;position:fixed;inset:0;background:#000a;z-index:20;align-items:end}.overlay.show{display:flex}.sheet{width:100%;max-height:92vh;overflow:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:17px}.sheet h2{margin-top:0}.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}.field input,.field textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:#fff}.field textarea{min-height:110px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.url{word-break:break-all;background:var(--card);padding:11px;border-radius:12px;font-size:12px;color:#bde9fa}.empty{text-align:center;color:var(--muted);padding:30px}.notice{display:none;position:fixed;left:12px;right:12px;bottom:15px;z-index:50;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--border)}.notice.show{display:block}@media(max-width:600px){.grid,.balance{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>P2P Referral App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            margin: 0; padding: 20px;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .balance { font-size: 24px; font-weight: bold; color: var(--tg-theme-button-color, #3390ec); }
+        .card {
+            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
+            padding: 15px; border-radius: 10px; margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background-color: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none; padding: 10px 15px; border-radius: 5px;
+            cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px;
+        }
+        input, textarea {
+            width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius: 5px;
+            border: 1px solid #ccc; box-sizing: border-box;
+            background-color: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+        }
+        .nav-tabs { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .nav-tab { flex: 1; text-align: center; padding: 10px; background: #ddd; cursor: pointer; }
+        .nav-tab.active { background: var(--tg-theme-button-color, #3390ec); color: white; }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top"><div><div class="brand">Ads to Income BD</div><div class="muted">P2P Referral Tasks</div></div><div class="user" id="user"><div class="avatar" id="avatar">U</div><span id="username">User</span></div></div>
-  <div id="message" class="card" style="margin-top:14px">Connecting to Telegram…</div>
-  <main id="app" style="display:none">
-    <div class="balance"><div class="card"><div class="muted">Available tokens</div><div class="tokens" id="tokens">0</div><div class="muted">১ token = ১টি task publish</div></div><div class="card"><button class="btn primary" id="newTask">+ Publish Task</button><button class="btn" id="refresh">↻ Refresh</button></div></div>
-    <input class="search" id="search" placeholder="Task খুঁজুন…">
-    <div class="tabs"><button class="tab active" data-tab="all">All</button><button class="tab" data-tab="available">Available</button><button class="tab" data-tab="mine">My Tasks</button><button class="tab" data-tab="completed">Completed</button></div>
-    <h3 id="heading">Available tasks</h3><div id="list" class="grid"></div>
-  </main>
-</div>
 
-<div class="overlay" id="create"><div class="sheet"><h2>Publish Referral Task</h2><div class="muted">১ token খরচ হবে।</div><div class="field"><label>Title</label><input id="title" maxlength="100"></div><div class="field"><label>Description</label><textarea id="desc" maxlength="1500"></textarea></div><div class="field"><label>Direct Link</label><input id="url" placeholder="https://t.me/..." inputmode="url"></div><div class="row"><div class="field"><label>Maximum slots</label><input id="slots" type="number" min="1" max="1000" value="1"></div><div class="field"><label>Verification chat (optional)</label><input id="verify" placeholder="@channel"></div></div><button class="btn primary" id="publish">Publish</button><button class="btn" onclick="hide('create')">Cancel</button></div></div>
-<div class="overlay" id="detail"><div class="sheet" id="detailBody"></div></div>
-<div class="overlay" id="complete"><div class="sheet"><h2>Submit Proof</h2><div class="muted" id="completeTitle"></div><div class="field"><label>Your Telegram username / identity</label><input id="proofUser"></div><div class="field"><label>Proof</label><textarea id="proofText" placeholder="যেমন: @username / confirmation / কীভাবে কাজটি করেছেন"></textarea></div><button class="btn primary" id="submitProof">Submit & Get 1 Token</button><button class="btn" onclick="hide('complete')">Cancel</button></div></div>
-<div class="notice" id="notice"></div>
+    <div class="header">
+        <h2>P2P Referral system</h2>
+        <div>আপনার টোকেন: <span class="balance" id="token-balance">0</span></div>
+    </div>
 
-<script>
-const tg=window.Telegram?.WebApp;
-const API=(window.APP_CONFIG.API_BASE_URL||'').replace(/\/$/,'');
-const $=id=>document.getElementById(id);
-let state={user:null,tasks:[],mine:[],completed:[],tab:'all',selected:null};
-function notice(t){$('notice').textContent=t;$('notice').classList.add('show');setTimeout(()=>$('notice').classList.remove('show'),3000)}
-function hide(id){$(id).classList.remove('show')} function show(id){$(id).classList.add('show')}
-function esc(s){return String(s??'').replace(/[&<>'"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[x]))}
-function api(path,opt={}){if(!API) return Promise.reject(new Error('Python API URL এখনো বসানো হয়নি।'));opt.headers={...(opt.headers||{}),'X-Telegram-Init-Data':tg?.initData||''};return fetch(API+path,opt).then(async r=>{let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.detail||'Server error');return d})}
-async function load(){let m=await api('/api/me');state.user=m;$('tokens').textContent=m.tokens;$('username').textContent=m.username?'@'+m.username:m.first_name;$('avatar').textContent=(m.first_name||'U')[0].toUpperCase();$('user').style.display='flex';let [a,b,c]=await Promise.all([api('/api/tasks'),api('/api/my/tasks'),api('/api/my/completions')]);state.tasks=a.items||[];state.mine=b.items||[];state.completed=c.items||[];render()}
-function render(){let q=$('search').value.toLowerCase();let done=new Set(state.completed.map(x=>x.task_id));let arr=state.tab==='mine'?state.mine:state.tab==='completed'?state.completed.map(x=>({id:x.task_id,title:x.title,description:x.description,target_url:x.target_url,max_slots:x.max_slots,completed_count:x.completed_count,remaining_slots:Math.max(0,x.max_slots-x.completed_count),status:x.status,owner_id:x.owner_id})):state.tasks;if(q)arr=arr.filter(x=>(x.title+' '+x.description).toLowerCase().includes(q));$('heading').textContent=state.tab==='mine'?'My Tasks':state.tab==='completed'?'Completed Tasks':'Available tasks';$('list').innerHTML=arr.length?arr.map(t=>{let mine=t.owner_id===state.user.id,d=done.has(t.id);return `<div class="card task"><div class="muted">#${t.id}</div><h3>${esc(t.title)}</h3><p>${esc(t.description)}</p><span class="pill">${t.remaining_slots??0}/${t.max_slots} slots left</span><span class="pill">${mine?'Your task':d?'Completed':'Earn 1 token'}</span><button class="btn" onclick="openTask(${t.id})">View</button>${!mine&&!d&&(t.remaining_slots??0)>0?`<button class="btn primary" onclick="startComplete(${t.id})">Complete</button>`:''}</div>`}).join(''):'<div class="empty">কোনো task পাওয়া যায়নি।</div>'}
-async function openTask(id){try{let t=await api('/api/tasks/'+id);state.selected=t;$('detailBody').innerHTML=`<h2>${esc(t.title)}</h2><p>${esc(t.description)}</p><div class="url">${esc(t.target_url)}</div><div><span class="pill">${t.remaining_slots}/${t.max_slots} slots left</span></div><button class="btn primary" onclick="openLink(${JSON.stringify(t.target_url)})">Open Direct Link</button>${t.owner_id!==state.user.id?`<button class="btn" onclick="startComplete(${t.id})">I Completed It</button>`:''}<button class="btn" onclick="hide('detail')">Close</button>`;show('detail')}catch(e){notice(e.message)}}
-function openLink(url){if(url.startsWith('https://t.me/')&&tg?.openTelegramLink)tg.openTelegramLink(url);else window.open(url,'_blank')}
-function startComplete(id){let t=state.tasks.find(x=>x.id===id)||state.selected;if(!t)return;state.selected=t;$('completeTitle').textContent=t.title;$('proofUser').value=state.user.username?'@'+state.user.username:'';$('proofText').value='';hide('detail');show('complete')}
-$('newTask').onclick=()=>{if(!state.user||state.user.tokens<1)return notice('Publish করতে ১ token দরকার।');show('create')};$('refresh').onclick=()=>load().catch(e=>notice(e.message));$('search').oninput=render;
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.tab=b.dataset.tab;render()});
-$('publish').onclick=async()=>{let p={title:$('title').value.trim(),description:$('desc').value.trim(),target_url:$('url').value.trim(),max_slots:Number($('slots').value),verification_chat:$('verify').value.trim()||null};if(!p.title||!p.description||!p.target_url)return notice('সব তথ্য পূরণ করুন।');try{await api('/api/tasks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});hide('create');notice('Task published!');await load()}catch(e){notice(e.message)}};
-$('submitProof').onclick=async()=>{if(!state.selected)return;let p={proof_username:$('proofUser').value.trim(),proof_text:$('proofText').value.trim()};if(!p.proof_username||!p.proof_text)return notice('Proof পূরণ করুন।');try{let r=await api('/api/tasks/'+state.selected.id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});hide('complete');notice(r.message||'Success!');await load()}catch(e){notice(e.message)}};
-(async()=>{if(!tg){$('message').textContent='এই পেজটি Telegram Mini App হিসেবে খুলুন।';return}tg.ready();tg.expand();if(!tg.initData){$('message').textContent='Telegram-এর ভিতর থেকে Mini App খুলুন।';return}if(!API){$('message').innerHTML='<b>Mini App connected.</b><br><br>Python API URL এখনো বসানো হয়নি। Pydroid 3-এর Python server-এর public HTTPS URL পাওয়ার পর HTML-এর <code>API_BASE_URL</code>-এ বসাতে হবে।';return}try{$('message').style.display='none';$('app').style.display='block';await load()}catch(e){$('message').textContent=e.message}})();
-</script>
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="switchTab('tasks')">এভেইলেবল টাস্ক</div>
+        <div class="nav-tab" onclick="switchTab('create')">টাস্ক দিন</div>
+    </div>
+
+    <!-- Available Tasks Section -->
+    <div id="tasks-section">
+        <h3>অন্যদের টাস্ক করে টোকেন আয় করুন</h3>
+        <div id="task-list">লোড হচ্ছে...</div>
+    </div>
+
+    <!-- Create Task Section -->
+    <div id="create-section" class="hidden">
+        <h3>নতুন টাস্ক পাবলিশ করুন</h3>
+        <p>১টি টাস্ক/স্লট = ১ টোকেন</p>
+        <input type="text" id="t-title" placeholder="টাস্কের নাম (যেমন: Join My Bot)">
+        <textarea id="t-desc" rows="3" placeholder="বিস্তারিত ডেসক্রিপশন..."></textarea>
+        <input type="url" id="t-link" placeholder="রেফার লিংক বা বট লিংক">
+        <input type="number" id="t-slots" placeholder="কতজন জয়েন করাতে চান?" min="1" value="1">
+        <button class="btn" onclick="createTask()">পাবলিশ করুন</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // ⚠️ আপনার Python API সার্ভারের লিংক এখানে দিন 
+        // (যেহেতু আপনি নিজে হোস্ট করবেন, আপনার সার্ভারের আইপি বা ডোমেইন এখানে দিবেন)
+        const API_URL = "http://127.0.0.1:5000/api"; 
+        
+        let user = tg.initDataUnsafe.user || { id: 123456, first_name: "Test User" }; // Fallback for browser testing
+
+        // টোকেন লোড করা
+        async function loadUser() {
+            try {
+                let res = await fetch(`${API_URL}/user/${user.id}`);
+                let data = await res.json();
+                if (data.success) document.getElementById('token-balance').innerText = data.tokens;
+            } catch (e) { console.error("Error loading user", e); }
+        }
+
+        // টাস্ক লোড করা
+        async function loadTasks() {
+            try {
+                let res = await fetch(`${API_URL}/tasks`);
+                let data = await res.json();
+                let list = document.getElementById('task-list');
+                list.innerHTML = "";
+                
+                if (data.tasks.length === 0) {
+                    list.innerHTML = "<p>বর্তমানে কোনো টাস্ক নেই।</p>"; return;
+                }
+
+                data.tasks.forEach(t => {
+                    list.innerHTML += `
+                        <div class="card">
+                            <h4>${t.title}</h4>
+                            <p>${t.description}</p>
+                            <a href="${t.link}" target="_blank"><button class="btn" style="background:#28a745;">লিংকে যান</button></a>
+                            <input type="text" id="proof-${t.id}" placeholder="প্রুফ দিন (আপনার টেলিগ্রাম ইউজারনেম)">
+                            <button class="btn" onclick="submitProof(${t.id})">সম্পন্ন করেছি (Submit Proof)</button>
+                        </div>
+                    `;
+                });
+            } catch (e) { console.error("Error loading tasks", e); }
+        }
+
+        // টাস্ক তৈরি করা
+        async function createTask() {
+            let title = document.getElementById('t-title').value;
+            let desc = document.getElementById('t-desc').value;
+            let link = document.getElementById('t-link').value;
+            let slots = document.getElementById('t-slots').value;
+
+            if(!title || !desc || !link) return tg.showAlert("সবগুলো ঘর পূরণ করুন!");
+
+            let res = await fetch(`${API_URL}/task/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: user.id, title: title, description: desc, link: link, slots: slots })
+            });
+            let data = await res.json();
+            tg.showAlert(data.message);
+            if(data.success) {
+                switchTab('tasks');
+                loadUser();
+            }
+        }
+
+        // প্রুফ সাবমিট করা
+        async function submitProof(taskId) {
+            let proof = document.getElementById(`proof-${taskId}`).value;
+            if(!proof) return tg.showAlert("অনুগ্রহ করে প্রুফ হিসেবে আপনার নাম/ইউজারনেম দিন!");
+
+            let res = await fetch(`${API_URL}/task/submit`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task_id: taskId, worker_id: user.id, worker_name: user.first_name, proof_text: proof })
+            });
+            let data = await res.json();
+            tg.showAlert(data.message);
+            if(data.success) loadTasks();
+        }
+
+        function switchTab(tab) {
+            document.getElementById('tasks-section').classList.add('hidden');
+            document.getElementById('create-section').classList.add('hidden');
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tab + '-section').classList.remove('hidden');
+            event.target.classList.add('active');
+            if(tab === 'tasks') loadTasks();
+        }
+
+        // ইনিশিয়াল লোড
+        loadUser();
+        loadTasks();
+    </script>
 </body>
 </html>
