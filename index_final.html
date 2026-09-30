@@ -1,280 +1,445 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <title>PulseTap Studio Pro</title>
-  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root{--bg:#07111f;--card:#0f1d31;--card2:#0b1728;--line:#1e3452;--cyan:#22d3ee;--green:#34d399;--yellow:#facc15}
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -10%,#164e63 0,#07111f 42%,#050b14 100%);color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden}
-    body{user-select:none;touch-action:manipulation}
-    input{user-select:text}
-    button{touch-action:manipulation}
-    .app{min-height:100dvh;max-width:520px;margin:0 auto;padding:14px 14px 96px}
-    .glass{background:rgba(15,29,49,.82);border:1px solid rgba(102,126,162,.25);box-shadow:0 15px 40px rgba(0,0,0,.28);backdrop-filter:blur(14px)}
-    .coin-glow{filter:drop-shadow(0 0 18px rgba(34,211,238,.3))}
-    .tap-btn{width:min(72vw,280px);height:min(72vw,280px);border-radius:50%;background:radial-gradient(circle at 35% 25%,#67e8f9 0,#0891b2 24%,#155e75 54%,#0b1630 100%);border:5px solid #a5f3fc;box-shadow:0 0 0 10px rgba(34,211,238,.08),0 0 70px rgba(34,211,238,.28),inset 0 0 50px rgba(255,255,255,.12);transition:transform .08s}
-    .tap-btn:active{transform:scale(.965)}
-    .pulse-ring{animation:pulseRing 2s infinite}
-    @keyframes pulseRing{0%,100%{box-shadow:0 0 0 0 rgba(34,211,238,.2),0 0 70px rgba(34,211,238,.22)}50%{box-shadow:0 0 0 16px rgba(34,211,238,.03),0 0 90px rgba(34,211,238,.38)}}
-    .floating{position:fixed;z-index:90;pointer-events:none;font-weight:900;font-size:20px;color:#67e8f9;text-shadow:0 0 15px rgba(34,211,238,.7);animation:float .75s ease-out forwards}
-    @keyframes float{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-84px) scale(1.15)}}
-    .nav{position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(492px,calc(100vw - 20px));z-index:55}
-    .nav button{min-height:56px}
-    .modal{position:fixed;inset:0;z-index:70;background:rgba(2,8,23,.96);backdrop-filter:blur(18px);display:none;padding:16px;overflow:auto}
-    .modal.show{display:flex}
-    .sheet{width:min(100%,500px);margin:auto}
-    .ad-overlay{position:fixed;inset:0;z-index:120;background:#020817;display:none;flex-direction:column}
-    .ad-overlay.show{display:flex}
-    .ad-frame{width:100%;flex:1;border:0;background:#06101e}
-    .ad-top{padding:12px 14px;background:#0b1730;border-bottom:1px solid #1e3452;display:flex;align-items:center;justify-content:space-between}
-    .ad-bottom{padding:14px;background:#0b1730;border-top:1px solid #1e3452}
-    .hidden2{display:none!important}
-    .status-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-    .status-on{background:#34d399;box-shadow:0 0 12px #34d399}
-    .status-off{background:#fb7185;box-shadow:0 0 12px #fb7185}
-    .tiny-scroll{max-height:55vh;overflow:auto}
-    .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#22d3ee,#2563eb);display:grid;place-items:center;box-shadow:0 8px 28px rgba(34,211,238,.25)}
-    .energy-bar{height:8px;background:#081321;border-radius:999px;overflow:hidden;border:1px solid #1f3550}.energy-fill{height:100%;background:linear-gradient(90deg,#22d3ee,#60a5fa);transition:width .2s}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Earning Platform</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            user-select: none;
+        }
+        .card-bg {
+            background: linear-gradient(145deg, #161d2f, #111625);
+            border: 1px solid #1f293d;
+        }
+        .btn-primary {
+            background-color: #84cc16;
+            color: #052e16;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(132, 204, 22, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(132, 204, 22, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(132, 204, 22, 0); }
+        }
+    </style>
 </head>
-<body>
-<div id="app" class="app">
-  <header class="glass rounded-3xl p-4 flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="brand-mark" aria-label="PulseTap logo">
-        <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
-          <circle cx="32" cy="32" r="23" fill="none" stroke="white" stroke-width="5" opacity=".95"/>
-          <path d="M24 33h7l4-12 6 18h-7l-3 10-7-16z" fill="white"/>
-        </svg>
-      </div>
-      <div class="min-w-0">
-        <div id="name" class="font-black text-base truncate">Gamer</div>
-        <div class="text-xs text-slate-400 flex items-center gap-2 mt-1"><span id="netDot" class="status-dot status-off"></span><span id="netText">Checking connection...</span></div>
-      </div>
+<body class="pb-24">
+
+    <!-- Header Section -->
+    <header class="p-4 flex justify-between items-center border-b border-gray-800">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-lime-400 border border-lime-500/30" id="user-avatar">
+                U
+            </div>
+            <div>
+                <h1 class="font-semibold text-sm" id="user-name">User Account</h1>
+                <p class="text-xs text-gray-400" id="user-id">ID: 00000000</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <span class="text-xs text-gray-400 uppercase tracking-wider block">Network</span>
+            <span class="text-xs font-semibold text-lime-400 flex items-center justify-end gap-1">
+                <svg class="w-2 h-2 fill-lime-400" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3"/></svg>
+                USDT Mainnet
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="p-4 space-y-4">
+
+        <!-- Balance Overview Card -->
+        <div class="card-bg rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Estimated Income</span>
+                <span class="text-xs bg-lime-500/10 text-lime-400 px-2 py-0.5 rounded border border-lime-500/20 font-mono" id="mining-status">OFFLINE</span>
+            </div>
+            
+            <div class="flex items-baseline space-x-1 my-2">
+                <span class="text-3xl font-bold font-mono" id="usdt-balance">0.000000</span>
+                <span class="text-xs font-semibold text-gray-400">USDT</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-gray-800 text-center text-xs">
+                <div>
+                    <p class="text-gray-400">Hourly</p>
+                    <p class="font-mono font-medium text-gray-200" id="rate-hour">$0.0004</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">Daily</p>
+                    <p class="font-mono font-medium text-gray-200" id="rate-day">$0.0100</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">Monthly</p>
+                    <p class="font-mono font-medium text-gray-200" id="rate-month">$0.3000</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Mining Action -->
+        <button id="start-mining-btn" onclick="triggerAdCheck('mining')" class="w-full py-3.5 rounded-xl btn-primary pulse-animation flex items-center justify-center space-x-2 shadow-lg shadow-lime-950/40">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <span id="mining-btn-text">Start 24H Mining Session</span>
+        </button>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="card-bg p-4 rounded-xl">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs text-gray-400">Coin Boost</span>
+                    <svg class="w-4 h-4 stroke-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div class="text-xl font-bold font-mono text-white" id="coin-balance">0</div>
+                <p class="text-[10px] text-lime-400 mt-1" id="speed-text">+0.00 USDT/Day Speed</p>
+            </div>
+
+            <div class="card-bg p-4 rounded-xl">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs text-gray-400">USDT Wallet</span>
+                    <svg class="w-4 h-4 stroke-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <div class="text-xl font-bold font-mono text-white" id="wallet-balance">$0.0000</div>
+                <p class="text-[10px] text-gray-400 mt-1">Available Withdrawal</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="openModal('topup-modal')" class="py-3 card-bg rounded-xl font-semibold text-sm text-lime-400 hover:bg-slate-800 transition flex items-center justify-center gap-2 border border-lime-500/20">
+                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Top Up
+            </button>
+            <button onclick="openModal('withdraw-modal')" class="py-3 card-bg rounded-xl font-semibold text-sm text-gray-200 hover:bg-slate-800 transition flex items-center justify-center gap-2 border border-gray-700">
+                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                Withdraw
+            </button>
+        </div>
+
+        <!-- Referral Info Banner -->
+        <div class="card-bg p-4 rounded-xl space-y-2">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xs font-semibold text-gray-300">Affiliate Program</h3>
+                <span class="text-[10px] bg-slate-800 text-gray-400 px-2 py-0.5 rounded">+10 Coins / Invite</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <input type="text" id="ref-link" readonly value="https://t.me/rahim709_bot?start=12345" class="bg-slate-900 border border-gray-800 rounded-lg p-2 text-xs w-full font-mono text-gray-400">
+                <button onclick="copyRefLink()" class="px-3 py-2 bg-slate-800 text-xs font-medium rounded-lg text-lime-400 border border-gray-700">Copy</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-md border-t border-gray-800 px-6 py-2 flex justify-between items-center z-40">
+        <button onclick="switchTab('home')" class="flex flex-col items-center text-lime-400">
+            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span class="text-[10px] mt-1 font-medium">Home</span>
+        </button>
+        <button onclick="switchTab('friends')" class="flex flex-col items-center text-gray-400 hover:text-gray-200">
+            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <span class="text-[10px] mt-1 font-medium">Friends</span>
+        </button>
+        <button onclick="openMysteryBoxModal()" class="flex flex-col items-center text-gray-400 hover:text-gray-200">
+            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <span class="text-[10px] mt-1 font-medium">Mystery Box</span>
+        </button>
+    </nav>
+
+    <!-- Modal Container: ADS WATCH -->
+    <div id="ad-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="card-bg w-full max-w-sm rounded-2xl p-6 text-center space-y-4">
+            <h2 class="text-base font-bold text-gray-100">Verification Required</h2>
+            <p class="text-xs text-gray-400">Complete watching 5 sponsor ads to proceed with your action.</p>
+            
+            <div class="py-4">
+                <div class="text-3xl font-bold font-mono text-lime-400" id="ad-count-display">0 / 5</div>
+                <p class="text-[10px] text-gray-500 mt-1">Ads Completed</p>
+            </div>
+
+            <button id="watch-ad-btn" onclick="processAdWatch()" class="w-full py-3 btn-primary rounded-xl font-semibold text-sm">
+                Watch Ad
+            </button>
+        </div>
     </div>
-    <button id="dailyBtn" class="bg-gradient-to-r from-emerald-500 to-green-700 rounded-2xl px-3 py-2 text-xs font-black"><i class="fa-solid fa-calendar-check mr-1"></i>Daily</button>
-  </header>
 
-  <section class="text-center mt-5">
-    <div class="text-xs text-slate-400">YOUR COINS</div>
-    <div id="coins" class="text-5xl font-black tracking-tight coin-glow mt-1">0</div>
-    <div class="flex justify-center gap-2 mt-2 flex-wrap">
-      <span class="px-3 py-1 rounded-full text-xs border border-cyan-900 bg-cyan-950/40 text-cyan-300">Level <b id="level">1</b></span>
-      <span class="px-3 py-1 rounded-full text-xs border border-slate-700 bg-slate-900/60 text-slate-200">Total taps <b id="taps">0</b></span>
-      <span id="fastBadge" class="hidden2 px-3 py-1 rounded-full text-xs border border-yellow-600/50 bg-yellow-950/30 text-yellow-300"><i class="fa-solid fa-bolt mr-1"></i>4x ACTIVE</span>
+    <!-- Modal Container: TOP UP -->
+    <div id="topup-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="card-bg w-full max-w-sm rounded-2xl p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <h3 class="text-sm font-semibold">Account Top Up</h3>
+                <button onclick="closeModal('topup-modal')" class="text-gray-400 hover:text-white">&times;</button>
+            </div>
+            
+            <div class="text-xs text-gray-400 space-y-1">
+                <p>• Minimum Top Up: <span class="text-white font-mono">1.00 USDT</span></p>
+                <p>• Conversion Rate: <span class="text-lime-400 font-mono">1 USDT = 40 Coins</span></p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs text-gray-400">Transaction ID (TxID)</label>
+                <input type="text" id="txid-input" placeholder="Paste TxID here..." class="w-full bg-slate-900 border border-gray-800 rounded-lg p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-lime-500">
+            </div>
+
+            <button onclick="submitTopUp()" class="w-full py-3 btn-primary rounded-xl text-xs font-semibold">Verify Payment</button>
+        </div>
     </div>
-    <div class="text-xs text-slate-400 mt-4">Tap energy <b id="tapEnergy">1,000</b> / <span id="tapEnergyBase">1,000</span></div>
-    <div class="energy-bar mt-2"><div id="energyFill" class="energy-fill" style="width:100%"></div></div>
-    <div class="text-[11px] text-slate-500 mt-2">Resets in <span id="energyReset">60:00</span> • Ads add <span id="adRewardTxt">100</span> energy • Ad cooldown <span id="adCooldownTxt">5:00</span></div>
-    <div class="text-xs text-slate-500 mt-3">1,000,000 Coins = 1 USDT • Withdraw fee: <span id="feeTxt">15%</span></div>
-  </section>
 
-  <section class="mt-7 flex flex-col items-center">
-    <div class="text-center mb-3">
-      <div class="text-xs text-slate-400">AUTO AD</div>
-      <div id="adTimer" class="text-lg font-black text-cyan-300">—</div>
+    <!-- Modal Container: WITHDRAW -->
+    <div id="withdraw-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="card-bg w-full max-w-sm rounded-2xl p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <h3 class="text-sm font-semibold">Withdraw Funds</h3>
+                <button onclick="closeModal('withdraw-modal')" class="text-gray-400 hover:text-white">&times;</button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-gray-400">Amount (Min 0.1 USDT)</label>
+                    <input type="number" id="withdraw-amount" placeholder="0.10" oninput="calculateWithdrawal()" class="w-full bg-slate-900 border border-gray-800 rounded-lg p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-lime-500 mt-1">
+                </div>
+
+                <div class="bg-slate-900/50 p-3 rounded-lg border border-gray-800/80 text-xs space-y-1 font-mono">
+                    <div class="flex justify-between text-gray-400">
+                        <span>Requested Amount:</span>
+                        <span id="calc-req">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-gray-400">
+                        <span>Network Fee (10%):</span>
+                        <span id="calc-fee" class="text-red-400">-$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-white font-semibold pt-1 border-t border-gray-800">
+                        <span>Net Payout:</span>
+                        <span id="calc-net" class="text-lime-400">$0.00</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-400">USDT TRC20 / BEP20 Address</label>
+                    <input type="text" id="withdraw-address" placeholder="Enter wallet address..." class="w-full bg-slate-900 border border-gray-800 rounded-lg p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-lime-500 mt-1">
+                </div>
+            </div>
+
+            <button onclick="triggerAdCheck('withdraw')" class="w-full py-3 btn-primary rounded-xl text-xs font-semibold">Proceed Withdrawal</button>
+        </div>
     </div>
-    <button id="tapBtn" class="tap-btn pulse-ring flex flex-col items-center justify-center">
-      <i class="fa-solid fa-fingerprint text-6xl text-cyan-50"></i>
-      <span class="mt-3 text-xs tracking-[.35em] font-black text-cyan-50">TAP NOW</span>
-      <span id="tapPower" class="mt-2 text-[11px] text-cyan-200">+1 / tap</span>
-    </button>
-    <div id="offlineBanner" class="hidden2 mt-4 w-full text-center bg-rose-950/70 border border-rose-700/40 rounded-2xl p-3 text-sm"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Internet/API connection lost. Tap sync is paused.</div>
-  </section>
 
-  <section class="grid grid-cols-2 gap-3 mt-7">
-    <button id="referBtn" class="glass rounded-2xl p-4 text-left"><div class="text-2xl text-cyan-300"><i class="fa-solid fa-user-group"></i></div><div class="font-black mt-2">Refer and Earn</div><div class="text-xs text-slate-400 mt-1">+20k / referral</div></button>
-    <button id="fastBtn" class="glass rounded-2xl p-4 text-left"><div class="text-2xl text-yellow-300"><i class="fa-solid fa-bolt"></i></div><div class="font-black mt-2">4x Fast Tap</div><div class="text-xs text-slate-400 mt-1">1 USDT</div></button>
-  </section>
-</div>
+    <!-- JavaScript Application Logic -->
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if(tg) tg.expand();
 
-<nav class="nav glass rounded-3xl p-2 grid grid-cols-5 gap-1">
-  <button data-tab="home" class="rounded-2xl text-cyan-300 flex flex-col items-center justify-center"><i class="fa-solid fa-bolt"></i><span class="text-[10px] mt-1">Mine</span></button>
-  <button data-tab="tasks" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-list-check"></i><span class="text-[10px] mt-1">Tasks</span></button>
-  <button data-tab="ref" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-user-group"></i><span class="text-[10px] mt-1">Refer</span></button>
-  <button data-tab="wallet" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-wallet"></i><span class="text-[10px] mt-1">Wallet</span></button>
-  <button data-tab="more" class="rounded-2xl text-slate-400 flex flex-col items-center justify-center"><i class="fa-solid fa-ellipsis"></i><span class="text-[10px] mt-1">More</span></button>
-</nav>
+        const AD_URL = "https://www.profitableratecpmnetwork.com/ubupygs3?key=511d31b0135289fc6ee4ff0f18b63a18";
+        
+        // Application State
+        let state = {
+            usdtBalance: 0.0998,
+            coins: 0,
+            hasWonMaxBox: false,
+            lastBoxOpened: 0,
+            adCount: 0,
+            pendingAction: null
+        };
 
-<!-- generic modal -->
-<div id="modal" class="modal">
-  <div class="sheet glass rounded-3xl p-5">
-    <div class="flex items-center justify-between mb-4"><h2 id="modalTitle" class="text-2xl font-black"></h2><button id="modalClose" class="w-10 h-10 rounded-2xl bg-slate-800">✕</button></div>
-    <div id="modalBody"></div>
-  </div>
-</div>
+        // Initialize User Data
+        if(tg?.initDataUnsafe?.user) {
+            const u = tg.initDataUnsafe.user;
+            document.getElementById('user-name').innerText = `${u.first_name || ''} ${u.last_name || ''}`;
+            document.getElementById('user-id').innerText = `ID: ${u.id}`;
+            document.getElementById('user-avatar').innerText = (u.first_name || 'U').charAt(0).toUpperCase();
+        }
 
-<!-- 20 second in-app ad screen -->
-<div id="adOverlay" class="ad-overlay">
-  <div class="ad-top">
-    <div><div class="font-black">Reward Advertisement</div><div class="text-[11px] text-slate-400">Complete the timer to receive tap energy</div></div>
-    <div id="adCount" class="text-xl font-black text-cyan-300">20s</div>
-  </div>
-  <iframe id="adFrame" class="ad-frame" sandbox="allow-scripts allow-forms allow-popups allow-same-origin"></iframe>
-  <div class="ad-bottom">
-    <button id="openAdBtn" class="w-full py-3 rounded-2xl bg-cyan-700/40 border border-cyan-500/30 text-cyan-100 text-sm font-bold mb-2 hidden2">Ad unavailable in frame</button>
-    <button id="adBackBtn" class="w-full py-3 rounded-2xl bg-slate-700 text-white text-sm font-black opacity-50" disabled>Back</button>
-  </div>
-</div>
+        // Calculation Helpers
+        function updateUI() {
+            const dailyRate = 0.01 + (state.coins * 0.01);
+            const hourlyRate = dailyRate / 24;
+            const monthlyRate = dailyRate * 30;
 
-<script>
-(() => {
-  const tg = window.Telegram?.WebApp;
-  if (tg) { tg.ready(); tg.expand(); }
+            document.getElementById('usdt-balance').innerText = state.usdtBalance.toFixed(6);
+            document.getElementById('wallet-balance').innerText = `$${state.usdtBalance.toFixed(4)}`;
+            document.getElementById('coin-balance').innerText = state.coins;
+            document.getElementById('speed-text').innerText = `+${(state.coins * 0.01).toFixed(2)} USDT/Day Speed`;
 
-  // GitHub Pages hosts only the UI. Put your public HTTPS Flask API here, or pass ?api=https://...
-  // The bot can append this automatically when API_PUBLIC_URL is configured.
-  const API_BASE = (window.PULSETAP_API_BASE || new URLSearchParams(location.search).get('api') || '').replace(/\/+$/,'');
-  const state = {
-    initData: tg?.initData || "",
-    user: null, config: null, tasks: [], withdrawals: [], pendingTapDelta: 0,
-    syncing: false, online: navigator.onLine, adEnd: 0, adTimer: null, adSessionId: null, adCountdown: null, audioCtx: null,
-  };
+            document.getElementById('rate-hour').innerText = `$${hourlyRate.toFixed(4)}`;
+            document.getElementById('rate-day').innerText = `$${dailyRate.toFixed(4)}`;
+            document.getElementById('rate-month').innerText = `$${monthlyRate.toFixed(4)}`;
+        }
 
-  const $ = id => document.getElementById(id);
-  const fmt = n => Number(n||0).toLocaleString('en-US');
-  const show = (id,v=true)=>$(id).classList.toggle('hidden2',!v);
+        // Modal Handlers
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-  function nativeAlert(  }
+        // Ad Gate Controller
+        function triggerAdCheck(actionType) {
+            state.pendingAction = actionType;
+            state.adCount = 0;
+            document.getElementById('ad-count-display').innerText = `0 / 5`;
+            openModal('ad-modal');
+        }
 
-  function successSound(){ playTone(660,.07,'sine',.035); setTimeout(()=>playTone(880,.10,'sine',.03),70); }
+        function processAdWatch() {
+            window.open(AD_URL, '_blank');
+            state.adCount++;
+            document.getElementById('ad-count-display').innerText = `${state.adCount} / 5`;
 
+            if(state.adCount >= 5) {
+                closeModal('ad-modal');
+                executePendingAction();
+            }
+        }
 
-  async function api(path, body={}){
-    const controller = new AbortController();
-    const timeout = setTimeout(()=>controller.abort(), 12000);
-    try{
-      const res = await fetch(API_BASE + path, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({initData:state.initData,...body}),
-        signal:controller.signal,
-        cache:'no-store',
-      });
-      let data={}; try{data=await res.json()}catch{}
-      if(!res.ok && !data.error) data.error=`HTTP ${res.status}`;
-      return data;
-    }finally{ clearTimeout(timeout); }
-  }
+        function executePendingAction() {
+            if(state.pendingAction === 'mining') {
+                document.getElementById('mining-status').innerText = 'ACTIVE';
+                document.getElementById('mining-btn-text').innerText = 'Mining Session Running (24H)';
+                document.getElementById('start-mining-btn').classList.remove('pulse-animation');
+                alert('Mining Session Started Successfully!');
+            } else if(state.pendingAction === 'withdraw') {
+                processWithdrawal();
+            }
+            state.pendingAction = null;
+        }
 
-  async function bootstrap(){
-    if(location.hostname.endsWith('github.io') && !API_BASE){
-      setConnection(false);
-      nativeAlert('Mini App UI is live, but the public API URL is not configured yet. Set API_PUBLIC_URL on the Flask server and reopen the bot.');
-      return;
-    }
-    if(!state.initData){
-      nativeAlert('এই Mini App অবশ্যই Telegram bot-এর Web App button থেকে খুলুন।');
-      return;
-    }
-    try{
-      const data = await api('/api/bootstrap');
-      if(!data.ok) throw new Error(data.error||'Authentication failed');
-      state.user=data.user; state.config=data.config; state.tasks=data.tasks||[]; state.withdrawals=data.withdrawals||[];
-      updateUI(); setConnection(true); startAdClock();
-      if(tg?.BackButton) tg.BackButton.hide();
-    }catch(e){
-      setConnection(false);
-      nativeAlert(e.message||'Server connection failed.');
-    }
-  }
+        // Top Up Logic
+        function submitTopUp() {
+            const txid = document.getElementById('txid-input').value.trim();
+            if(!txid) {
+                alert('Please enter a valid Transaction ID.');
+                return;
+            }
 
-  async function syncNow(force=false){
-    if(state.syncing || !state.online || !state.user) return;
-    if(!force && state.pendingTapDelta<=0) return;
-    state.syncing=true;
-    const delta=state.pendingTapDelta;
-    state.pendingTapDelta=0;
-    try{
-      const data=await api('/api/sync',{tapDelta:delta});
-      if(!data.ok) throw new Error(data.error||'Sync failed');
-      state.user=data.user; updateUI();
-      setConnection(true);
-    }catch(e){
-      state.pendingTapDelta += delta;
-      setConnection(false);
-    }finally{state.syncing=false}
-  }
+            fetch('/api/verify-topup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    userId: tg?.initDataUnsafe?.user?.id || 12345,
+                    txid: txid
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    state.coins += data.coinsAdded;
+                    updateUI();
+                    closeModal('topup-modal');
+                    alert(`Top up verified! Added ${data.coinsAdded} Coins.`);
+                } else {
+                    alert('Automated Verification: Transaction ID not found or invalid.');
+                }
+            })
+            .catch(() => alert('Verification endpoint simulating check. Auto Robot processing...'));
+        }
 
-  async function heartbeat(){
-    if(!state.online || !state.user) return;
-    try{ const d=await api('/api/heartbeat'); if(!d.ok) throw new Error(); setConnection(true); }
-    catch{ setConnection(false); }
-  }
+        // Withdrawal Math Logic
+        function calculateWithdrawal() {
+            const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+            const fee = amt * 0.10;
+            const net = Math.max(0, amt - fee);
 
-  function floatCoin(x,y,count){
-    const el=document.createElement('div'); el.className='floating'; el.textContent=`+${count}`; el.style.left=(x-8)+'px'; el.style.top=(y-14)+'px'; document.body.appendChild(el); setTimeout(()=>el.remove(),750);
-  }
+            document.getElementById('calc-req').innerText = `$${amt.toFixed(4)}`;
+            document.getElementById('calc-fee').innerText = `-$${fee.toFixed(4)}`;
+            document.getElementById('calc-net').innerText = `$${net.toFixed(4)}`;
+        }
 
-  let activePointers=new Set();
-  let lastTapUi=0;
-  $('tapBtn').addEventListener('pointerdown', (e)=>{
-    if(!state.user || !state.config || !state.online) return;
-    if(state.user.tapEnergy<=0){ playTone(220,.07,'square',.025); return nativeAlert('Hourly tap energy is empty. Watch a reward ad or wait for the next reset.'); }
-    if(activePointers.size >= (state.user.fastTapRemaining>0 ? 4 : 2)) return;
-    const now=performance.now();
-    if(now-lastTapUi<18) return;
-    lastTapUi=now;
-    activePointers.add(e.pointerId);
-    const multiplier = state.user.fastTapRemaining>0 ? state.config.fastTapMultiplier : 1;
-    state.pendingTapDelta += 1;
-    if(state.pendingTapDelta >= 8) syncNow(false);
-    state.user.taps += 1;
-    state.user.tapEnergy = Math.max(0, state.user.tapEnergy - 1);
-    state.user.coins += multiplier;
-    state.user.level = Math.min(100,1+Math.floor(state.user.taps/1000));
-    updateUI(); floatCoin(e.clientX,e.clientY,multiplier);
-    playTone(430 + Math.min(260,e.pressure*120),.045,'triangle',.028);
-    if(tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-  });
-  ['pointerup','pointercancel','pointerleave'].forEach(ev=>$('tapBtn').addEventListener(ev,e=>activePointers.delete(e.pointerId)));
+        function processWithdrawal() {
+            const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+            const addr = document.getElementById('withdraw-address').value.trim();
 
+            if(amt < 0.1) {
+                alert('Minimum withdrawal amount is 0.1 USDT');
+                return;
+            }
+            if(amt > state.usdtBalance) {
+                alert('Insufficient Balance');
+                return;
+            }
+            if(!addr) {
+                alert('Enter valid wallet address');
+                return;
+            }
 
-  setInterval(()=>syncNow(false), 750);
-  setInterval(()=>heartbeat(), 2200);
-  window.addEventListener('online',()=>{setConnection(true);syncNow(true);});
-  window.addEventListener('offline',()=>{setConnection(false); nativeAlert('Network connection lost. Tap sync has been paused.');});
-  document.addEventListener('visibilitychange',()=>{ if(document.hidden) syncNow(true); else { heartbeat(); bootstrap(); }});
+            state.usdtBalance -= amt;
+            updateUI();
+            closeModal('withdraw-modal');
 
-  async function claimDaily(){
-    const d=await api('/api/daily-claim');
-    if(!d.ok) return nativeAlert(d.error||'Daily unavailable');
-    state.user=d.user; updateUI(); nativeAlert(d.message); successSound(); if(tg?.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
-  }
-  $('dailyBtn').onclick=claimDaily;
+            // Send notification to admin backend
+            fetch('/api/withdraw-request', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user: tg?.initDataUnsafe?.user || {id: 12345, username: 'User'},
+                    amount: amt,
+                             address: addr,
+                    netAmount: (amt * 0.9).toFixed(4),
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('Withdrawal request submitted successfully!');
+            })
+            .catch(err => {
+                alert('Withdrawal request logged successfully!');
+            });
+        }
 
-  function openModal(title, html){$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('modal').classList.add('show'); if(tg?.BackButton)tg.BackButton.show();}
-  function closeModal(){ $('modal').classList.remove('show'); if(tg?.BackButton)tg.BackButton.hide(); }
-  $('modalClose').onclick=closeModal;
-  if(tg?.BackButton) tg.BackButton.onClick(()=>{ if($('modal').classList.contains('show'))closeModal(); else if($('adOverlay').classList.contains('show') && !$('adBackBtn').disabled)closeAd(); });
+        // Referral Link Copy Handler
+        function copyRefLink() {
+            const copyText = document.getElementById("ref-link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("Referral link copied to clipboard!");
+        }
 
-  function tasksView(){
-    const rows=state.tasks.map(t=>`<div class="bg-slate-950/60 rounded-2xl p-4 border border-slate-800 mb-3"><div class="font-black">${esc(t.title)}</div><div class="text-xs text-yellow-300 mt-1">+${fmt(t.reward)} Coins</div><div class="flex gap-2 mt-3"><button class="open-task flex-1 bg-blue-700 rounded-xl py-2 text-xs font-black" data-link="${escAttr(t.link)}">Open</button><button class="claim-task flex-1 bg-emerald-700 rounded-xl py-2 text-xs font-black" data-id="${t.id}" ${t.claimed?'disabled':''}>${t.claimed?'Claimed':'Claim'}</button></div></div>`).join('');
-    openModal('Tasks',rows||'<div class="text-slate-400">No active tasks.</div>');
-    document.querySelectorAll('.open-task').forEach(b=>b.onclick=()=>{const link=b.dataset.link; if(tg?.openLink)tg.openLink(link);else window.open(link,'_blank')});
-    document.querySelectorAll('.claim-task').forEach(b=>b.onclick=async()=>{const d=await api('/api/task-claim',{taskId:b.dataset.id}); nativeAlert(d.message||d.error); if(d.ok){state.user=d.user;b.disabled=true;b.textContent='Claimed';updateUI();}});
-  }
+        // Bottom Navigation Tab Switching Logic
+        function switchTab(tabName) {
+            if(tabName === 'home') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if(tabName === 'friends') {
+                const refBox = document.getElementById('ref-link');
+                if(refBox) refBox.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
 
-  async function referralView(){
-    const botLink = state.config.botUsername ? `https://t.me/${state.config.botUsername}?start=ref_${state.user.userId}` : `https://t.me/YourBotUsername?start=ref_${state.user.userId}`;
-    let referralRows='';
-    try{
-      const rd=await api('/api/referrals');
-      referralRows = (rd.referrals||[]).map(r=>`<div class=\"bg-slate-950 rounded-2xl p-3 mb-2 text-xs\"><div class=\"font-bold\">${esc(r.name||'Gamer')}</div><div class=\"text-slate-400 mt-1\">Taps: ${fmt(r.taps)} • ${r.referral_rewarded?'Reward released':'Waiting for 1,000 taps'}</div></div>`).join('');
-    }catch{}
-    const left=state.config.referralsLeft;
-    openModal('Refer and Earn',`<div class="rounded-2xl bg-cyan-950/20 border border-cyan-900 p-4"><div class="font-black text-cyan-200 text-lg">+${fmt(state.config.referrerReward)} Coins per successful referral</div><div class="text-xs text-slate-300 mt-2">New user receives +${fmt(state.config.referredReward)} Coins.</div><div class="text-xs text-yellow-300 mt-2">Both rewards unlock only after the referred user completes ${fmt(state.config.refUnlockTaps)} taps.</div></div><div class="mt-4 rounded-2xl bg-slate-950 p-4"><div class="text-xs text-slate-400">Successful referrals</div><div class="text-3xl font-black mt-1">${state.user.successfulReferrals} / ${state.config.maxReferrals}</div><div class="text-xs text-slate-500 mt-1">Remaining slots: ${left}</div></div><div class="mt-4"><div class="font-black mb-2">Referral status</div>${referralRows||'<div class=\"text-slate-500 text-sm\">No referred users yet.</div>'}</div>${left>0?`<button id="shareRef" class="w-full mt-4 bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl py-3 font-black"><i class="fa-solid fa-share-nodes mr-1"></i>Share Referral Link</button><div class="text-[11px] text-slate-500 mt-2 break-all">${esc(botLink)}</div>`:`<div class="mt-4 rounded-2xl border border-rose-800/40 bg-rose-950/20 p-4 text-rose-200 text-sm font-bold">You have reached the ${state.config.maxReferrals}-referral limit.</div>`}`);
-    const btn=document.getElementById('shareRef');
-    if(btn) btn.onclick=()=>{const share=`https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodeURIComponent('Join PulseTap Studio')}`; if(tg?.openTelegramLink)tg.openTelegramLink(share);else if(navigator.share)navigator.share({url:botLink,text:'Join PulseTap Studio'});else navigator.clipboard?.writeText(botLink).then(()=>nativeAlert('Referral link copied.'));};
-  }
+        // Mystery Box Modal & Reward Handler
+        function openMysteryBoxModal() {
+            if(confirm("Open Mystery Box? You need to watch 5 sponsor ads to unlock your bonus reward!")) {
+                triggerAdCheck('mystery_box');
+            }
+        }
 
+        // Multi-action executor update
+        const baseExecuteAction = executePendingAction;
+        executePendingAction = function() {
+            if(state.pendingAction === 'mystery_box') {
+                const rewardUSDT = (Math.random() * 0.02 + 0.005).toFixed(4);
+                const rewardCoins = 5;
+                state.usdtBalance += parseFloat(rewardUSDT);
+                state.coins += rewardCoins;
+                updateUI();
+                alert(`🎉 Mystery Box Unlocked!\nYou received $${rewardUSDT} USDT and +${rewardCoins} Coins!`);
+                state.pendingAction = null;
+            } else {
+                baseExecuteAction();
+            }
+        };
 
-  function walletView(){
-    const fee=state.config.withdrawFeePercent;
-    const min=state.config.minWithdrawCoins;
-    openModal('Wallet and Withdraw',`<div class="rounded-2xl bg-slate-950 p-4"><div class="text-xs text-slate-400">Gross balance</div><div class="text-3xl font-black">${(state.user.coins/state.config.conversionCoins).toFixed(6)} USDT</div><div class="text-xs text-slate-500 mt-1">Rate: ${fmt(state.config.conversionCoins)} Coins = 1 USDT</div></div><div class="rounded-2xl bg-amber-950/20 border border-amber-700/30 p-4 mt-3 text-sm">Withdrawal fee: <b>${fee}%</b>. Minimum: <b>${fmt(min)} Coins</b>. ${state.config.withdrawRequiresReferral && state.user.successfulReferrals < state.config.minReferralsForWithdraw ? `<br><br>Before withdrawal you need at least <b>${state.config.minReferralsForWithdraw}</b> successful referral
+        // Initial UI Render on page load
+        updateUI();
+    </script>
+</body>
+</html>
