@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0f19">
+    <meta name="color-scheme" content="dark">
+    <title>Crypto Earning Platform</title>
+
+    <!-- Telegram Mini App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg: #0b0f19;
+            --panel: #111625;
+            --panel-2: #161d2f;
+            --border: #1f293d;
+            --lime: #84cc16;
+            --lime-dark: #052e16;
+            --text: #f3f4f6;
+            --muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            background: var(--bg);
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding-bottom: calc(88px + env(safe-area-inset-bottom));
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(132, 204, 22, 0.06), transparent 28%),
+                var(--bg);
+            color: var(--text);
+            user-select: none;
+            -webkit-user-select: none;
+            overscroll-behavior-y: contain;
+        }
+
+        input,
+        button {
+            font: inherit;
+        }
+
+        input {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .app-shell {
+            width: 100%;
+            max-width: none;
+            min-height: 100dvh;
+            margin: 0;
+        }
+
+
+        /* Full-screen Telegram Mini App layout */
+        @media (max-width: 700px) {
+            .app-shell {
+                width: 100vw;
+                min-height: 100dvh;
+            }
+
+            body {
+                width: 100%;
+                overflow-x: hidden;
+            }
+
+            main {
+                width: 100%;
+            }
+        }
+
+        @supports (height: 100svh) {
+            .app-shell {
+                min-height: 100svh;
+            }
+        }
+
+        .card-bg {
+            background: linear-gradient(145deg, var(--panel-2), var(--panel));
+            border: 1px solid var(--border);
+        }
+
+        .btn-primary {
+            background: var(--lime);
+            color: var(--lime-dark);
+            font-weight: 700;
+            transition: transform 0.16s ease, opacity 0.16s ease;
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: scale(0.975);
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: #1b2436;
+            color: #d1d5db;
+            border: 1px solid #28344a;
+        }
+
+        .pulse-animation {
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(132, 204, 22, 0.35);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(132, 204, 22, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(132, 204, 22, 0);
+            }
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .toast-wrap {
+            position: fixed;
+            left: 50%;
+            top: calc(16px + env(safe-area-inset-top));
+            z-index: 300;
+            width: min(92vw, 480px);
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            margin-bottom: 8px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid #29364b;
+            background: rgba(17, 22, 37, 0.97);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .toast.success {
+            border-color: rgba(132, 204, 22, 0.4);
+        }
+
+        .toast.error {
+            border-color: rgba(248, 113, 113, 0.4);
+        }
+
+        .toast.info {
+            border-color: rgba(96, 165, 250, 0.4);
+        }
+
+        .number-font {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .nav-btn.active {
+            color: var(--lime);
+        }
+
+        .nav-btn.active .nav-dot {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .nav-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 999px;
+            background: var(--lime);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: 0.15s ease;
+            margin-top: 2px;
+        }
+
+        .progress-track {
+            height: 8px;
+            border-radius: 999px;
+            background: #1b2436;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #65a30d, #a3e635);
+            transition: width 0.25s ease;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #6b7280;
+            display: inline-block;
+        }
+
+        .status-dot.active {
+            background: var(--lime);
+            box-shadow: 0 0 10px rgba(132, 204, 22, 0.7);
+        }
+
+        .break-anywhere {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .ad-frame-loading {
+            filter: blur(0.2px);
+        }
+
+        #ad-frame-wrap {
+            min-height: 270px;
+            background: #f8fafc;
+        }
+
+        #ad-frame {
+            display: block;
+            width: 100%;
+            height: 270px;
+            border: 0;
+            background: #f8fafc;
+            color-scheme: light;
+        }
+
+        .ad-loading-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(180deg, #f8fafc, #eef2f7);
+            color: #475569;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .ad-loading-spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid #cbd5e1;
+            border-top-color: #65a30d;
+            border-radius: 999px;
+            animation: adSpin 0.8s linear infinite;
+        }
+
+        @keyframes adSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .ad-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(180deg, #f8fafc, #eef2f7);
+            color: #475569;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.6;
+            z-index: 3;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app-shell">
+
+    <!-- Header -->
+    <header class="p-4 flex justify-between items-center border-b border-gray-800"
+            style="padding-top: calc(14px + env(safe-area-inset-top));">
+        <div class="flex items-center gap-3 min-w-0">
+            <div id="user-avatar"
+                 class="w-10 h-10 shrink-0 rounded-full bg-slate-800 flex items-center justify-center font-bold text-lime-400 border border-lime-500/30">
+                U
+            </div>
+
+            <div class="min-w-0">
+                <h1 id="user-name" class="font-semibold text-sm truncate">User Account</h1>
+                <p id="user-id" class="text-xs text-gray-400 truncate">ID: 00000000</p>
+            </div>
+        </div>
+
+        <div class="text-right shrink-0 ml-3">
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider block">Network</span>
+            <span class="text-xs font-semibold text-lime-400 flex items-center justify-end gap-1">
+                <span class="status-dot" id="network-dot"></span>
+                USDT
+            </span>
+        </div>
+    </header>
+
+    <main class="w-full p-4 space-y-4">
+
+        <!-- Balance -->
+        <section class="card-bg rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Estimated Income</span>
+
+                <span id="mining-status"
+                      class="text-xs bg-slate-800 text-gray-400 px-2 py-0.5 rounded border border-gray-700 font-mono">
+                    OFFLINE
+                </span>
+            </div>
+
+            <div class="flex items-baseline gap-1 my-2">
+                <span id="usdt-balance" class="text-3xl font-bold font-mono number-font">0.000000</span>
+                <span class="text-xs font-semibold text-gray-400">USDT</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-gray-800 text-center text-xs">
+                <div>
+                    <p class="text-gray-400">Hourly</p>
+                    <p id="rate-hour" class="font-mono font-medium text-gray-200 number-font">$0.0004</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Daily</p>
+                    <p id="rate-day" class="font-mono font-medium text-gray-200 number-font">$0.0100</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400">Monthly</p>
+                    <p id="rate-month" class="font-mono font-medium text-gray-200 number-font">$0.3000</p>
+                </div>
+            </div>
+
+            <div id="mining-countdown-wrap" class="hidden mt-4">
+                <div class="flex justify-between text-[10px] text-gray-400 mb-1">
+                    <span id="mining-progress-label">Session progress</span>
+                    <span id="mining-countdown" class="font-mono text-lime-400">24:00:00</span>
+                </div>
+
+                <div class="progress-track">
+                    <div id="mining-progress" class="progress-bar" style="width:0%"></div>
+                </div>
+
+                <div id="mining-pending-wrap" class="hidden mt-3 rounded-lg border border-amber-500/20 bg-amber-500/5 p-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[10px] text-amber-200/80">Reward waiting for claim</span>
+                        <span id="mining-pending-reward" class="text-xs font-bold font-mono text-amber-300">0.000000 USDT</span>
+                    </div>
+                    <p class="text-[9px] text-gray-500 mt-1">Claim the completed 24H session before another mining session can start.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mining -->
+        <button id="start-mining-btn"
+                onclick="handleMiningButton()"
+                class="w-full py-3.5 rounded-xl btn-primary pulse-animation flex items-center justify-center gap-2 shadow-lg shadow-lime-950/40">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+            </svg>
+            <span id="mining-btn-text">Start 24H Mining Session</span>
+        </button>
+
+        <!-- Metrics -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="card-bg p-4 rounded-xl">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs text-gray-400">Coin Boost</span>
+                    <svg class="w-4 h-4 stroke-gray-400" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+
+                <div id="coin-balance" class="text-xl font-bold font-mono text-white number-font">0</div>
+                <p id="speed-text" class="text-[10px] text-lime-400 mt-1">+0.00 USDT/Day Speed</p>
+            </div>
+
+            <div class="card-bg p-4 rounded-xl">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs text-gray-400">USDT Wallet</span>
+                    <svg class="w-4 h-4 stroke-gray-400" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+
+                <div id="wallet-balance" class="text-xl font-bold font-mono text-white number-font">$0.0000</div>
+                <p class="text-[10px] text-gray-400 mt-1">Available Withdrawal</p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="openModal('topup-modal')"
+                    class="py-3 card-bg rounded-xl font-semibold text-sm text-lime-400 transition flex items-center justify-center gap-2 border border-lime-500/20">
+                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Top Up
+            </button>
+
+            <button onclick="openModal('withdraw-modal')"
+                    class="py-3 card-bg rounded-xl font-semibold text-sm text-gray-200 transition flex items-center justify-center gap-2 border border-gray-700">
+                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Withdraw
+            </button>
+        </div>
+
+        <!-- Referral -->
+        <section class="card-bg p-4 rounded-xl space-y-2">
+            <div class="flex justify-between items-center gap-2">
+                <h3 class="text-xs font-semibold text-gray-300">Affiliate Program</h3>
+                <span class="text-[10px] bg-slate-800 text-gray-400 px-2 py-0.5 rounded whitespace-nowrap">
+                    +10 Coins / Invite
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <input type="text"
+                       id="ref-link"
+                       readonly
+                       value="https://t.me/rahim709_bot?start=12345"
+                       class="bg-slate-900 border border-gray-800 rounded-lg p-2 text-xs w-full font-mono text-gray-400">
+
+                <button onclick="copyRefLink()"
+                        class="px-3 py-2 bg-slate-800 text-xs font-medium rounded-lg text-lime-400 border border-gray-700">
+                    Copy
+                </button>
+            </div>
+
+            <p class="text-[10px] text-gray-500">
+                Share your referral link to invite new users.
+            </p>
+        </section>
+
+        <section class="rounded-xl border border-slate-700 bg-slate-900/40 p-3">
+            <p class="text-[10px] leading-5 text-gray-400">
+                Payments are verified before balances are updated. Please enter transaction details carefully.
+            </p>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 inset-x-0 bg-slate-950/95 backdrop-blur-md border-t border-gray-800 px-4 py-2 flex justify-around items-center z-40"
+         style="padding-bottom: calc(8px + env(safe-area-inset-bottom));">
+        <button id="nav-home"
+                onclick="switchTab('home')"
+                class="nav-btn active flex flex-col items-center text-gray-400 min-w-[72px]">
+            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span class="text-[10px] mt-1 font-medium">Home</span>
+            <span class="nav-dot"></span>
+        </button>
+
+        <button id="nav-friends"
+                onclick="switchTab('friends')"
+                class="nav-btn flex flex-col items-center text-gray-400 min-w-[72px]">
+            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span class="text-[10px] mt-1 font-medium">Friends</span>
+            <span class="nav-dot"></span>
+        </button>
+
+        <button id="nav-mystery"
+                onclick="openMysteryBoxModal()"
+                class="nav-btn flex flex-col items-center text-gray-400 min-w-[72px]">
+            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+            <span class="text-[10px] mt-1 font-medium">Mystery Box</span>
+            <span class="nav-dot"></span>
+        </button>
+    </nav>
+</div>
+
+<!-- Toasts -->
+<div id="toast-wrap" class="toast-wrap"></div>
+
+<!-- IN-APP AD MODAL -->
+<div id="ad-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="ad-step-label">
+    <div class="card-bg w-full max-w-lg rounded-2xl p-4 text-center space-y-3">
+
+        <div class="flex items-center justify-between gap-3">
+            <div class="text-left min-w-0">
+                <h2 class="text-base font-bold text-gray-100">Advertisement</h2>
+                <p id="ad-step-label" class="text-[10px] text-gray-500 mt-0.5">
+                    Advertisement 1 of 5
+                </p>
+            </div>
+
+            <div class="text-right shrink-0">
+                <div id="ad-timer" class="text-xl font-bold font-mono text-lime-400 number-font">20s</div>
+                <p class="text-[9px] text-gray-500">remaining</p>
+            </div>
+        </div>
+
+        <div id="ad-frame-wrap" class="relative w-full overflow-hidden rounded-xl border border-gray-800" style="min-height:270px;">
+            <iframe
+                id="ad-frame"
+                title="Advertisement"
+                src="about:blank"
+                loading="eager"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allow="fullscreen; autoplay; clipboard-read; clipboard-write"
+                sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts">
+            </iframe>
+
+            <div id="ad-loading-overlay" class="ad-loading-overlay">
+                <div class="ad-loading-spinner" aria-hidden="true"></div>
+                <div class="font-semibold">Loading advertisement</div>
+                <div class="text-[10px]">Please keep this window open.</div>
+            </div>
+
+            <div id="ad-fallback" class="ad-fallback hidden">
+                The advertisement could not be displayed in the embedded view.
+                Please try the next load when your connection is stable.
+            </div>
+        </div>
+
+        <div class="progress-track">
+            <div id="ad-progress" class="progress-bar" style="width:0%"></div>
+        </div>
+
+        <p id="ad-timer-text" class="text-[10px] text-gray-400 min-h-[30px]">
+            The 20-second timer starts when the advertisement loads.
+        </p>
+
+        <button id="watch-ad-btn"
+                type="button"
+                onclick="processAdWatch()"
+                class="w-full py-3 btn-primary rounded-xl font-semibold text-sm"
+                disabled>
+            Continue
+        </button>
+
+        <button id="ad-cancel-btn"
+                type="button"
+                onclick="cancelAdGate()"
+                class="w-full py-2 rounded-xl text-xs text-gray-500 hover:text-gray-300">
+            Cancel
+        </button>
+    </div>
+</div>
+
+<!-- TOP UP MODAL -->
+<div id="topup-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="card-bg w-full max-w-sm rounded-2xl p-5 space-y-4">
+        <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+            <h3 class="text-sm font-semibold">Account Top Up</h3>
+            <button onclick="closeModal('topup-modal')" class="text-2xl leading-none text-gray-400">&times;</button>
+        </div>
+
+        <div class="text-xs text-gray-400 space-y-1">
+            <p>• Minimum Top Up: <span class="text-white font-mono">1.00 USDT</span></p>
+            <p>• Conversion Rate: <span class="text-lime-400 font-mono">1 USDT = 40 Coins</span></p>
+        </div>
+
+        <div class="space-y-2">
+            <label for="txid-input" class="text-xs text-gray-400">Transaction ID (TxID)</label>
+            <input type="text"
+                   id="txid-input"
+                   autocomplete="off"
+                   placeholder="Paste TxID here..."
+                   class="w-full bg-slate-900 border border-gray-800 rounded-lg p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-lime-500">
+        </div>
+
+        <button id="topup-submit-btn"
+                onclick="submitTopUp()"
+                class="w-full py-3 btn-primary rounded-xl text-xs font-semibold">
+            Verify Payment
+        </button>
+
+        <p class="text-[10px] text-gray-500">
+            Payments are verified before coins are added to your balance.
+        </p>
+    </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div id="withdraw-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="card-bg w-full max-w-sm rounded-2xl p-5 space-y-4">
+        <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+            <h3 class="text-sm font-semibold">Withdraw Funds</h3>
+            <button onclick="closeModal('withdraw-modal')" class="text-2xl leading-none text-gray-400">&times;</button>
+        </div>
+
+        <div class="space-y-3">
+            <div>
+                <label for="withdraw-amount" class="text-xs text-gray-400">
+                    Amount (Min 0.1 USDT)
+                </label>
+                <input type="number"
+                       id="withdraw-amount"
+                       min="0.1"
+                       step="0.0001"
+                       inputmode="decimal"
+                       placeholder="0.10"
+                       oninput="calculateWithdrawal()"
+                       class="w-full bg-slate-900 border border-gray-800 rounded-lg p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-lime-500 mt-1">
+            </div>
+
+            <div class="bg-slate-900/50 p-3 rounded-lg border border-gray-800/80 text-xs space-y-1 font-mono">
+                <div class="flex justify-between text-gray-400">
+                    <span>Requested Amount:</span>
+                    <span id="calc-req">$0.0000</span>
+                </div>
+
+                <div class="flex justify-between text-gray-400">
+                    <span>Platform Fee (10%):</span>
+                    <span id="calc-fee" class="text-red-400">-$0.0000</span>
+                </div>
+
+                <div class="flex justify-between text-white font-semibold pt-1 border-t border-gray-800">
+                    <span>Net Payout:</span>
+                    <span id="calc-net" class="text-lime-400">$0.0000</span>
+                </div>
+            </div>
+
+            <div>
+                <label for="withdraw-address" class="text-xs text-gray-400">
+                    USDT TRC20 / BEP20 Address
+                </label>
+                <input type="text"
+                       id="withdraw-address"
+                       autocomplete="off"
+                       placeholder="Enter wallet address..."
+                       class="w-full bg-slate-900 border border-gray-800 rounded-lg p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-lime-500 mt-1">
+                <p class="text-[10px] text-gray-500 mt-1">
+                    TRC20 usually starts with T. BEP20 usually starts with 0x.
+                </p>
+            </div>
+        </div>
+
+        <button id="withdraw-submit-btn"
+                onclick="triggerAdCheck('withdraw')"
+                class="w-full py-3 btn-primary rounded-xl text-xs font-semibold">
+            Proceed Withdrawal
+        </button>
+    </div>
+</div>
+
+<!-- MYSTERY BOX INFO MODAL -->
+<div id="mystery-info-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="card-bg w-full max-w-sm rounded-2xl p-6 text-center space-y-4">
+        <div class="mx-auto w-14 h-14 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center">
+            <svg class="w-7 h-7 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+        </div>
+
+        <h2 class="text-base font-bold">Mystery Box</h2>
+        <p class="text-xs leading-5 text-gray-400">
+            Watch 5 sponsor steps and then receive a reward from the configured reward source.
+        </p>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="bg-slate-900/70 border border-gray-800 rounded-xl p-3">
+                <div class="text-gray-500">Ad Steps</div>
+                <div class="font-mono text-white mt-1">5</div>
+            </div>
+            <div class="bg-slate-900/70 border border-gray-800 rounded-xl p-3">
+                <div class="text-gray-500">Reward</div>
+            </div>
+        </div>
+
+        <button onclick="closeModal('mystery-info-modal'); triggerAdCheck('mystery_box')"
+                class="w-full py-3 btn-primary rounded-xl text-sm font-semibold">
+            Unlock
+        </button>
+
+        <button onclick="closeModal('mystery-info-modal')"
+                class="w-full py-2 rounded-xl text-xs text-gray-500">
+            Cancel
+        </button>
+    </div>
+</div>
+
+<script>
+    'use strict';
+
+    /* =========================================================
+       CONFIGURATION
+       ========================================================= */
+
+    const CONFIG = {
+        // Keep this empty when your API is hosted on the same domain.
+        API_BASE: '',
+
+        DEMO_MODE: false,
+
+        BOT_USERNAME: 'rahim709_bot',
+
+        AD_URL: 'https://www.profitableratecpmnetwork.com/ubupygs3?key=511d31b0135289fc6ee4ff0f18b63a18',
+
+        REQUIRED_ADS: 5,
+        AD_VIEW_SECONDS: 20,
+        AD_AUTO_CLOSE_SECONDS: 20,
+
+        MIN_TOPUP_USDT: 1,
+        COINS_PER_USDT: 40,
+
+        MIN_WITHDRAW_USDT: 0.1,
+        WITHDRAW_FEE_RATE: 0.10,
+
+        MINING_SESSION_SECONDS: 24 * 60 * 60,
+
+        // Base daily rate from the original UI.
+        BASE_DAILY_USDT: 0.01,
+
+        // Original logic was coins * 0.01 USDT/day.
+        COIN_BOOST_PER_COIN_DAILY: 0.01,
+
+        STORAGE_KEY: 'crypto_earning_platform_v6'
+    };
+
+    /* =========================================================
+       TELEGRAM
+       ========================================================= */
+
+    const tg = window.Telegram && window.Telegram.WebApp
+        ? window.Telegram.WebApp
+        : null;
+
+    try {
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            if (typeof tg.setHeaderColor === 'function') tg.setHeaderColor('#0b0f19');
+            if (typeof tg.setBackgroundColor === 'function') tg.setBackgroundColor('#0b0f19');
+        }
+    } catch (error) {
+        console.warn('Telegram WebApp setup failed:', error);
+    }
+
+    /* =========================================================
+       STATE
+       ========================================================= */
+
+    const defaultState = {
+        usdtBalance: 0,
+        coins: 0,
+
+        mining: {
+            startedAt: 0,
+            endsAt: 0,
+            lastAccrualAt: 0,
+            pendingReward: 0
+        },
+
+        adCount: 0,
+        pendingAction: null,
+        adTimerEndsAt: 0,
+        adStepOpenedAt: 0,
+        adLaunchAt: 0,
+        adFrameLoaded: false,
+
+        hasWonMaxBox: false,
+        lastBoxOpened: 0,
+
+        withdrawals: [],
+        topups: [],
+
+        initialized: false
+    };
+
+    let state = loadState();
+    let adTimerInterval = null;
+    let uiInterval = null;
+    let busyAction = false;
+
+    /* =========================================================
+       HELPERS
+       ========================================================= */
+
+    function cloneDefaultState() {
+        return JSON.parse(JSON.stringify(defaultState));
+    }
+
+    function normalizeState(input) {
+        const base = cloneDefaultState();
+
+        if (!input || typeof input !== 'object') {
+            return base;
+        }
+
+        const merged = {
+            ...base,
+            ...input,
+            mining: {
+                ...base.mining,
+                ...(input.mining || {})
+            },
+            withdrawals: Array.isArray(input.withdrawals) ? input.withdrawals : [],
+            topups: Array.isArray(input.topups) ? input.topups : []
+        };
+
+        merged.usdtBalance = safeNumber(merged.usdtBalance, base.usdtBalance);
+        merged.coins = Math.max(0, Math.floor(safeNumber(merged.coins, 0)));
+        merged.adCount = clamp(Math.floor(safeNumber(merged.adCount, 0)), 0, CONFIG.REQUIRED_ADS);
+        merged.pendingAction = typeof merged.pendingAction === 'string' ? merged.pendingAction : null;
+        merged.adTimerEndsAt = safeNumber(merged.adTimerEndsAt, 0);
+        merged.adStepOpenedAt = safeNumber(merged.adStepOpenedAt, 0);
+        merged.adLaunchAt = safeNumber(merged.adLaunchAt, 0);
+        merged.adFrameLoaded = Boolean(merged.adFrameLoaded);
+        merged.mining.startedAt = safeNumber(merged.mining.startedAt, 0);
+        merged.mining.endsAt = safeNumber(merged.mining.endsAt, 0);
+        merged.mining.lastAccrualAt = safeNumber(merged.mining.lastAccrualAt, 0);
+        merged.mining.pendingReward = Math.max(0, safeNumber(merged.mining.pendingReward, 0));
+
+        return merged;
+    }
+
+    function safeNumber(value, fallback = 0) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : fallback;
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+    }
+
+    function money(value, digits = 6) {
+        return safeNumber(value).toFixed(digits);
+    }
+
+    function formatClock(totalSeconds) {
+        const total = Math.max(0, Math.floor(totalSeconds));
+        const h = Math.floor(total / 3600);
+        const m = Math.floor((total % 3600) / 60);
+        const s = total % 60;
+
+        return [
+            String(h).padStart(2, '0'),
+            String(m).padStart(2, '0'),
+            String(s).padStart(2, '0')
+        ].join(':');
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state));
+        } catch (error) {
+            console.warn('Unable to save local state:', error);
+        }
+    }
+
+    function loadState() {
+        try {
+            const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+            if (!raw) return cloneDefaultState();
+
+            return normalizeState(JSON.parse(raw));
+        } catch (error) {
+            console.warn('Unable to load local state:', error);
+            return cloneDefaultState();
+        }
+    }
+
+    function getTelegramUser() {
+        return tg && tg.initDataUnsafe && tg.initDataUnsafe.user
+            ? tg.initDataUnsafe.user
+            : null;
+    }
+
+    function getUserId() {
+        return getTelegramUser()?.id || 12345;
+    }
+
+    function getDisplayName() {
+        const user = getTelegramUser();
+
+        if (!user) {
+            return 'User Account';
+        }
+
+        const fullName = [user.first_name, user.last_name]
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+
+        return fullName || user.username || 'Telegram User';
+    }
+
+    function setButtonLoading(button, loading, loadingText = 'Processing...') {
+        if (!button) return;
+
+        if (loading) {
+            button.dataset.originalText = button.innerText;
+            button.disabled = true;
+            button.innerText = loadingText;
+        } else {
+            button.disabled = false;
+            button.innerText = button.dataset.originalText || button.innerText;
+        }
+    }
+
+    /* =========================================================
+       TOAST / ALERT
+       ========================================================= */
+
+    function showToast(message, type = 'info', duration = 3000) {
+        const wrap = document.getElementById('toast-wrap');
+        if (!wrap) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerText = message;
+
+        wrap.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-4px)';
+            toast.style.transition = '0.2s ease';
+
+            setTimeout(() => {
+                toast.remove();
+            }, 220);
+        }, duration);
+    }
+
+    function haptic(type = 'light') {
+        try {
+            if (tg?.HapticFeedback?.impactOccurred) {
+                tg.HapticFeedback.impactOccurred(type);
+            }
+        } catch (_) {}
+    }
+
+    /* =========================================================
+       API
+       ========================================================= */
+
+    function apiUrl(path) {
+        if (!CONFIG.API_BASE) return path;
+        return `${CONFIG.API_BASE.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+    }
+
+    async function apiRequest(path, options = {}) {
+        const response = await fetch(apiUrl(path), {
+            credentials: 'include',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
+            }
+        });
+
+        const text = await response.text();
+
+        let data = {};
+        if (text) {
+            try {
+                data = JSON.parse(text);
+            } catch (_) {
+                data = { raw: text };
+            }
+        }
+
+        if (!response.ok) {
+            const message = data?.message || data?.error || `HTTP ${response.status}`;
+            throw new Error(message);
+        }
+
+        return data;
+    }
+
+    /* =========================================================
+       USER UI
+       ========================================================= */
+
+    function initializeUserUI() {
+        const user = getTelegramUser();
+
+        document.getElementById('user-name').innerText = getDisplayName();
+        document.getElementById('user-id').innerText = `ID: ${user?.id || '00000000'}`;
+
+        const firstLetter =
+            (user?.first_name || user?.username || 'U')
+                .charAt(0)
+                .toUpperCase();
+
+        document.getElementById('user-avatar').innerText = firstLetter;
+
+        const refId = user?.id || 12345;
+        document.getElementById('ref-link').value =
+            `https://t.me/${CONFIG.BOT_USERNAME}?start=${encodeURIComponent(refId)}`;
+
+        document.getElementById('network-dot').classList.add('active');
+    }
+
+    /* =========================================================
+       MINING
+       ========================================================= */
+
+    function getDailyRate() {
+        const boost = state.coins * CONFIG.COIN_BOOST_PER_COIN_DAILY;
+        return CONFIG.BASE_DAILY_USDT + boost;
+    }
+
+    function getHourlyRate() {
+        return getDailyRate() / 24;
+    }
+
+    function getMonthlyRate() {
+        return getDailyRate() * 30;
+    }
+
+    function isMiningActive(now = Date.now()) {
+        return state.mining.startedAt > 0 &&
+               state.mining.endsAt > now;
+    }
+
+    function isMiningClaimPending(now = Date.now()) {
+        return state.mining.startedAt > 0 &&
+               state.mining.endsAt > 0 &&
+               now >= state.mining.endsAt;
+    }
+
+    function accrueMining() {
+        if (!state.mining.startedAt || !state.mining.endsAt) {
+            return false;
+        }
+
+        const now = Date.now();
+        const start = state.mining.startedAt;
+        const end = state.mining.endsAt;
+
+        let last = state.mining.lastAccrualAt || start;
+        if (last < start) last = start;
+        if (last > now) last = now;
+
+        const accrualUntil = Math.min(now, end);
+
+        if (accrualUntil > last) {
+            const elapsedSeconds = (accrualUntil - last) / 1000;
+            const dailyRate = getDailyRate();
+            const earned = (dailyRate / 86400) * elapsedSeconds;
+
+            // Keep the reward pending until the user explicitly claims the
+            // completed 24H session. This prevents another session from
+            // starting while an unclaimed reward is waiting.
+            state.mining.pendingReward =
+                Math.max(0, safeNumber(state.mining.pendingReward, 0) + earned);
+
+            state.mining.lastAccrualAt = accrualUntil;
+            saveState();
+        }
+
+        if (now >= end) {
+            state.mining.lastAccrualAt = end;
+            saveState();
+            return true;
+        }
+
+        return false;
+    }
+
+    function renderMining() {
+        const status = document.getElementById('mining-status');
+        const button = document.getElementById('start-mining-btn');
+        const buttonText = document.getElementById('mining-btn-text');
+
+        const wrap = document.getElementById('mining-countdown-wrap');
+        const countdown = document.getElementById('mining-countdown');
+        const progress = document.getElementById('mining-progress');
+        const progressLabel = document.getElementById('mining-progress-label');
+        const pendingWrap = document.getElementById('mining-pending-wrap');
+        const pendingReward = document.getElementById('mining-pending-reward');
+
+        const now = Date.now();
+        const active = isMiningActive(now);
+        const claimPending = isMiningClaimPending(now);
+        const pending = Math.max(0, safeNumber(state.mining.pendingReward, 0));
+
+        if (active) {
+            const total = CONFIG.MINING_SESSION_SECONDS * 1000;
+            const remainingMs = Math.max(0, state.mining.endsAt - now);
+            const elapsedMs = clamp(now - state.mining.startedAt, 0, total);
+
+            status.innerText = 'ACTIVE';
+            status.className =
+                'text-xs bg-lime-500/10 text-lime-400 px-2 py-0.5 rounded border border-lime-500/20 font-mono';
+
+            buttonText.innerText = `Mining Running • ${formatClock(remainingMs / 1000)}`;
+            button.disabled = true;
+            button.classList.remove('pulse-animation');
+
+            wrap.classList.remove('hidden');
+            pendingWrap.classList.add('hidden');
+            progressLabel.innerText = 'Session progress';
+            countdown.innerText = formatClock(remainingMs / 1000);
+            progress.style.width = `${(elapsedMs / total) * 100}%`;
+            return;
+        }
+
+        if (claimPending) {
+            status.innerText = 'CLAIM REQUIRED';
+            status.className =
+                'text-xs bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/20 font-mono';
+
+            button.disabled = false;
+            button.classList.remove('pulse-animation');
+            buttonText.innerText = pending > 0
+                ? `Claim ${money(pending, 6)} USDT`
+                : 'Claim Mining Reward';
+
+            wrap.classList.remove('hidden');
+            pendingWrap.classList.remove('hidden');
+            progressLabel.innerText = '24H session completed';
+            countdown.innerText = '00:00:00';
+            progress.style.width = '100%';
+            pendingReward.innerText = `${money(pending, 6)} USDT`;
+            return;
+        }
+
+        status.innerText = 'OFFLINE';
+        status.className =
+            'text-xs bg-slate-800 text-gray-400 px-2 py-0.5 rounded border border-gray-700 font-mono';
+
+        button.disabled = false;
+        buttonText.innerText = 'Start 24H Mining Session';
+        button.classList.add('pulse-animation');
+        wrap.classList.add('hidden');
+        pendingWrap.classList.add('hidden');
+    }
+
+    function handleMiningButton() {
+        accrueMining();
+
+        if (isMiningActive()) {
+            showToast('Your 24H mining session is already active.', 'info');
+            return;
+        }
+
+        if (isMiningClaimPending()) {
+            claimMiningReward();
+            return;
+        }
+
+        triggerAdCheck('mining');
+    }
+
+    function claimMiningReward() {
+        accrueMining();
+
+        if (!isMiningClaimPending()) {
+            showToast('Your mining session is not ready to claim yet.', 'info');
+            return;
+        }
+
+        const reward = Math.max(0, safeNumber(state.mining.pendingReward, 0));
+
+        state.usdtBalance = Math.max(0, safeNumber(state.usdtBalance, 0) + reward);
+        state.mining.startedAt = 0;
+        state.mining.endsAt = 0;
+        state.mining.lastAccrualAt = 0;
+        state.mining.pendingReward = 0;
+
+        saveState();
+        updateUI();
+        renderMining();
+
+        showToast(
+            reward > 0
+                ? `Mining reward claimed: +${money(reward, 6)} USDT.`
+                : 'Mining session claimed. No reward was generated.',
+            reward > 0 ? 'success' : 'info',
+            4500
+        );
+        haptic('medium');
+    }
+
+    function startMiningSession() {
+        accrueMining();
+
+        if (isMiningActive()) {
+            showToast('Your 24H mining session is already active.', 'info');
+            return;
+        }
+
+        if (isMiningClaimPending()) {
+            showToast('Claim your completed 24H mining reward before starting again.', 'error', 4500);
+            return;
+        }
+
+        const now = Date.now();
+
+        state.mining.startedAt = now;
+        state.mining.endsAt = now + CONFIG.MINING_SESSION_SECONDS * 1000;
+        state.mining.lastAccrualAt = now;
+        state.mining.pendingReward = 0;
+
+        saveState();
+        renderMining();
+        updateUI();
+
+        showToast('Mining session started for 24 hours. Claim it when the timer reaches 00:00:00.', 'success');
+        haptic('medium');
+    }
+
+    /* =========================================================
+       MAIN UI
+       ========================================================= */
+
+    function updateUI() {
+        accrueMining();
+
+        const dailyRate = getDailyRate();
+        const hourlyRate = dailyRate / 24;
+        const monthlyRate = dailyRate * 30;
+
+        document.getElementById('usdt-balance').innerText = money(state.usdtBalance, 6);
+        document.getElementById('wallet-balance').innerText = `$${money(state.usdtBalance, 6)}`;
+        document.getElementById('coin-balance').innerText = String(Math.floor(state.coins));
+
+        document.getElementById('speed-text').innerText =
+            `+${money(state.coins * CONFIG.COIN_BOOST_PER_COIN_DAILY, 2)} USDT/Day Speed`;
+
+        document.getElementById('rate-hour').innerText = `$${money(hourlyRate, 4)}`;
+        document.getElementById('rate-day').innerText = `$${money(dailyRate, 4)}`;
+        document.getElementById('rate-month').innerText = `$${money(monthlyRate, 4)}`;
+
+        renderMining();
+    }
+
+    function syncTelegramBackButton() {
+        try {
+            const anyModalOpen = Array.from(document.querySelectorAll('.modal-backdrop'))
+                .some(el => !el.classList.contains('hidden'));
+
+            if (!tg?.BackButton) return;
+            if (anyModalOpen) tg.BackButton.show();
+            else tg.BackButton.hide();
+        } catch (_) {}
+    }
+
+    /* =========================================================
+       MODALS
+       ========================================================= */
+
+    function openModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('hidden');
+        syncTelegramBackButton();
+    }
+
+    function closeModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.classList.add('hidden');
+
+        if (id === 'ad-modal') {
+            clearInterval(adWatchInterval);
+        }
+
+        syncTelegramBackButton();
+    }
+
+    function closeAllModals() {
+        document.querySelectorAll('.modal-backdrop').forEach(el => {
+            el.classList.add('hidden');
+        });
+        syncTelegramBackButton();
+    }
+
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                if (modal.id === 'ad-modal') {
+                    cancelAdGate();
+                } else {
+                    modal.classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeAllModals();
+        }
+    });
+
+    /* =========================================================
+       SMARTLINK AD GATE
+       ========================================================= */
+
+    let adWatchInterval = null;
+    let adLoadTimeout = null;
+
+    function getAdElements() {
+        return {
+            frame: document.getElementById('ad-frame'),
+            loading: document.getElementById('ad-loading-overlay'),
+            fallback: document.getElementById('ad-fallback'),
+            button: document.getElementById('watch-ad-btn'),
+            timer: document.getElementById('ad-timer'),
+            timerText: document.getElementById('ad-timer-text'),
+            stepLabel: document.getElementById('ad-step-label'),
+            progress: document.getElementById('ad-progress')
+        };
+    }
+
+    function resetAdGate(actionType) {
+        state.pendingAction = actionType;
+        state.adCount = 0;
+        state.adTimerEndsAt = 0;
+        state.adStepOpenedAt = 0;
+        state.adLaunchAt = 0;
+        state.adFrameLoaded = false;
+
+        saveState();
+        prepareNextSmartlinkAd();
+    }
+
+    function triggerAdCheck(actionType) {
+        if (busyAction) return;
+
+        if (actionType === 'mining') {
+            if (isMiningActive()) {
+                showToast('Mining is already active.', 'info');
+                return;
+            }
+
+            if (isMiningClaimPending()) {
+                showToast('Claim your completed 24H mining reward first.', 'error', 4500);
+                return;
+            }
+        }
+
+        if (actionType === 'withdraw') {
+            const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+            const addr = document.getElementById('withdraw-address').value.trim();
+
+            if (amt < CONFIG.MIN_WITHDRAW_USDT) {
+                showToast(`Minimum withdrawal is ${CONFIG.MIN_WITHDRAW_USDT} USDT.`, 'error');
+                return;
+            }
+
+            if (amt > state.usdtBalance) {
+                showToast('Insufficient USDT balance.', 'error');
+                return;
+            }
+
+            if (!isValidWalletAddress(addr)) {
+                showToast('Enter a valid TRC20 or BEP20 address.', 'error');
+                return;
+            }
+        }
+
+        resetAdGate(actionType);
+        openModal('ad-modal');
+        haptic('light');
+    }
+
+    function prepareNextSmartlinkAd() {
+        clearInterval(adWatchInterval);
+        clearTimeout(adLoadTimeout);
+
+        const { frame, loading, fallback, button, timer, timerText, stepLabel, progress } = getAdElements();
+        const step = state.adCount + 1;
+
+        stepLabel.innerText = `Advertisement ${step} of ${CONFIG.REQUIRED_ADS}`;
+        timer.innerText = `${CONFIG.AD_VIEW_SECONDS}s`;
+        timerText.innerText = 'Loading advertisement…';
+        progress.style.width = '0%';
+        button.disabled = true;
+        button.classList.remove('hidden');
+        button.innerText = 'Continue';
+
+        state.adFrameLoaded = false;
+        state.adStepOpenedAt = Date.now();
+        state.adTimerEndsAt = 0;
+        state.adLaunchAt = 0;
+        saveState();
+
+        loading.classList.remove('hidden');
+        fallback.classList.add('hidden');
+
+        const loadStartedAt = Date.now();
+        adLoadTimeout = setTimeout(() => {
+            if (!state.adFrameLoaded && Date.now() - loadStartedAt >= 9000) {
+                loading.classList.add('hidden');
+                fallback.classList.remove('hidden');
+                button.disabled = true;
+                timerText.innerText = 'The advertisement is still loading. Please check your connection and try again.';
+            }
+        }, 9000);
+
+        frame.onload = () => {
+            clearTimeout(adLoadTimeout);
+            state.adFrameLoaded = true;
+            state.adLaunchAt = Date.now();
+            state.adTimerEndsAt = state.adLaunchAt + CONFIG.AD_VIEW_SECONDS * 1000;
+            saveState();
+
+            loading.classList.add('hidden');
+            fallback.classList.add('hidden');
+            timerText.innerText = 'Advertisement loaded. Keep it open until the timer finishes.';
+
+            beginAdCountdown();
+        };
+
+        frame.onerror = () => {
+            clearTimeout(adLoadTimeout);
+            state.adFrameLoaded = false;
+            saveState();
+            loading.classList.add('hidden');
+            fallback.classList.remove('hidden');
+            button.disabled = true;
+            timerText.innerText = 'The advertisement could not be loaded.';
+        };
+
+        // Keep the sponsor inside this Mini App instead of replacing the page.
+        frame.src = CONFIG.AD_URL;
+    }
+
+    function beginAdCountdown() {
+        clearInterval(adWatchInterval);
+
+        const { button } = getAdElements();
+        button.disabled = true;
+
+        const tick = () => {
+            if (!state.adLaunchAt || !state.adTimerEndsAt) return;
+
+            const now = Date.now();
+            const remaining = Math.max(0, state.adTimerEndsAt - now);
+            const seconds = Math.ceil(remaining / 1000);
+            const elapsed = CONFIG.AD_VIEW_SECONDS - Math.ceil(remaining / 1000);
+            const percent = clamp((elapsed / CONFIG.AD_VIEW_SECONDS) * 100, 0, 100);
+
+            const { timer, timerText, progress } = getAdElements();
+            timer.innerText = `${seconds}s`;
+            progress.style.width = `${percent}%`;
+            timerText.innerText = remaining > 0
+                ? `Advertisement timer: ${seconds} seconds remaining.`
+                : 'Advertisement complete. You may continue.';
+
+            if (remaining <= 0) {
+                clearInterval(adWatchInterval);
+                button.disabled = false;
+                button.innerText = state.adCount + 1 >= CONFIG.REQUIRED_ADS
+                    ? 'Finish'
+                    : 'Continue';
+            }
+        };
+
+        tick();
+        adWatchInterval = setInterval(tick, 250);
+    }
+
+    function completeAdStep() {
+        if (!state.pendingAction || !state.adLaunchAt || Date.now() < state.adTimerEndsAt) return;
+
+        clearInterval(adWatchInterval);
+        clearTimeout(adLoadTimeout);
+
+        state.adCount = clamp(state.adCount + 1, 0, CONFIG.REQUIRED_ADS);
+        state.adStepOpenedAt = 0;
+        state.adTimerEndsAt = 0;
+        state.adLaunchAt = 0;
+        state.adFrameLoaded = false;
+        saveState();
+
+        if (state.adCount >= CONFIG.REQUIRED_ADS) {
+            closeModal('ad-modal');
+            showToast('Advertisement requirement completed. Processing your request…', 'success', 3500);
+            executePendingAction();
+            return;
+        }
+
+        prepareNextSmartlinkAd();
+    }
+
+    function cancelAdGate() {
+        clearInterval(adWatchInterval);
+        clearTimeout(adLoadTimeout);
+
+        state.pendingAction = null;
+        state.adCount = 0;
+        state.adStepOpenedAt = 0;
+        state.adTimerEndsAt = 0;
+        state.adLaunchAt = 0;
+        state.adFrameLoaded = false;
+
+        saveState();
+        closeModal('ad-modal');
+        showToast('Advertisement verification cancelled.', 'info');
+    }
+
+    function processAdWatch() {
+        if (!state.adLaunchAt || !state.adTimerEndsAt) {
+            showToast('Please wait for the advertisement to finish loading.', 'info');
+            return;
+        }
+
+        if (Date.now() < state.adTimerEndsAt) {
+            showToast(`Please wait ${Math.ceil((state.adTimerEndsAt - Date.now()) / 1000)} more seconds.`, 'info');
+            return;
+        }
+
+        completeAdStep();
+    }
+
+    async function executePendingAction() {
+        const action = state.pendingAction;
+        state.pendingAction = null;
+        saveState();
+
+        if (!action) return;
+
+        if (action === 'mining') {
+            startMiningSession();
+            return;
+        }
+
+        if (action === 'withdraw') {
+            await processWithdrawal();
+            return;
+        }
+
+        if (action === 'mystery_box') {
+            await openMysteryReward();
+        }
+    }
+
+    /* =========================================================
+       TOP UP
+       ========================================================= */
+
+    async function submitTopUp() {
+        const input = document.getElementById('txid-input');
+        const button = document.getElementById('topup-submit-btn');
+        const txid = input.value.trim();
+
+        if (txid.length < 8) {
+            showToast('Enter a valid Transaction ID.', 'error');
+            return;
+        }
+
+        setButtonLoading(button, true, 'Verifying…');
+
+        try {
+            const data = await apiRequest('/api/verify-topup', {
+                method: 'POST',
+                body: JSON.stringify({
+                    userId: getUserId(),
+                    telegramInitData: tg?.initData || '',
+                    txid
+                })
+            });
+
+            const coinsAdded = Math.max(0, Math.floor(safeNumber(data?.coinsAdded, 0)));
+
+            if (!data?.success || coinsAdded <= 0) {
+                throw new Error(data?.message || 'Transaction was not verified.');
+            }
+
+            state.coins += coinsAdded;
+            state.topups.push({
+                txid,
+                coinsAdded,
+                timestamp: new Date().toISOString()
+            });
+
+            saveState();
+            updateUI();
+
+            input.value = '';
+            closeModal('topup-modal');
+
+            showToast(`Top Up verified. +${coinsAdded.toLocaleString()} Coins added.`, 'success', 4500);
+            haptic('medium');
+        } catch (error) {
+            showToast(`Top Up verification failed: ${error.message}`, 'error', 4500);
+        } finally {
+            setButtonLoading(button, false);
+        }
+    }
+
+    /* =========================================================
+       WITHDRAWAL
+       ========================================================= */
+
+    function calculateWithdrawal() {
+        const amt = Math.max(
+            0,
+            safeNumber(document.getElementById('withdraw-amount').value, 0)
+        );
+
+        const fee = amt * CONFIG.WITHDRAW_FEE_RATE;
+        const net = Math.max(0, amt - fee);
+
+        document.getElementById('calc-req').innerText = `$${money(amt, 4)}`;
+        document.getElementById('calc-fee').innerText = `-$${money(fee, 4)}`;
+        document.getElementById('calc-net').innerText = `$${money(net, 4)}`;
+    }
+
+    function isValidWalletAddress(address) {
+        const value = String(address || '').trim();
+
+        // TRC20: Base58 address, normally starts with T and has 34 chars.
+        const trc20 = /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(value);
+
+        // BEP20: Ethereum-compatible hex address.
+        const bep20 = /^0x[a-fA-F0-9]{40}$/.test(value);
+
+        return trc20 || bep20;
+    }
+
+    async function processWithdrawal() {
+        if (busyAction) return;
+
+        const amountInput = document.getElementById('withdraw-amount');
+        const addressInput = document.getElementById('withdraw-address');
+        const button = document.getElementById('withdraw-submit-btn');
+
+        const amt = safeNumber(amountInput.value, 0);
+        const addr = addressInput.value.trim();
+
+        if (amt < CONFIG.MIN_WITHDRAW_USDT) {
+            showToast(`Minimum withdrawal is ${CONFIG.MIN_WITHDRAW_USDT} USDT.`, 'error');
+            return;
+        }
+
+        if (amt > state.usdtBalance) {
+            showToast('Insufficient USDT balance.', 'error');
+            return;
+        }
+
+        if (!isValidWalletAddress(addr)) {
+            showToast('Enter a valid TRC20 or BEP20 wallet address.', 'error');
+            return;
+        }
+
+        const fee = amt * CONFIG.WITHDRAW_FEE_RATE;
+        const net = amt - fee;
+
+        busyAction = true;
+        setButtonLoading(button, true, 'Submitting...');
+
+        try {
+            const data = await apiRequest('/api/withdraw-request', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user: tg?.initDataUnsafe?.user || { id: getUserId() },
+                    userId: getUserId(),
+                    telegramInitData: tg?.initData || '',
+                    amount: Number(amt.toFixed(6)),
+                    fee: Number(fee.toFixed(6)),
+                    netAmount: Number(net.toFixed(6)),
+                    address: addr,
+                    timestamp: new Date().toISOString()
+                })
+            });
+
+            if (!data?.success) {
+                throw new Error(data?.message || 'Withdrawal request was rejected.');
+            }
+
+            // Only deduct after backend confirms the request.
+            state.usdtBalance = Math.max(0, state.usdtBalance - amt);
+
+            state.withdrawals.push({
+                amount: Number(amt.toFixed(6)),
+                fee: Number(fee.toFixed(6)),
+                netAmount: Number(net.toFixed(6)),
+                address: addr,
+                timestamp: new Date().toISOString(),
+                status: data.status || 'pending',
+                requestId: data.requestId || null
+            });
+
+            saveState();
+            updateUI();
+
+            amountInput.value = '';
+            addressInput.value = '';
+            calculateWithdrawal();
+            closeModal('withdraw-modal');
+
+            showToast(
+                `Withdrawal request submitted. Net payout: ${net.toFixed(4)} USDT.`,
+                'success',
+                4500
+            );
+
+            haptic('medium');
+        } catch (error) {
+            showToast(`Withdrawal failed: ${error.message}`, 'error', 4500);
+        } finally {
+            busyAction = false;
+            setButtonLoading(button, false);
+        }
+    }
+
+    /* =========================================================
+       REFERRAL
+       ========================================================= */
+
+    async function copyRefLink() {
+        const input = document.getElementById('ref-link');
+        const value = input.value;
+
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(value);
+            } else {
+                input.focus();
+                input.select();
+                input.setSelectionRange(0, value.length);
+
+                const copied = document.execCommand('copy');
+                if (!copied) throw new Error('Copy command failed.');
+            }
+
+            showToast('Referral link copied.', 'success');
+            haptic('light');
+        } catch (error) {
+            showToast('Could not copy automatically. Please copy the link manually.', 'error');
+        }
+    }
+
+    /* =========================================================
+       MYSTERY BOX
+       ========================================================= */
+
+    function openMysteryBoxModal() {
+        if (state.hasWonMaxBox) {
+            showToast('Your Mystery Box reward has already been claimed on this device.', 'info');
+            return;
+        }
+
+        openModal('mystery-info-modal');
+    }
+
+    async function openMysteryReward() {
+        if (state.hasWonMaxBox) {
+            showToast('Mystery Box has already been claimed.', 'info');
+            return;
+        }
+
+        try {
+            const data = await apiRequest('/api/mystery-box', {
+                method: 'POST',
+                body: JSON.stringify({
+                    userId: getUserId(),
+                    telegramInitData: tg?.initData || ''
+                })
+            });
+
+            if (!data?.success) {
+                throw new Error(data?.message || 'Reward could not be issued.');
+            }
+
+            const rewardUSDT = Math.max(0, safeNumber(data.rewardUSDT, 0));
+            const rewardCoins = Math.max(0, Math.floor(safeNumber(data.rewardCoins, 0)));
+
+            state.usdtBalance += rewardUSDT;
+            state.coins += rewardCoins;
+            state.hasWonMaxBox = true;
+            state.lastBoxOpened = Date.now();
+
+            saveState();
+            updateUI();
+
+            showToast(
+                `Mystery Box: +${rewardUSDT.toFixed(4)} USDT and +${rewardCoins} Coins.`,
+                'success',
+                5000
+            );
+        } catch (error) {
+            showToast(`Mystery Box could not be opened: ${error.message}`, 'error', 4500);
+        }
+    }
+
+    /* =========================================================
+       NAVIGATION
+       ========================================================= */
+
+    function setActiveNav(tabName) {
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        const target = document.getElementById(`nav-${tabName}`);
+        if (target) target.classList.add('active');
+    }
+
+    function switchTab(tabName) {
+        if (tabName === 'home') {
+            setActiveNav('home');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        if (tabName === 'friends') {
+            setActiveNav('friends');
+
+            const refBox = document.getElementById('ref-link');
+            if (refBox) {
+                refBox.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    }
+
+    /* =========================================================
+       APP VISIBILITY
+       ========================================================= */
+
+    document.addEventListener('visibilitychange', () => {
+        // Timers are calculated from Date.now(), so returning from background
+        // never resets the remaining time.
+        accrueMining();
+        updateUI();
+
+        if (!document.getElementById('ad-modal').classList.contains('hidden') && state.adLaunchAt > 0) {
+            beginAdCountdown();
+        }
+
+        saveState();
+    });
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    window.addEventListener('pagehide', saveState);
+    window.addEventListener('beforeunload', saveState);
+    window.addEventListener('pageshow', () => {
+        updateUI();
+        renderMining();
+        updateNetworkStatus();
+        syncTelegramBackButton();
+    });
+
+    /* =========================================================
+       OPTIONAL TELEGRAM BACK BUTTON
+       ========================================================= */
+
+    try {
+        if (tg?.BackButton) {
+            tg.BackButton.onClick(() => {
+                const adModal = document.getElementById('ad-modal');
+                if (adModal && !adModal.classList.contains('hidden')) {
+                    if (state.adLaunchAt > 0 && Date.now() < state.adTimerEndsAt) {
+                        showToast('Please wait for the advertisement timer to finish.', 'info', 3000);
+                        return;
+                    }
+                    cancelAdGate();
+                    return;
+                }
+                closeAllModals();
+            });
+        }
+    } catch (_) {}
+
+    function updateNetworkStatus() {
+        const dot = document.getElementById('network-dot');
+        const networkLabel = document.querySelector('header .text-right .text-xs.font-semibold');
+        const online = navigator.onLine !== false;
+
+        if (dot) dot.classList.toggle('active', online);
+        if (networkLabel) {
+            const current = networkLabel.lastChild;
+            if (current && current.nodeType === Node.TEXT_NODE) {
+                current.textContent = online ? ' USDT' : ' Offline';
+            }
+        }
+    }
+
+    /* =========================================================
+       STARTUP
+       ========================================================= */
+
+    function initializeApp() {
+        initializeUserUI();
+        updateNetworkStatus();
+
+        const balanceResetKey = 'crypto_earning_platform_balance_reset_v4';
+
+        try {
+            if (!localStorage.getItem(balanceResetKey)) {
+                localStorage.setItem(balanceResetKey, '1');
+            }
+        } catch (_) {}
+
+        if (state.adCount >= CONFIG.REQUIRED_ADS) {
+            state.adCount = 0;
+            state.adStepOpenedAt = 0;
+            state.adTimerEndsAt = 0;
+            state.adLaunchAt = 0;
+            state.pendingAction = null;
+        }
+
+        if (state.adTimerEndsAt < Date.now() && state.adLaunchAt === 0) {
+            state.adTimerEndsAt = 0;
+        }
+
+        if (state.mining.pendingReward < 0) {
+            state.mining.pendingReward = 0;
+        }
+
+        accrueMining();
+        calculateWithdrawal();
+        updateUI();
+        saveState();
+        syncTelegramBackButton();
+
+        clearInterval(uiInterval);
+        uiInterval = setInterval(() => {
+            updateUI();
+
+            if (!document.getElementById('ad-modal').classList.contains('hidden') && state.adLaunchAt > 0) {
+                beginAdCountdown();
+            }
+        }, 1000);
+    }
+
+    initializeApp();
+</script>
+</body>
+</html>
